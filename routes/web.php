@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\Run\CustomsController;
 use App\Http\Controllers\Run\DatesController;
 use App\Http\Controllers\Run\OfficeController;
@@ -36,3 +37,9 @@ Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'sto
 //Dates
 Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
 Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
+
+//employee
+Route::get('get/employee/data', [EmployeeController::class, 'index'])->name('getEmployee');
+Route::post('post/employee/data', [EmployeeController::class, 'store'])->name('postEmployee');
+Route::get('get/employee/type/{name}/{userId}', [EmployeeController::class, 'type'])->name('getEmployeeType');
+Route::post('update/employee/{userId}', [EmployeeController::class, 'storeType'])->name('updateEmployeeData');

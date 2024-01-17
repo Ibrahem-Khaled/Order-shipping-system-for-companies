@@ -15,6 +15,7 @@ class ContanierController extends Controller
 
         $sizes = $request->input('size');
         $numbers = $request->input('number');
+        $rent = $request->has('rent') ? 'rent' : 'wait';
 
         //return response()->json($numbers);
         // Check if all arrays are not null and have the same count
@@ -32,6 +33,7 @@ class ContanierController extends Controller
                     'size' => $size,
                     'customs_id' => $customs_id,
                     'client_id' => $custom->client_id,
+                    'status' => $rent,
                 ]);
             }
 

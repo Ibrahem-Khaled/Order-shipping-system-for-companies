@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'role',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -54,5 +50,9 @@ class User extends Authenticatable
     public function driverContainer()
     {
         return $this->hasMany(Container::class, 'driver_id');
+    }
+    public function userinfo()
+    {
+        return $this->hasOne(UserInfo::class, 'user_id');
     }
 }

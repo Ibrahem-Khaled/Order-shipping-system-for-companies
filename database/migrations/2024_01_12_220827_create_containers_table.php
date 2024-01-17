@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->bigInteger('number')->unique();
             $table->enum('size', [20, 40]);
             $table->string('price')->nullable()->default(0);
-            $table->enum('status', ['wait', 'transport', 'done'])->default('wait');
+            $table->enum('status', ['wait', 'transport', 'done', 'rent'])->default('wait');
             $table->timestamps();
         });
     }
