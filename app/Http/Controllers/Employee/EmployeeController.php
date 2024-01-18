@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cars;
 use App\Models\User;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
@@ -12,7 +13,8 @@ class EmployeeController extends Controller
     public function index()
     {
         $employee = User::where('role', 'driver')->orWhere('role', 'administrative')->get();
-        return view('employee.employee', compact('employee'));
+        $cars = Cars::all();
+        return view('employee.employee', compact('employee', 'cars'));
     }
     public function type(Request $request, $userId)
     {
@@ -83,5 +85,11 @@ class EmployeeController extends Controller
                 'userId' => $user->id,
             ])->with('success', 'تم انشاء بيانات الموظف بنجاح');
         }
+    }
+
+    public function storeCar(Request $request)
+    {
+        Cars::create($request->all());
+        return redirect()->back()->with('success', 'تم اضافة السيارة بنجاح');
     }
 }

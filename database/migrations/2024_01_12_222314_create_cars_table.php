@@ -12,9 +12,14 @@ return new class extends Migration {
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('number')->unique();
             $table->bigInteger('driver_id')->unique();
+            $table->string('type_car')->nullable();
+            $table->bigInteger('model_car')->nullable();
+            $table->bigInteger('serial_number')->unique();
+            $table->string('license_expire')->nullable();
             $table->string('scan_expire')->nullable();
+            $table->string('card_run_expire')->nullable();
+            $table->string('number')->unique();
             $table->string('insurance_expire')->nullable();
             $table->timestamps();
         });

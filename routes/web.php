@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\FinanceialManagement\DashController;
+use App\Http\Controllers\FinanceialManagement\RevenuesController;
 use App\Http\Controllers\Run\CustomsController;
 use App\Http\Controllers\Run\DatesController;
 use App\Http\Controllers\Run\OfficeController;
@@ -18,28 +21,40 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-//select is run or money
-Route::get('select/type', [SelectTypeController::class, 'index'])->name('home');
-Route::get('select/type/dashboard', [SelectTypeController::class, 'runDash'])->name('runDash');
 
-//add offices and get this offices
-Route::get('add/office', [OfficeController::class, 'index'])->name('addOffice');
-Route::post('post/office', [OfficeController::class, 'store'])->name('postOffice');
-Route::get('get/offices', [CustomsController::class, 'index'])->name('getOfices');
+Route::get('login', [AuthController::class, 'index'])->name('login');
 
-//add the customs id
-Route::post('post/customs/data/number/{clientId}', [CustomsController::class, 'store'])->name('postCustoms');
-Route::get('show/contanier/post/{customId}/{contNum}', [CustomsController::class, 'showContainerPost'])->name('showContanierPost');
+Route::group(['prefix' => 'system',], function () {
+    //select is run or money
+    Route::get('select/type', [SelectTypeController::class, 'index'])->name('home');
+    Route::get('select/type/dashboard', [SelectTypeController::class, 'runDash'])->name('runDash');
 
-//add Container
-Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
+    //add offices and get this offices
+    Route::get('add/office', [OfficeController::class, 'index'])->name('addOffice');
+    Route::post('post/office', [OfficeController::class, 'store'])->name('postOffice');
+    Route::get('get/offices', [CustomsController::class, 'index'])->name('getOfices');
 
-//Dates
-Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
-Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
+    //add the customs id
+    Route::post('post/customs/data/number/{clientId}', [CustomsController::class, 'store'])->name('postCustoms');
+    Route::get('show/contanier/post/{customId}/{contNum}', [CustomsController::class, 'showContainerPost'])->name('showContanierPost');
 
-//employee
-Route::get('get/employee/data', [EmployeeController::class, 'index'])->name('getEmployee');
-Route::post('post/employee/data', [EmployeeController::class, 'store'])->name('postEmployee');
-Route::get('get/employee/type/{name}/{userId}', [EmployeeController::class, 'type'])->name('getEmployeeType');
-Route::post('update/employee/{userId}', [EmployeeController::class, 'storeType'])->name('updateEmployeeData');
+    //add Container
+    Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
+
+    //Dates
+    Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
+    Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
+
+    //employee
+    Route::get('get/employee/data', [EmployeeController::class, 'index'])->name('getEmployee');
+    Route::post('post/employee/data', [EmployeeController::class, 'store'])->name('postEmployee');
+    Route::post('post/cars/data', [EmployeeController::class, 'storeCar'])->name('postCar');
+    Route::get('get/employee/type/{name}/{userId}', [EmployeeController::class, 'type'])->name('getEmployeeType');
+    Route::post('update/employee/{userId}', [EmployeeController::class, 'storeType'])->name('updateEmployeeData');
+
+    //FinancialManagement
+    Route::get('Financial/Management', [DashController::class, 'index'])->name('FinancialManagement');
+    Route::get('Financial/Management/Revenues/client', [RevenuesController::class, 'index'])->name('getRevenuesClient');
+    Route::get('account/statement/data/{clientId}', [RevenuesController::class, 'accountStatement'])->name('getAccountStatement');
+
+});

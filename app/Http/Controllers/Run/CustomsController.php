@@ -13,7 +13,6 @@ class CustomsController extends Controller
     public function index()
     {
         $users = User::where('role', 'client')->get();
-
         //return response()->json($users);
         return view('run.Customs', compact('users'));
     }

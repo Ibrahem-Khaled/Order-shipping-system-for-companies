@@ -19,6 +19,8 @@
                     class="d-inline-block align-top">
                 NomerGroup
             </a>
+            <a href="{{ url()->previous() }}">Go Back</a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -96,7 +98,8 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3"
                 style="max-height: 400px; overflow: auto; position: relative;">
-                <h3 class="text-center mb-4"> {{ count($containerPort) }} الحاويات المحملة</h3>
+                <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
+                    الحاويات المحملة</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
@@ -116,8 +119,8 @@
                             <tr>
                                 <td class="text-center">{{ $item->customs->subclient_id }}</td>
                                 <td class="text-center">{{ $item->client->name }}</td>
-                                <td class="text-center">{{ $item->car->number }}</td>
-                                <td class="text-center">{{ $item->driver->name }}</td>
+                                <td class="text-center">{{ $item->car->number ?? 0 }}</td>
+                                <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
                                 <td class="text-center">{{ $item->size }}</td>
                                 <td class="text-center">{{ $item->number }}</td>
                                 <td class="text-center">

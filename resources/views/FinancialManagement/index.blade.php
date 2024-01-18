@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختيار العملية</title>
+    <title>الادارة المالية</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
@@ -93,7 +93,6 @@
 
             <a href="{{ url()->previous() }}">Go Back</a>
 
-
             <!-- Responsive navigation toggle button -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,11 +113,11 @@
 
 
     <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 10px; align-items: stretch;">
-        <a href="{{ route('getOfices') }}" class="card">
-            <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRyYW5zcG9ydHxlbnwwfHwwfHx8MA%3D%3D"
+        <button href="{{ route('dates') }}" class="card">
+            <img src="https://plus.unsplash.com/premium_photo-1679496828905-1f6d9ac5721a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWNjb3VudGluZ3xlbnwwfHwwfHx8MA%3D%3D"
                 alt="balloon with an emoji face" class="card__img">
             <span class="card__footer">
-                <span>البيان الجمركي</span>
+                <span>المصروفات</span>
             </span>
             <span class="card__action">
                 <svg viewBox="0 0 448 512" title="play">
@@ -126,12 +125,50 @@
                         d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" />
                 </svg>
             </span>
-        </a>
-        <a href="{{ route('dates') }}" class="card">
-            <img src="https://plus.unsplash.com/premium_photo-1679496828905-1f6d9ac5721a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWNjb3VudGluZ3xlbnwwfHwwfHx8MA%3D%3D"
+        </button>
+        <button type="button" class="card" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+            <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRyYW5zcG9ydHxlbnwwfHwwfHx8MA%3D%3D"
                 alt="balloon with an emoji face" class="card__img">
             <span class="card__footer">
-                <span>المواعيد</span>
+                <span>الايرادات</span>
+            </span>
+            <span class="card__action">
+                <svg viewBox="0 0 448 512" title="play">
+                    <path
+                        d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" />
+                </svg>
+            </span>
+        </button>
+        <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog"
+            aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Content Goes Here -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to Add Employee Data -->
+                        <div class="list-group">
+                            <a href="{{route('getRevenuesClient')}}" class="list-group-item list-group-item-action">كشف حساب مكتب تخليص جمركي</a>
+                            <a href="#" class="list-group-item list-group-item-action">حركة البيع وشراء</a>
+                            <a href="#" class="list-group-item list-group-item-action">أخرى</a>
+                        </div>
+                        <!-- Include your form elements for adding employee data here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Include your "Add" button here to submit the form -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ route('getOfices') }}" class="card">
+            <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRyYW5zcG9ydHxlbnwwfHwwfHx8MA%3D%3D"
+                alt="balloon with an emoji face" class="card__img">
+            <span class="card__footer">
+                <span>اليومية</span>
             </span>
             <span class="card__action">
                 <svg viewBox="0 0 448 512" title="play">

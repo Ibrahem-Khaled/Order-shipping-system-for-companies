@@ -55,4 +55,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserInfo::class, 'user_id');
     }
+    public function car()
+    {
+        return $this->hasOne(Cars::class, 'driver_id');
+    }
 }
