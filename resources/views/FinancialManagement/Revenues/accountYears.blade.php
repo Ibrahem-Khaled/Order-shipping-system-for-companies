@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المكاتب</title>
+    <title>كشوف حسابات</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="path/to/font-awesome/css/all.min.css">
@@ -24,7 +24,6 @@
                 NomerGroup
             </a>
 
-            <a href="{{ url()->previous() }}">Go Back</a>
 
             <!-- Responsive navigation toggle button -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -35,7 +34,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <!-- You can add an icon here if needed -->
+                        <a href="{{ url()->previous() }}">Go Back</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}">
@@ -47,30 +46,74 @@
         </div>
     </nav>
 
+
+    <div class="col-md-12">
+        <h1 class="text-success" style="text-align: right"> كشف حساب سنوي ل {{ $user->name }}</h1>
+    </div>
+
+
     <div class="container mt-5">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">كشف الشهري</th>
-                    <th scope="col">اجمالي عدد الحاويات</th>
-                    <th scope="col">كشف السنوي</th>
-                    <th scope="col">اجمالي المطلوب من المكتب</th>
+                    <th scope="col">ملاحظات</th>
+                    <th scope="col">الرصيد</th>
+                    <th scope="col">مدين</th>
+                    <th scope="col">دائن</th>
+                    <th scope="col">الوصف</th>
+                    <th scope="col">التاريخ</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $user)
+                @php
+                    $sum = 0;
+                    $total = $container;
+                @endphp
+
+                @foreach ($user->clientdaily as $item)
                     <tr>
-                        <th scope="row">{{ $user->id }}</th>
-                        <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->where('status', 'transport')->count() }}</td>
-                        <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->where('status', 'transport')->sum('price') }}</td>
+                        <td>{{ $item->notes }}</td>
+
+                        <td>{{ $sum = $total - $item->price }}</td>
+                        <td>{{ $item->price }}</td>
+                        <td>{{ $total == 0 ? null : $total }}</td>
+                        <td>{{ $item->description }}</td>
+                        <td>{{ $item->created_at }}</td>
                     </tr>
                 @endforeach
-                <!-- Add more rows as needed -->
             </tbody>
+
         </table>
+
+        {{-- <div class="container">
+            <div class="col-md-12">
+                <h1 class="text-primary">المجموع</h1>
+                @php
+                    $sumPrice = $user->container->where('status', 'transport')->sum('price');
+                @endphp
+                <h3 class="text-dark">
+                    {{ $sumPrice }}
+                </h3>
+            </div>
+
+            <div class="col-md-12">
+                <h1 class="text-success"> (% 15) القيمة المضافة</h1>
+                <h3 class="text-dark">
+                    @php
+                        $sumWith = $sumPrice * 0.15;
+                    @endphp
+                    {{ $sumWith }}
+                </h3>
+            </div>
+
+            <div class="col-md-12">
+                <h1 class="text-danger">الاجمالي</h1>
+                <h3 class="text-dark">
+
+                    {{ $sumPrice + $sumWith }}
+                </h3>
+            </div>
+        </div> --}}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

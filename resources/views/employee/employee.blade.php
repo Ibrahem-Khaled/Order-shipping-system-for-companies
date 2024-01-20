@@ -86,7 +86,7 @@
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <?php $driver = \App\Models\User::where('role', 'driver')->get(); ?>
-                                                    <select name="driver_id" required class="form-control">
+                                                    <select name="driver_id" class="form-control">
                                                         <option value="">اختيار السائق</option>
                                                         @foreach ($driver as $item)
                                                             <option value="{{ $item->id }}">{{ $item->name }}

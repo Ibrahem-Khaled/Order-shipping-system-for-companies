@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\daily\Daily;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\FinanceialManagement\DashController;
 use App\Http\Controllers\FinanceialManagement\RevenuesController;
@@ -56,5 +57,10 @@ Route::group(['prefix' => 'system',], function () {
     Route::get('Financial/Management', [DashController::class, 'index'])->name('FinancialManagement');
     Route::get('Financial/Management/Revenues/client', [RevenuesController::class, 'index'])->name('getRevenuesClient');
     Route::get('account/statement/data/{clientId}', [RevenuesController::class, 'accountStatement'])->name('getAccountStatement');
+    Route::get('account/years/data/{clientId}', [RevenuesController::class, 'accountYears'])->name('getAccountYears');
+
+    //FinancialManagement
+    Route::get('daily/Management/data', [Daily::class, 'index'])->name('dailyManagement');
+    Route::post('post/daily/data', [Daily::class, 'store'])->name('postDailyData');
 
 });

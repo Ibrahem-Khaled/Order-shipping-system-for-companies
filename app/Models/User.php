@@ -59,4 +59,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Cars::class, 'driver_id');
     }
+    public function clientdaily()
+    {
+        return $this->hasMany(Daily::class, 'client_id');
+    }
+    public function employeedaily()
+    {
+        return $this->hasMany(Daily::class, 'employee_id');
+    }
 }

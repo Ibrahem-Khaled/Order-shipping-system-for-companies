@@ -151,7 +151,8 @@
                     <div class="modal-body">
                         <!-- Form to Add Employee Data -->
                         <div class="list-group">
-                            <a href="{{route('getRevenuesClient')}}" class="list-group-item list-group-item-action">كشف حساب مكتب تخليص جمركي</a>
+                            <a href="{{ route('getRevenuesClient') }}"
+                                class="list-group-item list-group-item-action">كشف حساب مكتب تخليص جمركي</a>
                             <a href="#" class="list-group-item list-group-item-action">حركة البيع وشراء</a>
                             <a href="#" class="list-group-item list-group-item-action">أخرى</a>
                         </div>
@@ -164,7 +165,7 @@
                 </div>
             </div>
         </div>
-        <a href="{{ route('getOfices') }}" class="card">
+        <a href="{{ route('dailyManagement') }}" class="card">
             <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRyYW5zcG9ydHxlbnwwfHwwfHx8MA%3D%3D"
                 alt="balloon with an emoji face" class="card__img">
             <span class="card__footer">
