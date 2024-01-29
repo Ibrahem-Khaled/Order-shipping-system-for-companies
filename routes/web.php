@@ -10,6 +10,7 @@ use App\Http\Controllers\Run\DatesController;
 use App\Http\Controllers\Run\OfficeController;
 use App\Http\Controllers\Run\ContanierController;
 use App\Http\Controllers\SelectTypeController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,9 +24,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
 
-Route::group(['prefix' => 'system',], function () {
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('custom-login', [AuthController::class, 'customLogin'])->name('login.custom');
+Route::post('custom-registration', [AuthController::class, 'customRegistration'])->name('register.custom');
+Route::get('signout', [AuthController::class, 'signOut'])->name('signout');
+
+
+Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     //select is run or money
     Route::get('select/type', [SelectTypeController::class, 'index'])->name('home');
     Route::get('select/type/dashboard', [SelectTypeController::class, 'runDash'])->name('runDash');
@@ -58,6 +68,7 @@ Route::group(['prefix' => 'system',], function () {
     Route::get('Financial/Management/Revenues/client', [RevenuesController::class, 'index'])->name('getRevenuesClient');
     Route::get('account/statement/data/{clientId}', [RevenuesController::class, 'accountStatement'])->name('getAccountStatement');
     Route::get('account/years/data/{clientId}', [RevenuesController::class, 'accountYears'])->name('getAccountYears');
+    Route::post('update/container/price', [RevenuesController::class, 'updateContainerPrice'])->name('updateContainerPrice');
 
     //FinancialManagement
     Route::get('daily/Management/data', [Daily::class, 'index'])->name('dailyManagement');

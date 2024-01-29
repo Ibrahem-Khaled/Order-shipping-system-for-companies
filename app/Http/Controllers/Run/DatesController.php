@@ -13,11 +13,12 @@ class DatesController extends Controller
 {
     public function index()
     {
-        $container = Container::where('status', 'wait')->get();
-        $containerPort = Container::where('status', 'transport')->get();
+        $container = Container::whereIn('status', ['wait', 'rent'])->get();
+        $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
         $driver = User::where('role', 'driver')->get();
+        $rents = User::where('role', 'rent')->get();
         $cars = Cars::all();
-        return view('run.dates.date', compact('container', 'driver', 'containerPort', 'cars'));
+        return view('run.dates.date', compact('container', 'driver', 'containerPort', 'cars', 'rents'));
     }
 
     public function update(Request $request, $id)
@@ -27,6 +28,7 @@ class DatesController extends Controller
             'status' => $request->status,
             'driver_id' => $request->driver,
             'car_id' => $request->car,
+            'rent_id' => $request->rent_id ?? null,
         ]);
         if ($request->status == 'wait') {
             return redirect()->back()->with('success', 'تم الغاء التحميل ');

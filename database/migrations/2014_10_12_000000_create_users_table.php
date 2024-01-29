@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('phone')->unique()->nullable();
-            $table->enum('role', ['superAdmin', 'admin', 'driver', 'client', 'administrative']);
+            $table->enum('role', ['superAdmin', 'admin', 'driver', 'client', 'administrative','rent']);
             $table->bigInteger('sallary')->nullable();
             $table->bigInteger('tips')->nullable();
             $table->timestamp('phone_verified_at')->nullable();

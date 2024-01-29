@@ -109,18 +109,12 @@
                         @csrf
                         @for ($i = 0; $i < Route::current()->parameter('contNum'); $i++)
                             <div class="row justify-content-between text-left">
-                                <div class="mb-5 col-md-1"
-                                    style="display: flex;
-                                    align-items: center;
-                                    border-radius: 5px;
-                                    background-color: #ccc;
-                                    margin-top: 30px
-                                    ">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="rentCheckbox"
-                                            name="rent[]">
-                                        <label class="form-check-label" for="rentCheckbox">ايجار</label>
-                                    </div>
+                                <div class="mb-3 col-md-3">
+                                    <label for="containerSize">هل الحاوية ايجار</label>
+                                    <select id="containerSize" name="rent[]" class="form-select">
+                                        <option value="">هل الحاوية ايجار</option>
+                                        <option value="rent">ايجار</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <label for="containerNumber">اسم العميل</label>

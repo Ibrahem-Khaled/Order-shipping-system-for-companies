@@ -65,20 +65,35 @@
                     <th scope="col">#</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($user->customs as $item)
-                    <tr>
-                        <td><a href="#">{{ $item->name }}</a></td>
-                        <td>{{ $item->container->where('status', 'transport')->sum('price') }}</td>
-                        <td>0</td>
-                        <td>{{ $item->container->where('status', 'transport')->count() }}</td>
-                        <td scope="row">{{ $item->subclient_id }}</td>
-                        <td scope="row">{{ $item->statement_number }}</td>
-                        <th scope="row">{{ $item->id }}</th>
-                    </tr>
-                @endforeach
-            </tbody>
+            <form action="{{ route('updateContainerPrice') }}" method="POST">
+                @csrf
+                <tbody>
+                    @foreach ($user->customs as $item)
+                        <input hidden value="{{ $item->id }}" name="id[]" />
+                        <tr>
+                            <td><a href="#">{{ $item->name }}</a></td>
+                            <td>{{ $item->container->where('status', 'transport')->sum('price') }}</td>
+                            <td>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="price[]" required class="form-control"
+                                        placeholder="سعر الحاوية" aria-label="سعر الحاوية"
+                                        aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">ريال</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ $item->container->where('status', 'transport')->count() }}</td>
+                            <td scope="row">{{ $item->subclient_id }}</td>
+                            <td scope="row">{{ $item->statement_number }}</td>
+                            <th scope="row">{{ $item->id }}</th>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <button type="submit" class="btn btn-primary">تاكيد سعر الحاوية</button>
+            </form>
         </table>
+
 
         <div class="container">
             <div class="col-md-12">

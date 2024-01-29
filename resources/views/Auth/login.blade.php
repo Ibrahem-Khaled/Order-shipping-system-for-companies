@@ -76,23 +76,23 @@
 
                     <div class="card bg-glass">
                         <div class="card-body px-4 py-5 px-md-5">
-                            <form>
+                            <form action="{{ route('login.custom') }}" method="POST">
+                                @csrf
                                 <!-- Email input -->
                                 <div class="form-outline mb-4">
-                                    <input type="tel" id="form3Example3" class="form-control" />
+                                    <input type="tel" id="form3Example3" name="phone" class="form-control" />
                                     <label class="form-label" for="form3Example3">Phone</label>
                                 </div>
 
                                 <!-- Password input -->
                                 <div class="form-outline mb-4">
-                                    <input type="password" id="form3Example4" class="form-control" />
+                                    <input type="password" id="form3Example4" name="password" class="form-control" />
                                     <label class="form-label" for="form3Example4">Password</label>
                                 </div>
-
                                 <!-- Submit button -->
-                                <a href="SelectType.html" type="submit" class="btn btn-primary btn-block mb-4">
-                                    Sign up
-                                </a>
+                                <button type="submit" class="btn btn-primary btn-block mb-4">
+                                    تسجيل الدخول
+                                </button>
 
                                 <!-- Register buttons -->
                             </form>
@@ -106,8 +106,8 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>

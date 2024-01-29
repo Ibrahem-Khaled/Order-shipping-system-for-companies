@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\FinanceialManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\Container;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
@@ -23,32 +24,43 @@ class RevenuesController extends Controller
     public function accountYears($clientId)
     {
         // Get the current month
-        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
 
         // Retrieve records for the current month
         $user = User::find($clientId);
         $daily = $user->clientdaily;
         // Retrieve container records for the current month
         $container = $user->container
-            ->filter(function ($item) use ($currentMonth) {
-                return $item->created_at->month == $currentMonth;
+            ->filter(function ($item) use ($currentYear) {
+                return $item->created_at->year == $currentYear;
             })
             ->sum('price');
 
-        // Retrieve container records for each month
-        $containerByMonth = $user->container
-            ->groupBy(function ($item) {
-                return $item->created_at->format('F Y'); // Group by month and year
-            })
-            ->map(function ($group) {
-                return $group->sum('price');
-            });
 
         // return response()->json([
         //     'containerByMonth' => $containerByMonth,
         //     'container' => $container,
         // ]);
 
-        return view('FinancialManagement.Revenues.accountYears', compact('user', 'daily', 'container', 'currentMonth'));
+        return view('FinancialManagement.Revenues.accountYears', compact('user', 'daily', 'container'));
+    }
+
+    public function updateContainerPrice(Request $request)
+    {
+        $customIds = $request->input('id');
+        $prices = $request->input('price');
+
+        $count = count($prices);
+        for ($i = 0; $i < $count; $i++) {
+
+            $customId = $customIds[$i];
+            $price = $prices[$i];
+            // Find the CustomsDeclaration and its associated Container
+            $custom = Container::where('customs_id', $customId);
+            $custom->update([
+                'price' => $price,
+            ]);
+        }
+        return redirect()->back()->with('success', 'تم التحديث بنجاح');
     }
 }

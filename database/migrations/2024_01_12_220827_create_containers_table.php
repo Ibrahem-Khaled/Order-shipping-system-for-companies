@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('driver_id')->nullable();
             $table->bigInteger('car_id')->nullable();
+            $table->bigInteger('rent_id')->nullable();
             $table->bigInteger('customs_id');
             $table->bigInteger('client_id');
             $table->bigInteger('number')->unique();

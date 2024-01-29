@@ -62,28 +62,46 @@
                                     <input type="text" hidden name="status" value="transport">
                                     <td class="text-center">{{ $item->customs->subclient_id }}</td>
                                     <td class="text-center">{{ $item->client->name }}</td>
-                                    <td class="text-center">
-                                        <select class="form-select" name="car" required>
-                                            <option value="">اختر السيارة</option>
-                                            @foreach ($cars as $driverItem)
-                                                <option value="{{ $driverItem->id }}">{{ $driverItem->number }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td class="text-center">
-                                        <select class="form-select" name="driver" required>
-                                            <option value="">اختر السائق</option>
-                                            @foreach ($driver as $driverItem)
-                                                <option value="{{ $driverItem->id }}">{{ $driverItem->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
+
+                                    @if ($item->status == 'rent')
+                                        <td class="text-center">
+                                            <select class="form-select" name="rent_id" required>
+                                                <option value="">اختر شركة الاجار</option>
+                                                @foreach ($rents as $items)
+                                                    <option value="{{ $items->id }}">{{ $items->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    @else
+                                        <td class="text-center">
+                                            <select class="form-select" name="car" required>
+                                                <option value="">اختر السيارة</option>
+                                                @foreach ($cars as $driverItem)
+                                                    <option value="{{ $driverItem->id }}">{{ $driverItem->number }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="text-center">
+                                            <select class="form-select" name="driver" required>
+                                                <option value="">اختر السائق</option>
+                                                @foreach ($driver as $driverItem)
+                                                    <option value="{{ $driverItem->id }}">{{ $driverItem->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    @endif
                                     <td class="text-center">{{ $item->size }}</td>
                                     <td class="text-center">{{ $item->number }}</td>
                                     <td class="text-center">
                                         <button type="submit" class="btn btn-danger d-inline-block">
                                             @if ($item->status == 'wait')
                                                 الانتظار
+                                            @elseif($item->status == 'rent')
+                                                ايجار
                                             @endif
                                         </button>
                                     </td>
@@ -119,8 +137,13 @@
                             <tr>
                                 <td class="text-center">{{ $item->customs->subclient_id }}</td>
                                 <td class="text-center">{{ $item->client->name }}</td>
-                                <td class="text-center">{{ $item->car->number ?? 0 }}</td>
-                                <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
+                                @if ($item->rent_id == null)
+                                    <td class="text-center">{{ $item->car->number ?? 0 }}</td>
+                                    <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
+                                @else
+                                    <td class="text-center">{{ $item->rent->name }}</td>
+                                    <td class="text-center">اسم شركة الايجار</td>
+                                @endif
                                 <td class="text-center">{{ $item->size }}</td>
                                 <td class="text-center">{{ $item->number }}</td>
                                 <td class="text-center">
@@ -152,7 +175,11 @@
                                         </div>
                                         <form action="{{ route('updateContainer', $item->id) }}" method="POST">
                                             @csrf
-                                            <input type="text" hidden name="status" value="wait">
+                                            @if ($container->rent_id == null)
+                                                <input type="text" hidden name="status" value="wait">
+                                            @else
+                                                <input type="text" hidden name="status" value="rent">
+                                            @endif
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">إلغاء</button>

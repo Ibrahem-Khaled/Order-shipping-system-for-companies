@@ -15,9 +15,8 @@ class ContanierController extends Controller
 
         $sizes = $request->input('size');
         $numbers = $request->input('number');
-        $rent = $request->has('rent') ? 'rent' : 'wait';
+        $rents = $request->input('rent');
 
-        //return response()->json($numbers);
         // Check if all arrays are not null and have the same count
         if (count($sizes)) {
             $count = count($sizes);
@@ -26,6 +25,8 @@ class ContanierController extends Controller
             for ($i = 0; $i < $count; $i++) {
                 $size = $sizes[$i];
                 $number = $numbers[$i];
+                $rent = $rents[$i];
+                // return response()->json($rent);
 
                 // Create a new record in the database for each set of values
                 Container::create([
@@ -33,7 +34,7 @@ class ContanierController extends Controller
                     'size' => $size,
                     'customs_id' => $customs_id,
                     'client_id' => $custom->client_id,
-                    'status' => $rent,
+                    'status' => $rent == 'rent' ? 'rent' : 'wait',
                 ]);
             }
 

@@ -58,8 +58,8 @@
                 <tr>
                     <th scope="col">ملاحظات</th>
                     <th scope="col">الرصيد</th>
-                    <th scope="col">مدين</th>
                     <th scope="col">دائن</th>
+                    <th scope="col">مدين</th>
                     <th scope="col">الوصف</th>
                     <th scope="col">التاريخ</th>
                 </tr>
@@ -67,22 +67,29 @@
             <tbody>
                 @php
                     $sum = 0;
-                    $total = $container;
+                    $totalPrice = 0;
                 @endphp
 
-                @foreach ($user->clientdaily as $item)
+                @foreach ($user->clientdaily->sortBy('created_at') as $item)
                     <tr>
+                        @php
+                            $currentYear = $item->created_at->month;
+                        @endphp
                         <td>{{ $item->notes }}</td>
-
-                        <td>{{ $sum = $total - $item->price }}</td>
+                        <td>{{ $user->container->filter(function ($items) use ($currentYear) {
+                                return $items->created_at->month == $currentYear;
+                            })->sum('price') - $item->price }}
+                        </td>
                         <td>{{ $item->price }}</td>
-                        <td>{{ $total == 0 ? null : $total }}</td>
+                        <td>{{ $totalPrice = $user->container->filter(function ($items) use ($currentYear) {
+                                return $items->created_at->month == $currentYear;
+                            })->sum('price') }}
+                        </td>
                         <td>{{ $item->description }}</td>
                         <td>{{ $item->created_at }}</td>
                     </tr>
                 @endforeach
             </tbody>
-
         </table>
 
         {{-- <div class="container">

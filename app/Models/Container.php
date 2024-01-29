@@ -28,4 +28,9 @@ class Container extends Model
     {
         return $this->belongsTo(Cars::class, 'car_id');
     }
+
+    public function rent()
+    {
+        return $this->belongsTo(User::class, 'rent_id');
+    }
 }
