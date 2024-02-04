@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\daily\Daily;
 use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\expenses\CarsController;
 use App\Http\Controllers\FinanceialManagement\DashController;
 use App\Http\Controllers\FinanceialManagement\RevenuesController;
 use App\Http\Controllers\Run\CustomsController;
@@ -73,5 +74,17 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     //FinancialManagement
     Route::get('daily/Management/data', [Daily::class, 'index'])->name('dailyManagement');
     Route::post('post/daily/data', [Daily::class, 'store'])->name('postDailyData');
+    Route::post('update/daily/data/{id}', [Daily::class, 'update'])->name('updateDailyData');
+    Route::post('delete/daily/data/{id}', [Daily::class, 'delete'])->name('deleteDailyData');
+    Route::post('add/statment/data', [Daily::class, 'addStatement'])->name('addOtherStateMent');
+
+    //profile settings
+    Route::get('user/profile/settnigs/{userId}', [AuthController::class, 'profile'])->name('profileSettings');
+    Route::post('user/profile/update/{userId}', [AuthController::class, 'update'])->name('updateUser');
+
+    //expenses data
+    Route::get('expenses/data/cars', [CarsController::class, 'index'])->name('expensesCarsData');
+    Route::get('expenses/car/{id}', [CarsController::class, 'carsDaily'])->name('expensesCarDaily');
+    Route::get('expenses/sallary/data', [CarsController::class, 'sallary'])->name('expensesSallary');
 
 });

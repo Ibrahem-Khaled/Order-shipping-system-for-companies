@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('driver_id')->unique();
+            $table->bigInteger('driver_id')->unique()->nullable();
+            $table->enum('type', ['transfer', 'private']);
             $table->string('type_car')->nullable();
             $table->bigInteger('model_car')->nullable();
             $table->bigInteger('serial_number')->unique();

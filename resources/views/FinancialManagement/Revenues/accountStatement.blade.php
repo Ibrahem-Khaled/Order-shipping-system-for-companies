@@ -74,14 +74,20 @@
                             <td><a href="#">{{ $item->name }}</a></td>
                             <td>{{ $item->container->where('status', 'transport')->sum('price') }}</td>
                             <td>
-                                <div class="input-group mb-3">
-                                    <input type="text" name="price[]" required class="form-control"
-                                        placeholder="سعر الحاوية" aria-label="سعر الحاوية"
-                                        aria-describedby="basic-addon2">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="basic-addon2">ريال</span>
+                                @if ($item->container->where('status', 'transport')->sum('price') == 0)
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="price[]" required class="form-control"
+                                            placeholder="سعر الحاوية" aria-label="سعر الحاوية"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon2">ريال</span>
+                                        </div>
                                     </div>
-                                </div>
+                                @else
+                                    <input type="text" name="price[]" hidden
+                                        value=" {{ $item->container->where('status', 'transport')->sum('price') / $item->container->where('status', 'transport')->count() }}">
+                                    {{ $item->container->where('status', 'transport')->sum('price') / $item->container->where('status', 'transport')->count() }}
+                                @endif
                             </td>
                             <td>{{ $item->container->where('status', 'transport')->count() }}</td>
                             <td scope="row">{{ $item->subclient_id }}</td>

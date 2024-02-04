@@ -93,7 +93,6 @@
                                 <button type="submit" class="btn btn-primary btn-block mb-4">
                                     تسجيل الدخول
                                 </button>
-
                                 <!-- Register buttons -->
                             </form>
                         </div>

@@ -113,7 +113,7 @@
 
 
     <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 10px; align-items: stretch;">
-        <button href="{{ route('dates') }}" class="card">
+        <button type="button" class="card" data-bs-toggle="modal" data-bs-target="#expenses">
             <img src="https://plus.unsplash.com/premium_photo-1679496828905-1f6d9ac5721a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWNjb3VudGluZ3xlbnwwfHwwfHx8MA%3D%3D"
                 alt="balloon with an emoji face" class="card__img">
             <span class="card__footer">
@@ -126,6 +126,34 @@
                 </svg>
             </span>
         </button>
+        <div class="modal fade" id="expenses" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Content Goes Here -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to Add Employee Data -->
+                        <div class="list-group">
+                            <a href="{{ route('expensesCarsData') }}" class="list-group-item list-group-item-action">كشف
+                                حساب السيارات</a>
+                            <a href="{{ route('expensesSallary') }}"
+                                class="list-group-item list-group-item-action">المرتبات</a>
+                            <a href="#" class="list-group-item list-group-item-action"></a>
+                            <a href="#" class="list-group-item list-group-item-action">مصروفات الشركة</a>
+                        </div>
+                        <!-- Include your form elements for adding employee data here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Include your "Add" button here to submit the form -->
+                    </div>
+                </div>
+            </div>
+        </div>
         <button type="button" class="card" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
             <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRyYW5zcG9ydHxlbnwwfHwwfHx8MA%3D%3D"
                 alt="balloon with an emoji face" class="card__img">

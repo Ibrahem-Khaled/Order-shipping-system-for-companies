@@ -65,7 +65,7 @@
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->container->where('status', 'transport')->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->where('status', 'transport')->sum('price') }}</td>
+                        <td>{{ $user->container->where('status', 'transport')->sum('price') * 0.15 }}</td>
                     </tr>
                 @endforeach
                 <!-- Add more rows as needed -->

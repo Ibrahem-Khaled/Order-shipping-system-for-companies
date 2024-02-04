@@ -51,16 +51,19 @@ class RevenuesController extends Controller
         $prices = $request->input('price');
 
         $count = count($prices);
-        for ($i = 0; $i < $count; $i++) {
-
-            $customId = $customIds[$i];
-            $price = $prices[$i];
-            // Find the CustomsDeclaration and its associated Container
-            $custom = Container::where('customs_id', $customId);
-            $custom->update([
-                'price' => $price,
-            ]);
+        if ($count > 0) {
+            for ($i = 0; $i < $count; $i++) {
+                $customId = $customIds[$i];
+                $price = $prices[$i];
+                // Find the CustomsDeclaration and its associated Container
+                $custom = Container::where('customs_id', $customId);
+                $custom->update([
+                    'price' => $price,
+                ]);
+            }
+            return redirect()->back()->with('success', 'تم التحديث بنجاح');
+        } else {
+            return redirect()->back()->with('error', 'يوجد خطا ما');
         }
-        return redirect()->back()->with('success', 'تم التحديث بنجاح');
     }
 }

@@ -85,6 +85,13 @@
                                                         placeholder="رقم السيارة" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
+                                                    <select name="type" required class="form-control">
+                                                        <option value="">اختيار نوع السيارة</option>
+                                                        <option value="transfer">نقل</option>
+                                                        <option value="private">ملاكي</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
                                                     <?php $driver = \App\Models\User::where('role', 'driver')->get(); ?>
                                                     <select name="driver_id" class="form-control">
                                                         <option value="">اختيار السائق</option>
@@ -219,6 +226,9 @@
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
+                            @if (Auth()->user()->role == 'superAdmin')
+                                <th scope="col" class="text-center"></th>
+                            @endif
                             <th scope="col" class="text-center">الصورة الشخصية</th>
                             <th scope="col" class="text-center">المهنة</th>
                             <th scope="col" class="text-center">الراتب</th>
@@ -230,18 +240,28 @@
                     <tbody>
                         @foreach ($employee as $item)
                             <tr>
+                                @if (Auth()->user()->role == 'superAdmin')
+                                    <td class="text-center">
+                                        {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
+                                    </td>
+                                @endif
                                 <td class="text-center">
-                                    <img src="{{ asset('storage/' . $item->userinfo->image) }}"
-                                        alt="{{ $item->name }} Image" class="img-thumbnail"
+                                    <img src="{{ $item?->userinfo?->image == null ? 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg' : asset('storage/' . $item->userinfo->image) }}"
+                                        alt="{{ $item->name }}" class="img-thumbnail"
                                         style="max-width: 100px; max-height: 100px;">
                                 </td>
+
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->role == 'driver' ? 'سائق' : 'اداري' }}</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     ر.س{{ $item->sallary }}</td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">{{ $item->name }}
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('profileSettings', $item->id) }}">
+                                        {{ $item->name }}
+                                    </a>
                                 </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">{{ $item->id }}
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->id }}
                                 </td>
                             </tr>
                         @endforeach
@@ -289,7 +309,7 @@
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">{{ $item->number }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->driver->name }}
+                                    {{ $item?->driver?->name }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">{{ $item->id }}
                                 </td>

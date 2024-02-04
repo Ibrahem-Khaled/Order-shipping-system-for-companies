@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Hash;
 use Session;
@@ -68,4 +69,52 @@ class AuthController extends Controller
         Auth::logout();
         return Redirect('login');
     }
+
+    public function profile($userId)
+    {
+        $user = User::find($userId);
+        return view('Auth.profile', compact('user'));
+    }
+    public function update(Request $request, $userId)
+    {
+        $user = User::find($userId);
+
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'sallary' => $request->sallary,
+            'password' => $request->password,
+        ]);
+
+        // Find the UserInfo instance associated with the user
+        $userinfo = UserInfo::where('user_id', $userId)->first();
+
+        // If UserInfo instance doesn't exist, create it
+        if (!$userinfo) {
+            $userinfo = new UserInfo();
+            $userinfo->user_id = $userId;
+        }
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('user_images', 'public');
+        } else {
+            $image = null;
+        }
+
+        $userinfo->update([
+            'gender' => $request->gender,
+            'number_residence' => $request->number_residence,
+            'age' => $request->age,
+            'date_runer' => $request->date_runer,
+            'nationality' => $request->nationality,
+            'marital_status' => $request->marital_status,
+            'expire_residence' => $request->expire_residence,
+            'image' => $image,
+        ]);
+
+        return redirect()->route('getEmployee')->with('success', 'تم تحديث البيانات بنجاح');
+    }
+
+
 }

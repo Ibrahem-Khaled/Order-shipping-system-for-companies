@@ -79,7 +79,9 @@
                                             <select class="form-select" name="car" required>
                                                 <option value="">اختر السيارة</option>
                                                 @foreach ($cars as $driverItem)
-                                                    <option value="{{ $driverItem->id }}">{{ $driverItem->number }}
+                                                    <option value="{{ $driverItem->id }}">
+                                                        {{ $driverItem->driver?->name }} -
+                                                        {{ $driverItem->number }}
                                                     </option>
                                                 @endforeach
                                             </select>
