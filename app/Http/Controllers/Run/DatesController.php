@@ -24,9 +24,11 @@ class DatesController extends Controller
     public function update(Request $request, $id)
     {
         $container = Container::find($id);
+        $driver = User::find($request->driver);
         $container->update([
             'status' => $request->status,
             'driver_id' => $request->driver,
+            'tips' => $driver->tips ?? null,
             'car_id' => $request->car,
             'rent_id' => $request->rent_id ?? null,
         ]);

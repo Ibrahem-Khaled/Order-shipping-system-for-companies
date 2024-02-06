@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\daily\Daily;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\expenses\CarsController;
+use App\Http\Controllers\expenses\UsersController;
 use App\Http\Controllers\FinanceialManagement\DashController;
 use App\Http\Controllers\FinanceialManagement\RevenuesController;
 use App\Http\Controllers\Run\CustomsController;
@@ -85,6 +86,11 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     //expenses data
     Route::get('expenses/data/cars', [CarsController::class, 'index'])->name('expensesCarsData');
     Route::get('expenses/car/{id}', [CarsController::class, 'carsDaily'])->name('expensesCarDaily');
-    Route::get('expenses/sallary/data', [CarsController::class, 'sallary'])->name('expensesSallary');
+    Route::get('expenses/albancher/data', [UsersController::class, 'albancher'])->name('expensesSallaryAlbancher');
+    Route::get('expenses/daily/albancher/{id}', [UsersController::class, 'albancherDaily'])->name('expensesAlbancherDaily');
+    Route::get('expenses/employee/data', [UsersController::class, 'employee'])->name('expensesSallaryeEmployee');
+    Route::get('expenses/daily/employee/{id}', [UsersController::class, 'employeeDaily'])->name('expensesEmployeeDaily');
+    Route::get('expenses/tips/employee/{id}', [UsersController::class, 'employeeTips'])->name('expensesEmployeeTips');
+
 
 });

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السيارات</title>
+    <title>كشف حساب</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
@@ -36,42 +36,55 @@
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
-                <h3 class="text-center mb-4"> {{ count($cars) }} اجمالي عدد السيارات </h3>
+                <h2>{{ $user->name }}</h2>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
-                        <tr>
-                            @if (Auth()->user()->role == 'superAdmin')
-                                <th scope="col" class="text-center"></th>
-                            @endif
-                            <th scope="col" class="text-center">نوع السيارة</th>
-                            <th scope="col" class="text-center">رقم السيارة</th>
-                            <th scope="col" class="text-center">#</th>
+                        <tr class="text-uppercase text-success">
+                            <th scope="col"></th>
+                            <th scope="col">سعر الترب</th>
+                            <th scope="col">حجم الحاوية</th>
+                            <th scope="col">رقم الحاوية</th>
+                            <th scope="col">اسم العميل</th>
+                            <th scope="col">التاريخ</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        @foreach ($cars as $item)
+                        @foreach ($user->driverContainer as $item)
+                            @php
+                                $clint = App\Models\CustomsDeclaration::find($item->customs_id);
+                            @endphp
                             <tr>
-                                @if (Auth()->user()->role == 'superAdmin')
-                                    <td class="text-center">
-                                        {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
-                                    </td>
-                                @endif
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->type_car }}</td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    <a href="{{ route('expensesCarDaily', $item->id) }}">
-                                        {{ $item->number }}
-                                    </a>
+                                <td>
+                                    @if ($item->created_at != $item->updated_at)
+                                        معدل
+                                    @else
+                                        {{ null }}
+                                    @endif
                                 </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->id }}
+                                <td>
+                                    {{ $item->tips }}
                                 </td>
+                                <td>
+                                    {{ $item->size }}
+                                </td>
+                                <td>
+                                    {{ $item->number }}
+                                </td>
+                                <td>
+                                    {{ $clint->subclient_id }}
+                                </td>
+                                <td>{{ $item->created_at }}</td>
                             </tr>
                         @endforeach
                     </tbody>
-
+                    @php
+                        $allTrips = $user->driverContainer->sum('tips');
+                    @endphp
                 </table>
+                @if ($user->role == 'driver')
+                    <h3> اجمالي التربات {{ $allTrips }}</h3>
+                @endif
             </div>
         </div>
     </div>

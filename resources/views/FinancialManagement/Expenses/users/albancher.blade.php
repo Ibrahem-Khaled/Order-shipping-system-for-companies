@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السيارات</title>
+    <title>البنشري</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
@@ -36,32 +36,31 @@
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
-                <h3 class="text-center mb-4"> {{ count($cars) }} اجمالي عدد السيارات </h3>
+                <h3 class="text-center mb-4"> {{ count($users) }} اجمالي حسابات البنشري </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
-                            @if (Auth()->user()->role == 'superAdmin')
-                                <th scope="col" class="text-center"></th>
-                            @endif
-                            <th scope="col" class="text-center">نوع السيارة</th>
-                            <th scope="col" class="text-center">رقم السيارة</th>
+                            <th scope="col" class="text-center">الباقي</th>
+                            <th scope="col" class="text-center">اجمالي الدفع</th>
+                            <th scope="col" class="text-center">اجمالي المستحق</th>
+                            <th scope="col" class="text-center">الاسم</th>
                             <th scope="col" class="text-center">#</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        @foreach ($cars as $item)
+                        @foreach ($users as $item)
                             <tr>
-                                @if (Auth()->user()->role == 'superAdmin')
-                                    <td class="text-center">
-                                        {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
-                                    </td>
-                                @endif
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->type_car }}</td>
+                                    {{ $item->employeedaily->where('type', 'deposit')->sum('price') - $item->employeedaily->where('type', 'withdraw')->sum('price') }}
+                                </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    <a href="{{ route('expensesCarDaily', $item->id) }}">
-                                        {{ $item->number }}
+                                    {{ $item->employeedaily->where('type', 'withdraw')->sum('price') }}</td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->employeedaily->where('type', 'deposit')->sum('price') }}</td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('expensesAlbancherDaily', $item->id) }}">
+                                        {{ $item->name }}
                                     </a>
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">

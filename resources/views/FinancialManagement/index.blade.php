@@ -140,9 +140,10 @@
                         <div class="list-group">
                             <a href="{{ route('expensesCarsData') }}" class="list-group-item list-group-item-action">كشف
                                 حساب السيارات</a>
-                            <a href="{{ route('expensesSallary') }}"
+                            <a href="{{ route('expensesSallaryeEmployee') }}"
                                 class="list-group-item list-group-item-action">المرتبات</a>
-                            <a href="#" class="list-group-item list-group-item-action"></a>
+                            <a href="{{ route('expensesSallaryAlbancher') }}"
+                                class="list-group-item list-group-item-action">البنشري</a>
                             <a href="#" class="list-group-item list-group-item-action">مصروفات الشركة</a>
                         </div>
                         <!-- Include your form elements for adding employee data here -->

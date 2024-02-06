@@ -18,9 +18,4 @@ class CarsController extends Controller
         $car = Cars::find($id);
         return view('FinancialManagement.Expenses.carsDaily', compact('car'));
     }
-    public function sallary()
-    {
-        $cars = Cars::all();
-        return view('FinancialManagement.Expenses.sallary', compact('cars'));
-    }
 }
