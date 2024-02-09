@@ -127,6 +127,19 @@
                 </svg>
             </span>
         </a>
+        <a href="{{ route('empty') }}" class="card">
+            <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRyYW5zcG9ydHxlbnwwfHwwfHx8MA%3D%3D"
+                alt="balloon with an emoji face" class="card__img">
+            <span class="card__footer">
+                <span>كشف حساب الفارغ</span>
+            </span>
+            <span class="card__action">
+                <svg viewBox="0 0 448 512" title="play">
+                    <path
+                        d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" />
+                </svg>
+            </span>
+        </a>
         <a href="{{ route('dates') }}" class="card">
             <img src="https://plus.unsplash.com/premium_photo-1679496828905-1f6d9ac5721a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWNjb3VudGluZ3xlbnwwfHwwfHx8MA%3D%3D"
                 alt="balloon with an emoji face" class="card__img">

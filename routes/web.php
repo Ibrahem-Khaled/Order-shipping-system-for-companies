@@ -54,9 +54,11 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     //add Container
     Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
 
-    //Dates
+    //Dates and empty
     Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
+    Route::get('empty/contaniers', [DatesController::class, 'empty'])->name('empty');
     Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
+    Route::post('update/container/empty/{id}', [DatesController::class, 'updateEmpty'])->name('updateEmpty');
 
     //employee
     Route::get('get/employee/data', [EmployeeController::class, 'index'])->name('getEmployee');
@@ -71,6 +73,9 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('account/statement/data/{clientId}', [RevenuesController::class, 'accountStatement'])->name('getAccountStatement');
     Route::get('account/years/data/{clientId}', [RevenuesController::class, 'accountYears'])->name('getAccountYears');
     Route::post('update/container/price', [RevenuesController::class, 'updateContainerPrice'])->name('updateContainerPrice');
+    Route::get('offices/rent/Management', [RevenuesController::class, 'rent'])->name('getOfficesRent');
+    Route::get('rent/month/data/{clientId}', [RevenuesController::class, 'rentMonth'])->name('getrentMonth');
+    Route::post('update/container/rent/price', [RevenuesController::class, 'updateRentContainerPrice'])->name('updateRentContainerPrice');
 
     //FinancialManagement
     Route::get('daily/Management/data', [Daily::class, 'index'])->name('dailyManagement');
@@ -78,6 +83,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::post('update/daily/data/{id}', [Daily::class, 'update'])->name('updateDailyData');
     Route::post('delete/daily/data/{id}', [Daily::class, 'delete'])->name('deleteDailyData');
     Route::post('add/statment/data', [Daily::class, 'addStatement'])->name('addOtherStateMent');
+    Route::post('edit/contanier/tips', [Daily::class, 'editContanierTips'])->name('editContanierTips');
 
     //profile settings
     Route::get('user/profile/settnigs/{userId}', [AuthController::class, 'profile'])->name('profileSettings');

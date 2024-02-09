@@ -102,7 +102,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">الرئيسية</a>
+                        <a class="nav-link" href="{{ route('home') }}">الرئيسية</a>
                     </li>
                 </ul>
             </div>
@@ -207,13 +207,50 @@
                 </svg>
             </span>
         </a>
+        <button type="button" class="card" data-bs-toggle="modal" data-bs-target="#rent">
+            <img src="https://plus.unsplash.com/premium_photo-1679496828905-1f6d9ac5721a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWNjb3VudGluZ3xlbnwwfHwwfHx8MA%3D%3D"
+                alt="balloon with an emoji face" class="card__img">
+            <span class="card__footer">
+                <span>الايجارات</span>
+            </span>
+            <span class="card__action">
+                <svg viewBox="0 0 448 512" title="play">
+                    <path
+                        d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" />
+                </svg>
+            </span>
+        </button>
+        <div class="modal fade" id="rent" tabindex="-1" role="dialog"
+            aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Content Goes Here -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to Add Employee Data -->
+                        <div class="list-group">
+                            <a href="{{ route('getOfficesRent') }}" class="list-group-item list-group-item-action">كشف
+                                حساب مكاتب الايجار</a>
+                            <!-- Include your form elements for adding employee data here -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <!-- Include your "Add" button here to submit the form -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    </div>
+        </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
-    </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+        </script>
 </body>
 
 </html>

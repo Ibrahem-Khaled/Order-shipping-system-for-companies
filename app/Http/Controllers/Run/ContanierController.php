@@ -35,6 +35,7 @@ class ContanierController extends Controller
                     'customs_id' => $customs_id,
                     'client_id' => $custom->client_id,
                     'status' => $rent == 'rent' ? 'rent' : 'wait',
+                    'is_rent' => $rent == 'rent' ? 1 : 0,
                 ]);
             }
 

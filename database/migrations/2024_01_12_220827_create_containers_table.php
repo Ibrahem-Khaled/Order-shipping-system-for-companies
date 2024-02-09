@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->bigInteger('car_id')->nullable();
             $table->bigInteger('rent_id')->nullable();
             $table->bigInteger('tips')->nullable();
+            $table->boolean('is_rent')->default(0);
             $table->bigInteger('customs_id');
             $table->bigInteger('client_id');
             $table->bigInteger('number')->unique();

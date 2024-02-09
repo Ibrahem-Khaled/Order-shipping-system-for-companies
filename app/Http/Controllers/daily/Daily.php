@@ -4,6 +4,7 @@ namespace App\Http\Controllers\daily;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cars;
+use App\Models\Container;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Daily as days;
@@ -99,5 +100,18 @@ class Daily extends Controller
         return redirect()->back()->with('success', 'تم انشاء بيانات الموظف بنجاح');
 
     }
+    public function editContanierTips(Request $request)
+    {
+        $container = Container::where('number', $request->number)->first();
+        if (!$container) {
+            return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
+        } else {
+            $container->update([
+                'tips' => $request->tips,
+            ]);
+            return redirect()->back()->with('success', 'تم التعديل بنجاح');
+        }
+    }
+
 
 }

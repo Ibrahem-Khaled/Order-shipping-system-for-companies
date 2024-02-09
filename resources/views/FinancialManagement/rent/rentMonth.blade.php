@@ -10,6 +10,10 @@
 
     <style>
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        }
     </style>
 </head>
 
@@ -57,41 +61,38 @@
             <thead>
                 <tr>
                     <th scope="col">ملاحظات</th>
-                    <th scope="col">اجمالي سعر النقل</th>
                     <th scope="col">سعر النقل</th>
-                    <th scope="col">عدد الحاويات</th>
                     <th scope="col">العميل</th>
+                    <th scope="col">رقم الحاوية</th>
                     <th scope="col">رقم البيان</th>
                     <th scope="col">#</th>
                 </tr>
             </thead>
-            <form action="{{ route('updateContainerPrice') }}" method="POST">
+            <form action="{{ route('updateRentContainerPrice') }}" method="POST">
                 @csrf
                 <tbody>
-                    @foreach ($user->customs as $item)
+                    @foreach ($user->rentCont->where('status', 'transport') as $item)
+                        @php
+                            $custom = App\Models\CustomsDeclaration::find($item->customs_id);
+                        @endphp
                         <input hidden value="{{ $item->id }}" name="id[]" />
                         <tr>
                             <td><a href="#">{{ $item->name }}</a></td>
-                            <td>{{ $item->container->where('status', 'transport')->sum('price') }}</td>
                             <td>
-                                @if ($item->container->where('status', 'transport')->sum('price') == 0)
+                                @if ($item->is_rent == 1)
                                     <div class="input-group mb-3">
-                                        <input type="text" name="price[]" required class="form-control"
-                                            placeholder="سعر الحاوية" aria-label="سعر الحاوية"
+                                        <input type="text" name="price[]" required value="{{ $item->price }}"
+                                            class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
                                             aria-describedby="basic-addon2">
                                         <div class="input-group-append">
                                             <span class="input-group-text" id="basic-addon2">ريال</span>
                                         </div>
                                     </div>
-                                @else
-                                    <input type="text" name="price[]" hidden
-                                        value=" {{ $item->container->where('status', 'transport')->sum('price') / $item->container->where('status', 'transport')->count() }}">
-                                    {{ $item->container->where('status', 'transport')->sum('price') / $item->container->where('status', 'transport')->count() }}
                                 @endif
                             </td>
-                            <td>{{ $item->container->where('status', 'transport')->count() }}</td>
-                            <td scope="row">{{ $item->subclient_id }}</td>
-                            <td scope="row">{{ $item->statement_number }}</td>
+                            <td scope="row">{{ $custom->subclient_id }}</td>
+                            <td scope="row">{{ $item->number }}</td>
+                            <td scope="row">{{ $custom->statement_number }}</td>
                             <th scope="row">{{ $item->id }}</th>
                         </tr>
                     @endforeach
@@ -103,30 +104,9 @@
 
         <div class="container">
             <div class="col-md-12">
-                <h1 class="text-primary">المجموع</h1>
-                @php
-                    $sumPrice = $user->container->where('status', 'transport')->sum('price');
-                @endphp
-                <h3 class="text-dark">
-                    {{ $sumPrice }}
-                </h3>
-            </div>
-
-            <div class="col-md-12">
-                <h1 class="text-success"> (% 15) القيمة المضافة</h1>
-                <h3 class="text-dark">
-                    @php
-                        $sumWith = $sumPrice * 0.15;
-                    @endphp
-                    {{ $sumWith }}
-                </h3>
-            </div>
-
-            <div class="col-md-12">
                 <h1 class="text-danger">الاجمالي</h1>
                 <h3 class="text-dark">
-
-                    {{ $sumPrice + $sumWith }}
+                    {{ $user->rentCont->where('status', 'transport')->sum('price') }}
                 </h3>
             </div>
         </div>

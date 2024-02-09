@@ -70,6 +70,52 @@
                     </li>
                     <li class="nav-item">
                         <button type="button" style="margin: 5px" class="btn btn-success d-inline-block"
+                            data-bs-toggle="modal" data-bs-target="#editTips">
+                            تعديل سعر الترب للحاوية
+                        </button>
+                        <!-- Add Employee Modal -->
+                        <div class="modal fade" id="editTips" tabindex="-1" role="dialog"
+                            aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- Modal Content Goes Here -->
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addEmployeeModalLabel">تعديل سعر الترب</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Form to Add Employee Data -->
+                                        <form action="{{ route('editContanierTips') }}" method="POST"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="containerNumber" class="form-label">رقم الحاوية:</label>
+                                                    <input type="text" id="containerNumber" name="number"
+                                                        required class="form-control" placeholder="رقم الحاوية">
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="tarbPrice" class="form-label">سعر الترب:</label>
+                                                    <input type="text" id="tarbPrice" name="tips" required
+                                                        class="form-control" placeholder="سعر الترب">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">حفظ</button>
+                                        </form>
+                                        <!-- Include your form elements for adding employee data here -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <!-- Include your "Add" button here to submit the form -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" style="margin: 5px" class="btn btn-success d-inline-block"
                             data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
                             إضافة كشف حساب جديد
                         </button>
@@ -91,8 +137,8 @@
                                             @csrf
                                             <div class="row">
                                                 <div class="mb-3 col-md-6">
-                                                    <input type="text" name="name" required class="form-control"
-                                                        placeholder="الاسم" />
+                                                    <input type="text" name="name" required
+                                                        class="form-control" placeholder="الاسم" />
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">حفظ</button>
                                             </div>
@@ -124,8 +170,8 @@
                                         @csrf
                                         <div class="row">
                                             <div class="mb-3 col-md-6">
-                                                <input type="text" name="description" required class="form-control"
-                                                    placeholder="الوصف" />
+                                                <input type="text" name="description" required
+                                                    class="form-control" placeholder="الوصف" />
                                             </div>
                                             <div class="mb-3 col-md-6">
                                                 <input type="number" name="price" required class="form-control"
