@@ -37,6 +37,7 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <h2>{{ $user->name }}</h2>
+                <h2> الراتب {{ $user->sallary }}</h2>
 
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
@@ -82,12 +83,14 @@
                         $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
                         $sallary = $user->sallary;
                         $allTrips = $user->driverContainer->sum('tips');
+
                     @endphp
                 </table>
                 @if ($user->role == 'driver')
                     <h3> اجمالي التربات {{ $allTrips }}</h3>
                 @endif
-                <h3> الاجمالي {{ $sallary - $withdraw + $allTrips }}</h3>
+                <h3> الاجمالي {{ $totalPrice = $sallary - $withdraw + $allTrips }}</h3>
+                
             </div>
         </div>
     </div>

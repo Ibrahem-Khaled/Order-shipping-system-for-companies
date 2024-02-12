@@ -16,7 +16,10 @@ class DatesController extends Controller
     {
         $container = Container::whereIn('status', ['wait', 'rent'])->get();
         $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
-        $driver = User::where('role', 'driver')->get();
+        $driver = User::where('role', 'driver')
+            ->whereRaw('name NOT LIKE "%بنشري%"')
+            ->get();
+            
         $rents = User::where('role', 'rent')->get();
         $cars = Cars::where('type', 'transfer')->get();
         return view('run.dates.date', compact('container', 'driver', 'containerPort', 'cars', 'rents'));

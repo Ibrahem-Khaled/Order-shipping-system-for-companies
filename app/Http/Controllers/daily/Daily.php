@@ -25,7 +25,7 @@ class Daily extends Controller
             ->get();
 
         $cars = Cars::all();
-        $client = User::whereIn('role', ['client','rent'])->get();
+        $client = User::whereIn('role', ['client', 'rent'])->get();
         $employee = User::whereIn('role', ['driver', 'administrative'])->get();
         return view('FinancialManagement.Daily.index', compact('daily', 'cars', 'client', 'employee'));
     }
@@ -59,8 +59,15 @@ class Daily extends Controller
         }
 
         // If validation passes, create the record
-        days::create($request->all());
+        $data = days::create($request->except('created_at'));
 
+        if (!is_null($request->created_at)) {
+            $daily = days::find($data->id);
+            $daily->update([
+                'created_at' => $request->created_at,
+                'updated_at' => $request->created_at,
+            ]);
+        }
         return redirect()->back()->with('success', 'تم تريحل البيانات بنجاح');
     }
     public function update(Request $request, $id)

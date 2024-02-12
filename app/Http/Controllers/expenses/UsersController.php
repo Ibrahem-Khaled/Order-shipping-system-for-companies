@@ -12,7 +12,7 @@ class UsersController extends Controller
 {
     public function albancher()
     {
-        $users = User::where('name', 'like', '%البنشري%')->get();
+        $users = User::where('name', 'like', '%بنشر%')->get();
         return view('FinancialManagement.Expenses.users.albancher', compact('users'));
     }
     public function albancherDaily($id)
@@ -49,8 +49,9 @@ class UsersController extends Controller
                 $query->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear);
             }
         ])->find($id);
+        $employee = User::find($id);
 
-        return view('FinancialManagement.Expenses.users.employeeDaily', compact('user'));
+        return view('FinancialManagement.Expenses.users.employeeDaily', compact('user', 'employee'));
     }
     public function employeeTips($id)
     {

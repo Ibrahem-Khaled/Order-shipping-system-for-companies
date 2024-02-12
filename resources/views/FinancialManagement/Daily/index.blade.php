@@ -92,8 +92,8 @@
                                             <div class="row">
                                                 <div class="mb-3 col-md-6">
                                                     <label for="containerNumber" class="form-label">رقم الحاوية:</label>
-                                                    <input type="text" id="containerNumber" name="number"
-                                                        required class="form-control" placeholder="رقم الحاوية">
+                                                    <input type="text" id="containerNumber" name="number" required
+                                                        class="form-control" placeholder="رقم الحاوية">
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="tarbPrice" class="form-label">سعر الترب:</label>
@@ -211,6 +211,11 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="created_at">تاريخ الإنشاء:</label>
+                                                <input class="form-control" type="date" id="created_at"
+                                                    name="created_at">
                                             </div>
                                         </div>
                                         <button id="submitBtn" class="btn btn-primary">Submit</button>
