@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المواعيد</title>
+    <title>الفارغ</title>
     <!-- Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <!-- Data Table CSS -->
@@ -138,6 +138,7 @@
                             <th scope="col" class="text-center">السائق</th>
                             <th scope="col" class="text-center">حجم الحاوية</th>
                             <th scope="col" class="text-center">رقم الحاوية</th>
+                            <th scope="col" class="text-center">رقم البيان</th>
                             <th scope="col" class="text-center">الحالة</th>
                             <th scope="col" class="text-center">#</th>
                         </tr>
@@ -153,12 +154,12 @@
                                     <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
                                 @else
                                     <td class="text-center">{{ $item->rent->name }}</td>
-                                    <td class="text-center">اسم شركة الايجار</td>
+                                    <td class="text-center">{{ $item->rent->name }}</td>
                                 @endif
                                 <td class="text-center">{{ $item->size }}</td>
                                 <td class="text-center">{{ $item->number }}</td>
+                                <td class="text-center">{{ $item->customs->statement_number }}</td>
                                 <td class="text-center">
-
                                     <form id="confirmationForm{{ $item->id }}"
                                         action="{{ route('updateEmpty', $item->id) }}" method="POST">
                                         @csrf
@@ -189,6 +190,7 @@
                             <th scope="col" class="text-center">السائق</th>
                             <th scope="col" class="text-center">حجم الحاوية</th>
                             <th scope="col" class="text-center">رقم الحاوية</th>
+                            <th scope="col" class="text-center">رقم البيان</th>
                             <th scope="col" class="text-center">الحالة</th>
                             <th scope="col" class="text-center">#</th>
                         </tr>
@@ -208,6 +210,7 @@
                                 @endif
                                 <td class="text-center">{{ $item->size }}</td>
                                 <td class="text-center">{{ $item->number }}</td>
+                                <td class="text-center">{{ $item->customs->statement_number }}</td>
                                 <td class="text-center">
                                     <form id="confirmationForm{{ $item->id }}"
                                         action="{{ route('updateEmpty', $item->id) }}" method="POST">

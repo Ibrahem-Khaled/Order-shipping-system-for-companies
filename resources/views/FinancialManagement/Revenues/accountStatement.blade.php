@@ -68,32 +68,44 @@
             <form action="{{ route('updateContainerPrice') }}" method="POST">
                 @csrf
                 <tbody>
-                    @foreach ($user->customs as $item)
-                        <input hidden value="{{ $item->id }}" name="id[]" />
-                        <tr>
-                            <td><a href="#">{{ $item->name }}</a></td>
-                            <td>{{ $item->container->where('status', 'transport')->sum('price') }}</td>
-                            <td>
-                                @if ($item->container->where('status', 'transport')->sum('price') == 0)
-                                    <div class="input-group mb-3">
-                                        <input type="text" name="price[]" required class="form-control"
-                                            placeholder="سعر الحاوية" aria-label="سعر الحاوية"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2">ريال</span>
+                    @foreach ($user->customs as $custom)
+                        @php
+                            $transportContainers = $custom->container->whereIn('status', ['transport', 'done']);
+                        @endphp
+                        @if ($transportContainers->isNotEmpty())
+                            <input hidden value="{{ $custom->id }}" name="id[]" />
+                            <tr>
+                                <td><a href="#">{{ $custom->name }}</a></td>
+                                <td>{{ $custom->container->whereIn('status', ['transport','done'])->sum('price') }}</td>
+                                <td>
+                                    @if ($custom->container->whereIn('status', ['transport','done'])->sum('price') == 0)
+                                        <div class="input-group mb-3">
+                                            <input type="text" name="price[]"
+                                                value="{{ $custom->container->whereIn('status', ['transport','done'])->isNotEmpty() ? $custom->container->whereIn('status', ['transport','done'])->sum('price') / $custom->container->whereIn('status', ['transport','done'])->count() : 0 }}"
+                                                class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
+                                                aria-describedby="basic-addon2">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="basic-addon2">ريال</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                @else
-                                    <input type="text" name="price[]" hidden
-                                        value=" {{ $item->container->where('status', 'transport')->sum('price') / $item->container->where('status', 'transport')->count() }}">
-                                    {{ $item->container->where('status', 'transport')->sum('price') / $item->container->where('status', 'transport')->count() }}
-                                @endif
-                            </td>
-                            <td>{{ $item->container->where('status', 'transport')->count() }}</td>
-                            <td scope="row">{{ $item->subclient_id }}</td>
-                            <td scope="row">{{ $item->statement_number }}</td>
-                            <th scope="row">{{ $item->id }}</th>
-                        </tr>
+                                    @else
+                                        <div class="input-group mb-3">
+                                            <input type="text" name="price[]"
+                                                value="{{ $custom->container->whereIn('status', ['transport','done'])->isNotEmpty() ? $custom->container->whereIn('status', ['transport','done'])->sum('price') / $custom->container->whereIn('status', ['transport','done'])->count() : 0 }}"
+                                                class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
+                                                aria-describedby="basic-addon2">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="basic-addon2">ريال</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td>{{ $custom->container->whereIn('status', ['transport','done'])->count() }}</td>
+                                <td scope="row">{{ $custom->subclient_id }}</td>
+                                <td scope="row">{{ $custom->statement_number }}</td>
+                                <th scope="row">{{ $custom->id }}</th>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
                 <button type="submit" class="btn btn-primary">تاكيد سعر الحاوية</button>
@@ -105,7 +117,7 @@
             <div class="col-md-12">
                 <h1 class="text-primary">المجموع</h1>
                 @php
-                    $sumPrice = $user->container->where('status', 'transport')->sum('price');
+                    $sumPrice = $user->container->whereIn('status', ['transport','done'])->sum('price');
                 @endphp
                 <h3 class="text-dark">
                     {{ $sumPrice }}

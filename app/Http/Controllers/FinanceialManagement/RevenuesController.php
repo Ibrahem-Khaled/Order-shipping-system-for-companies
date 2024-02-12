@@ -39,13 +39,16 @@ class RevenuesController extends Controller
 
         // Retrieve records for the current month
         $user = User::find($clientId);
-        $daily = $user->clientdaily;
+
+        $daily = $user->clientdaily
+            ->filter(function ($item) use ($currentYear) {
+                return $item->created_at->year == $currentYear;
+            });
         // Retrieve container records for the current month
         $container = $user->container
             ->filter(function ($item) use ($currentYear) {
                 return $item->created_at->year == $currentYear;
-            })
-            ->sum('price');
+            });
 
         return view('FinancialManagement.Revenues.accountYears', compact('user', 'daily', 'container'));
     }
@@ -91,5 +94,15 @@ class RevenuesController extends Controller
         } else {
             return redirect()->back()->with('error', 'يوجد خطا ما');
         }
+    }
+
+    public function priceContainerEdit(Request $request, $id)
+    {
+        $container = Container::find($id);
+        $container->update([
+            'price' => $request->price
+        ]);
+
+        return redirect()->back()->with('success', 'done');
     }
 }

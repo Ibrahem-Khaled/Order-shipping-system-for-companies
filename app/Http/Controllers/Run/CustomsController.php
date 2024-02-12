@@ -16,13 +16,18 @@ class CustomsController extends Controller
         //return response()->json($users);
         return view('run.Customs', compact('users'));
     }
+    public function getOfficeContainerData($clientId)
+    {
+        $users = User::find($clientId);
+        return view('run.officeContanierData', compact('users'));
+    }
     public function showContainerPost($customId)
     {
         $custom = CustomsDeclaration::find($customId);
         //return response()->json($custom);
-        return view('run.addContanier',compact('custom'));
+        return view('run.addContanier', compact('custom'));
     }
-    
+
     public function store(Request $request, $clientId)
     {
         $num = $request->statement_number;

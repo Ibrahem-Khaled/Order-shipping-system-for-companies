@@ -98,7 +98,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('home')}}">الرئيسية</a>
+                        <a class="nav-link" href="{{ route('home') }}">الرئيسية</a>
                     </li>
                 </ul>
             </div>
@@ -109,11 +109,12 @@
     <div class="container-fluid px-1 py-5 mx-auto">
         <div class="row d-flex justify-content-center">
             <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
-                <h3>اضافة مكتب جمركي</h3>
+                <h3>{{ Route::current()->parameter('role') == 'rent' ? 'اضافة مكتب ايجار' : 'اضافة مكتب جمركي' }}</h3>
                 <p class="blue-text">من هنا يتم اضافة الجميع<br>من الموظف والمكاتب والعملاء ولخ...</p>
                 <div class="card">
                     <h5 class="text-center mb-4">برجاء ملئ جميع المعلومات بدقة</h5>
-                    <form class="form-card" action="{{ route('postOffice') }}" method="POST">
+                    <form class="form-card" action="{{ route('postOffice', Route::current()->parameter('role')) }}"
+                        method="POST">
                         @csrf
                         <div class="row justify-content-between text-left">
                             <div class="form-group col-sm-6 flex-column d-flex"> <label

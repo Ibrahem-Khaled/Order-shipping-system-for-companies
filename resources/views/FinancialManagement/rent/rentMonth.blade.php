@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="path/to/font-awesome/css/all.min.css">
 
     <style>
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
@@ -71,7 +70,7 @@
             <form action="{{ route('updateRentContainerPrice') }}" method="POST">
                 @csrf
                 <tbody>
-                    @foreach ($user->rentCont->where('status', 'transport') as $item)
+                    @foreach ($user->rentCont->whereIn('status', ['transport','done']) as $item)
                         @php
                             $custom = App\Models\CustomsDeclaration::find($item->customs_id);
                         @endphp
@@ -81,7 +80,7 @@
                             <td>
                                 @if ($item->is_rent == 1)
                                     <div class="input-group mb-3">
-                                        <input type="text" name="price[]" required value="{{ $item->price }}"
+                                        <input type="text" name="price[]"  value="{{ $item->price }}"
                                             class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
                                             aria-describedby="basic-addon2">
                                         <div class="input-group-append">
@@ -106,7 +105,7 @@
             <div class="col-md-12">
                 <h1 class="text-danger">الاجمالي</h1>
                 <h3 class="text-dark">
-                    {{ $user->rentCont->where('status', 'transport')->sum('price') }}
+                    {{ $user->rentCont->whereIn('status', ['transport','done'])->sum('price') }}
                 </h3>
             </div>
         </div>

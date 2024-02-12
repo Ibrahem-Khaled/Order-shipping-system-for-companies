@@ -35,7 +35,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('addOffice') }}">
+                        <a class="nav-link" href="{{ route('addOffice','client') }}">
                             <i class="fas fa-plus"></i> اضافة مكتب
                         </a>
                     </li>
@@ -67,9 +67,20 @@
                 @foreach ($users as $item)
                     <tr>
                         <th scope="row">{{ $item->id }}</th>
-                        <td><a href="#">{{ $item->name }}</a></td>
-                        <td>{{ $item->container->where('status', 'wait')->count() }}</td>
-                        <td>{{ $item->customs->count() }}</td>
+                        <td><a href="{{ route('getOfficeContainerData', $item->id) }}">{{ $item->name }}</a></td>
+                        <td>{{ $item->container->whereIn('status', ['wait', 'rent'])->count() }}</td>
+                        <td>
+                            @php
+                                $containerCount = 0;
+                                foreach ($item->customs as $custom) {
+                                    $customing = \App\Models\CustomsDeclaration::find($custom->id);
+                                    if ($customing->container->whereIn('status', ['wait', 'rent'])->count() > 0) {
+                                        $containerCount++;
+                                    }
+                                }
+                                echo $containerCount;
+                            @endphp
+                        </td>
                         <td>
                             <!-- Button to trigger the modal -->
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"

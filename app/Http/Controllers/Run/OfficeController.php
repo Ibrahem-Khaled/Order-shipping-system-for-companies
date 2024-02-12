@@ -12,13 +12,13 @@ class OfficeController extends Controller
     {
         return view('run.addoffice');
     }
-    public function store(Request $request)
+    public function store(Request $request, $role)
     {
         $name = $request->name;
-        
+
         User::create([
             'name' => $name,
-            'role' => 'client',
+            'role' => $role,
         ]);
         return redirect()->back()->with('success', 'تم الانشاء بنجاح');
     }
