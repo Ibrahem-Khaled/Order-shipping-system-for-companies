@@ -14,15 +14,22 @@ use Illuminate\Support\Facades\Validator;
 
 class Daily extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Get the current month and year
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
+        $query = $request->input('query');
 
-        $daily = days::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->get();
+        if (is_null($query)) {
+            $daily = days::whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->get();
+        } else {
+            $daily = days::where('created_at', 'like', '%' . $query . '%')
+                ->orWhere('description', 'like', '%' . $query . '%')
+                ->get();
+        }
 
         $cars = Cars::all();
         $client = User::whereIn('role', ['client', 'rent'])->get();

@@ -20,6 +20,6 @@ class OfficeController extends Controller
             'name' => $name,
             'role' => $role,
         ]);
-        return redirect()->back()->with('success', 'تم الانشاء بنجاح');
+        return redirect()->route('getOfices')->with('success', 'تم الانشاء بنجاح');
     }
 }

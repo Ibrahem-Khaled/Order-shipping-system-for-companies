@@ -6,12 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ContanierController extends Controller
 {
     public function store(Request $request, $customs_id)
     {
         $custom = CustomsDeclaration::find($customs_id);
+
+        $validator = Validator::make($request->all(), [
+            'number.*' => 'required|min:7|max:7',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return redirect()->back()->with('error','يجب أن يحتوي رقم الحاوية على 7 أرقام');
+        }
 
         $sizes = $request->input('size');
         $numbers = $request->input('number');
@@ -20,13 +29,11 @@ class ContanierController extends Controller
         // Check if all arrays are not null and have the same count
         if (count($sizes)) {
             $count = count($sizes);
-
             // Loop through arrays to process the data
             for ($i = 0; $i < $count; $i++) {
                 $size = $sizes[$i];
                 $number = $numbers[$i];
                 $rent = $rents[$i];
-                // return response()->json($rent);
 
                 // Create a new record in the database for each set of values
                 Container::create([

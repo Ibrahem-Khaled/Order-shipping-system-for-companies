@@ -40,7 +40,7 @@ class UsersController extends Controller
     }
     public function employeeDaily($id)
     {
-        // Get the current month and year
+        // Get the current month and year 
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
@@ -66,5 +66,16 @@ class UsersController extends Controller
         ])->find($id);
 
         return view('FinancialManagement.Expenses.users.employeeTips', compact('user'));
+    }
+
+    public function others()
+    {
+        $users = User::where('role', 'driver')
+            ->Where(function ($query) {
+                $query->whereNull('sallary');
+            })->whereRaw('name NOT LIKE "%بنشري%"')
+            ->get();
+
+        return view('FinancialManagement.Expenses.others', compact('users'));
     }
 }

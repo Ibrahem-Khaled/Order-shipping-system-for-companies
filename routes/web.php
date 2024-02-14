@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\daily\Daily;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\expenses\CarsController;
@@ -38,9 +39,6 @@ Route::get('signout', [AuthController::class, 'signOut'])->name('signout');
 
 
 Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
-    //select is run or money
-    Route::get('select/type', [SelectTypeController::class, 'index'])->name('home');
-    Route::get('select/type/dashboard', [SelectTypeController::class, 'runDash'])->name('runDash');
 
     //add offices and get this offices
     Route::get('add/office/{role}', [OfficeController::class, 'index'])->name('addOffice');
@@ -99,6 +97,11 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('expenses/employee/data', [UsersController::class, 'employee'])->name('expensesSallaryeEmployee');
     Route::get('expenses/daily/employee/{id}', [UsersController::class, 'employeeDaily'])->name('expensesEmployeeDaily');
     Route::get('expenses/tips/employee/{id}', [UsersController::class, 'employeeTips'])->name('expensesEmployeeTips');
+    Route::get('expenses/others', [UsersController::class, 'others'])->name('expensesOthers');
 
-
+    //company 
+    Route::get('company/home', [CompanyController::class, 'index'])->name('CompanyHome');
+    Route::get('home', [CompanyController::class, 'index'])->name('home');
 });
+
+

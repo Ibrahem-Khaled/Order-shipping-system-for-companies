@@ -42,7 +42,7 @@ class RevenuesController extends Controller
 
         $daily = $user->clientdaily
             ->filter(function ($item) use ($currentYear) {
-                return $item->created_at->year == $currentYear;
+                return $item->created_at?->year == $currentYear;
             });
         // Retrieve container records for the current month
         $container = $user->container
