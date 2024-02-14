@@ -110,7 +110,7 @@
                     <div class="nav-link active dropdown">
                         <button class="btn bg-gradient-primary " style="font-size: 16px">الادارة المالية</button>
                         <div class="dropdown-content bg-gradient-primary">
-                            <a class="dropdown-item" href="{{ route('getOfices') }}">اليومية</a>
+                            <a class="dropdown-item" href="{{ route('dailyManagement') }}">اليومية</a>
                             <a class="dropdown-item" href="{{ route('FinancialManagement') }}">الماليات</a>
                         </div>
                     </div>
