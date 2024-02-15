@@ -57,12 +57,13 @@
 
                                 $total = $sallary + $tips;
                                 $saving = $saving + $total - $dailyTransaction;
+                                $save = $total - $dailyTransaction;
 
                                 // Store the month and total balance in the annual statement array
                                 $annualStatement[$month] = [
                                     'total' => $total,
                                     'dailyTransaction' => $dailyTransaction,
-                                    'saving' => $saving,
+                                    'saving' => $save,
                                     'month' => $month,
                                     'tips' => $tips,
                                     'sallary' => $sallary,
@@ -84,7 +85,6 @@
                     @php
                         $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
                         $sallary = $user->sallary;
-
                     @endphp
                 </table>
 

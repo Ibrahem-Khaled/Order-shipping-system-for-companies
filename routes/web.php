@@ -102,6 +102,8 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     //company 
     Route::get('company/home', [CompanyController::class, 'index'])->name('CompanyHome');
     Route::get('home', [CompanyController::class, 'index'])->name('home');
+    Route::get('company/Detailes', [CompanyController::class, 'companyDetailes'])->name('companyDetailes');
+    Route::get('company/Rev/Exp', [CompanyController::class, 'companyRevExp'])->name('companyRevExp');
 });
 
 

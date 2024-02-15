@@ -1,4 +1,3 @@
-
 @extends('layouts.default')
 
 @section('content')
@@ -20,9 +19,10 @@
                     <tr>
                         <th scope="row">{{ $user->id }}</th>
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->whereIn('status', ['transport','done'])->count() }}</td>
+                        <td>{{ $user->container->whereIn('status', ['transport', 'done'])->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->sum('price') }}</td>
+                        <td>{{ $user->container->sum('price') - ($sumDaily = $user->clientdaily->sum('price')) }}
+                        </td>
                     </tr>
                 @endforeach
                 <!-- Add more rows as needed -->

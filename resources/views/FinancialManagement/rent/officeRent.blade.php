@@ -2,9 +2,6 @@
 @extends('layouts.default')
 
 @section('content')
-
-
-
     <div class="container mt-5">
         <table class="table">
             <a class="nav-link" href="{{ route('addOffice', 'rent') }}">

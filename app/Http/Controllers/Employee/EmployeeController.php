@@ -12,7 +12,9 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employee = User::where('role', 'driver')->orWhere('role', 'administrative')->get();
+        $employee = User::whereIn('role', ['driver', 'administrative'])
+            ->whereNotNull('sallary')
+            ->get();
         $cars = Cars::all();
         return view('employee.employee', compact('employee', 'cars'));
     }

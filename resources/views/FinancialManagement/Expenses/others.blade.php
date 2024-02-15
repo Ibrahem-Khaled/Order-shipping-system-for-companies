@@ -5,7 +5,7 @@
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
-                <h3 class="text-center mb-4"> {{ count($users) }} اجمالي حسابات البنشري </h3>
+                <h3 class="text-center mb-4"> {{ count($users) }} اجمالي حسابات الكشوف الاخري </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
