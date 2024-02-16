@@ -55,7 +55,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <h3> اجمالي ايرادات الشركة {{ strval($deposit) - $withdraw }}</h3>
+                <h3> اجمالي ايرادات الشركة {{ strval($deposit) - strval($withdraw) }}</h3>
 
             </div>
         </div>
