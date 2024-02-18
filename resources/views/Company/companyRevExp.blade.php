@@ -7,6 +7,10 @@
                 <table class="table">
                     @php
                         $deposit = $container->sum('price');
+                        $carSum = $cars->sum('price');
+                        $employeeSum = $employee->sum('sallary');
+                        $employeeTip = $employeeTips->sum('tips');
+                        $withdraw = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
                     @endphp
                     <thead>
                         <tr>
@@ -24,12 +28,6 @@
             </div>
             <div class="col-md-6">
                 <table class="table">
-                    @php
-                        $carSum = $cars->sum('price');
-                        $employeeSum = $employee->sum('sallary');
-                        $employeeTip = $employeeTips->sum('tips');
-                        $withdraw = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
-                    @endphp
                     <thead>
                         <tr>
                             <th scope="col">كشوف حسابات المصروفات</th>

@@ -1,6 +1,13 @@
 @extends('layouts.default')
 
 @section('content')
+    @php
+        $deposits = $container->sum('price');
+        $carSum = $cars->sum('price');
+        $employeeSum = $employee->sum('sallary');
+        $employeeTip = $employeeTips->sum('tips');
+        $withdraws = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
+    @endphp
 
     <div class="container-fluid py-4">
         <div class="row">
@@ -58,7 +65,7 @@
                                     <h5 class="font-weight-bolder mb-0">
                                         +{{ $container->whereIn('status', ['wait', 'rent'])->count() }}
                                         <span
-                                            class="text-danger text-sm font-weight-bolder">{{ intval(($container->whereIn('status', ['wait', 'rent'])->count() / $container->count()) * 100) }}%</span>
+                                            class="text-danger text-sm font-weight-bolder">{{ intval(($container?->whereIn('status', ['wait', 'rent'])->count() == 0 ? 1 : $container?->whereIn('status', ['wait', 'rent'])->count() / $container?->count()) * 100) }}%</span>
                                     </h5>
                                 </div>
                             </div>
@@ -77,9 +84,9 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Sales</p>
+                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">اجمالي الايرادات</p>
                                     <h5 class="font-weight-bolder mb-0">
-                                        $103,430
+                                        {{ strval($deposits) - strval($withdraws) }}
                                         <span class="text-success text-sm font-weight-bolder">+5%</span>
                                     </h5>
                                 </div>

@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">

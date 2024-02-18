@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Container::class, 'rent_id');
     }
+
+    public function partnerInfo()
+    {
+        return $this->hasOne(PartnerInfo::class, 'partner_id');
+    }
 }

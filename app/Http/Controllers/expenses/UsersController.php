@@ -78,4 +78,11 @@ class UsersController extends Controller
 
         return view('FinancialManagement.Expenses.others', compact('users'));
     }
+    public function company()
+    {
+        $users = User::where('role', 'company')
+            ->get();
+
+        return view('FinancialManagement.Expenses.Company', compact('users'));
+    }
 }

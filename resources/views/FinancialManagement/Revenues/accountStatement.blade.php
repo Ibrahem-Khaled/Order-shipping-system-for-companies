@@ -31,12 +31,13 @@
                             <input hidden value="{{ $custom->id }}" name="id[]" />
                             <tr>
                                 <td><a href="#">{{ $custom->name }}</a></td>
-                                <td>{{ $custom->container->whereIn('status', ['transport', 'done'])->sum('price') }}</td>
+                                <td>{{ $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') }}
+                                </td>
                                 <td>
-                                    @if ($custom->container->whereIn('status', ['transport', 'done'])->sum('price') == 0)
+                                    @if ($custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') == 0)
                                         <div class="input-group mb-3">
                                             <input type="text" name="price[]"
-                                                value="{{ $custom->container->whereIn('status', ['transport', 'done'])->isNotEmpty() ? $custom->container->whereIn('status', ['transport', 'done'])->sum('price') / $custom->container->whereIn('status', ['transport', 'done'])->count() : 0 }}"
+                                                value="{{ $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->isNotEmpty()? $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') /$custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->count(): 0 }}"
                                                 class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
                                                 aria-describedby="basic-addon2">
                                             <div class="input-group-append">
@@ -46,7 +47,7 @@
                                     @else
                                         <div class="input-group mb-3">
                                             <input type="text" name="price[]"
-                                                value="{{ $custom->container->whereIn('status', ['transport', 'done'])->isNotEmpty() ? $custom->container->whereIn('status', ['transport', 'done'])->sum('price') / $custom->container->whereIn('status', ['transport', 'done'])->count() : 0 }}"
+                                                value="{{ $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->isNotEmpty()? $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') / $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->count(): 0 }}"
                                                 class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
                                                 aria-describedby="basic-addon2">
                                             <div class="input-group-append">
@@ -55,7 +56,8 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td>{{ $custom->container->whereIn('status', ['transport', 'done'])->count() }}</td>
+                                <td>{{ $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->count() }}
+                                </td>
                                 <td scope="row">{{ $custom->subclient_id }}</td>
                                 <td scope="row">{{ $custom->statement_number }}</td>
                                 <th scope="row">{{ $custom->id }}</th>
@@ -72,7 +74,7 @@
             <div class="col-md-12">
                 <h1 class="text-primary">المجموع</h1>
                 @php
-                    $sumPrice = $user->container->whereIn('status', ['transport', 'done'])->sum('price');
+                    $sumPrice = $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price');
                 @endphp
                 <h3 class="text-dark">
                     {{ $sumPrice }}

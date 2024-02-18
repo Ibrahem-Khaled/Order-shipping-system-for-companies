@@ -1,4 +1,3 @@
-
 @extends('layouts.default')
 
 @section('content')
@@ -23,7 +22,8 @@
                         <td><a href="{{ route('getrentMonth', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->rentCont->where('is_rent', 1)->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->rentCont->where('is_rent', 1)->sum('price') }}</td>
+                        <td>{{ $user->rentCont->where('is_rent', 1)->sum('price') - $user->clientdaily->sum('price') }}
+                        </td>
                     </tr>
                 @endforeach
                 <!-- Add more rows as needed -->

@@ -21,7 +21,7 @@
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->container->whereIn('status', ['transport', 'done'])->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->sum('price') - ($sumDaily = $user->clientdaily->sum('price')) }}
+                        <td>{{ $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') - ($sumDaily = $user->clientdaily->sum('price')) }}
                         </td>
                     </tr>
                 @endforeach

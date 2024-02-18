@@ -21,8 +21,102 @@
                             style="position: relative; height: 700px">
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item">
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#addDailyModal"
-                                        class="nav-link btn btn-primary" style="margin: 5px;">اضافة حركة مالية</button>
+                                    <button type="button" data-bs-toggle="modal" style="margin: 5px"
+                                        data-bs-target="#addDailyModal" class="btn btn-primary d-inline-block">اضافة حركة
+                                        مالية</button>
+                                    <div class="modal fade" id="addDailyModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <!-- Modal Content Goes Here -->
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="addEmployeeModalLabel">اضافة حركة
+                                                        مالية جديد</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Form to Add Employee Data -->
+                                                    <form action="{{ route('postDailyData') }}" id="myForm"
+                                                        method="POST">
+                                                        @csrf
+                                                        <div class="row">
+                                                            <div class="mb-3 col-md-6">
+                                                                <input type="text" name="description" required
+                                                                    class="form-control" placeholder="الوصف" />
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <input type="number" name="price" required
+                                                                    class="form-control" placeholder="المبلغ" />
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <select name="type" required class="form-control">
+                                                                    <option value="">نوع الحركة</option>
+                                                                    <option value="deposit">وارد</option>
+                                                                    <option value="withdraw">منصرف</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <select name="car_id" class="form-control">
+                                                                    <option value="">اختيار السيارة</option>
+                                                                    @foreach ($cars as $item)
+                                                                        <option value="{{ $item->id }}">
+                                                                            {{ $item->number }} -
+                                                                            {{ $item->driver?->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <select name="client_id" class="form-control">
+                                                                    <option value="">اختيار حساب العميل
+                                                                    </option>
+                                                                    @foreach ($client as $item)
+                                                                        <option value="{{ $item->id }}">
+                                                                            {{ $item->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <select name="employee_id" class="form-control">
+                                                                    <option value="">اختيار الحساب</option>
+                                                                    @foreach ($employee as $item)
+                                                                        <option value="{{ $item->id }}">
+                                                                            {{ $item->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <select name="employee_id" class="form-control">
+                                                                    <option value="">اختيار حساب الشريك</option>
+                                                                    @foreach ($partner as $item)
+                                                                        <option value="{{ $item->id }}">
+                                                                            {{ $item->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <label for="created_at">تاريخ الإنشاء:</label>
+                                                                <input class="form-control" type="date" id="created_at"
+                                                                    name="created_at">
+                                                            </div>
+                                                        </div>
+                                                        <button id="submitBtn" class="btn btn-primary">Submit</button>
+                                                        <p id="error" class="error-message"></p>
+                                                    </form>
+                                                    <!-- Include your form elements for adding employee data here -->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <!-- Include your "Add" button here to submit the form -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                                 <li class="nav-item">
                                     <button type="button" style="margin: 5px" class="btn btn-success d-inline-block"
@@ -51,13 +145,14 @@
                                                                 <label for="containerNumber" class="form-label">رقم
                                                                     الحاوية:</label>
                                                                 <input type="text" id="containerNumber" name="number"
-                                                                    required class="form-control" placeholder="رقم الحاوية">
+                                                                    required class="form-control"
+                                                                    placeholder="رقم الحاوية">
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <label for="tarbPrice" class="form-label">سعر
                                                                     الترب:</label>
-                                                                <input type="text" id="tarbPrice" name="tips" required
-                                                                    class="form-control" placeholder="سعر الترب">
+                                                                <input type="text" id="tarbPrice" name="tips"
+                                                                    required class="form-control" placeholder="سعر الترب">
                                                             </div>
                                                         </div>
                                                         <button type="submit" class="btn btn-primary">حفظ</button>
@@ -114,89 +209,7 @@
                                         </div>
                                     </div>
                                 </li>
-                                <div class="modal fade" id="addDailyModal" tabindex="-1" role="dialog"
-                                    aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <!-- Modal Content Goes Here -->
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addEmployeeModalLabel">اضافة حركة
-                                                    مالية جديد</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <!-- Form to Add Employee Data -->
-                                                <form action="{{ route('postDailyData') }}" id="myForm"
-                                                    method="POST">
-                                                    @csrf
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-6">
-                                                            <input type="text" name="description" required
-                                                                class="form-control" placeholder="الوصف" />
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <input type="number" name="price" required
-                                                                class="form-control" placeholder="المبلغ" />
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <select name="type" required class="form-control">
-                                                                <option value="">نوع الحركة</option>
-                                                                <option value="deposit">وارد</option>
-                                                                <option value="withdraw">منصرف</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <select name="car_id" class="form-control">
-                                                                <option value="">اختيار السيارة</option>
-                                                                @foreach ($cars as $item)
-                                                                    <option value="{{ $item->id }}">
-                                                                        {{ $item->number }} -
-                                                                        {{ $item->driver?->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <select name="client_id" class="form-control">
-                                                                <option value="">اختيار حساب العميل
-                                                                </option>
-                                                                @foreach ($client as $item)
-                                                                    <option value="{{ $item->id }}">
-                                                                        {{ $item->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <select name="employee_id" class="form-control">
-                                                                <option value="">اختيار الحساب</option>
-                                                                @foreach ($employee as $item)
-                                                                    <option value="{{ $item->id }}">
-                                                                        {{ $item->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <label for="created_at">تاريخ الإنشاء:</label>
-                                                            <input class="form-control" type="date" id="created_at"
-                                                                name="created_at">
-                                                        </div>
-                                                    </div>
-                                                    <button id="submitBtn" class="btn btn-primary">Submit</button>
-                                                    <p id="error" class="error-message"></p>
-                                                </form>
-                                                <!-- Include your form elements for adding employee data here -->
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <!-- Include your "Add" button here to submit the form -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </ul>
                             <table class="table table-white mb-0">
                                 <thead style="background-color: #ffffff;">

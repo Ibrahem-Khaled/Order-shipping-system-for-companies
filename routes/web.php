@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\Company\PartnerController;
 use App\Http\Controllers\daily\Daily;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\expenses\CarsController;
@@ -98,12 +99,19 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('expenses/daily/employee/{id}', [UsersController::class, 'employeeDaily'])->name('expensesEmployeeDaily');
     Route::get('expenses/tips/employee/{id}', [UsersController::class, 'employeeTips'])->name('expensesEmployeeTips');
     Route::get('expenses/others', [UsersController::class, 'others'])->name('expensesOthers');
+    Route::get('expenses/company', [UsersController::class, 'company'])->name('expensesCompany');
 
     //company 
     Route::get('company/home', [CompanyController::class, 'index'])->name('CompanyHome');
     Route::get('home', [CompanyController::class, 'index'])->name('home');
     Route::get('company/Detailes', [CompanyController::class, 'companyDetailes'])->name('companyDetailes');
     Route::get('company/Rev/Exp', [CompanyController::class, 'companyRevExp'])->name('companyRevExp');
+
+    //partner
+    Route::get('company/partner', [PartnerController::class, 'index'])->name('partnerHome');
+    Route::post('store/partner', [PartnerController::class, 'store'])->name('partnerStore');
+    Route::post('update/partner/status/{id}', [PartnerController::class, 'inActive'])->name('partnerinActive');
+
 });
 
 

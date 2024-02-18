@@ -63,9 +63,7 @@ class RevenuesController extends Controller
             for ($i = 0; $i < $count; $i++) {
                 $customId = $customIds[$i];
                 $price = $prices[$i];
-                // Find the CustomsDeclaration and its associated Container
-                $custom = Container::where('customs_id', $customId);
-                $custom->update([
+                $custom = Container::where('customs_id', $customId)->where('is_rent', 0)->update([
                     'price' => $price,
                 ]);
             }
@@ -86,9 +84,11 @@ class RevenuesController extends Controller
                 $price = $prices[$i];
                 // Find the CustomsDeclaration and its associated Container
                 $custom = Container::find($customId);
-                $custom->update([
-                    'price' => $price,
-                ]);
+                if ($custom->is_rent == 1) {
+                    $custom->update([
+                        'price' => $price,
+                    ]);
+                }
             }
             return redirect()->back()->with('success', 'تم التحديث بنجاح');
         } else {

@@ -16,6 +16,7 @@
                     <th scope="col">ملاحظات</th>
                     <th scope="col">سعر النقل</th>
                     <th scope="col">العميل</th>
+                    <th scope="col">اسم المكتب</th>
                     <th scope="col">رقم الحاوية</th>
                     <th scope="col">رقم البيان</th>
                     <th scope="col">#</th>
@@ -44,6 +45,7 @@
                                 @endif
                             </td>
                             <td scope="row">{{ $custom->subclient_id }}</td>
+                            <td scope="row">{{ $custom->client->name }}</td>
                             <td scope="row">{{ $item->number }}</td>
                             <td scope="row">{{ $custom->statement_number }}</td>
                             <th scope="row">{{ $item->id }}</th>

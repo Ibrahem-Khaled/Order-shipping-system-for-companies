@@ -25,9 +25,10 @@
                                 class="list-group-item list-group-item-action">المرتبات</a>
                             <a href="{{ route('expensesSallaryAlbancher') }}"
                                 class="list-group-item list-group-item-action">البنشري</a>
+                            <a href="{{ route('expensesCompany') }}" class="list-group-item list-group-item-action">مصروفات
+                               ادارية ونثرية </a>
                             <a href="{{ route('expensesOthers') }}" class="list-group-item list-group-item-action">كشوف
                                 أخرى</a>
-                            <a href="#" class="list-group-item list-group-item-action">مصروفات الشركة</a>
                         </div>
                         <!-- Include your form elements for adding employee data here -->
                     </div>
