@@ -92,7 +92,7 @@
                             <th scope="col" class="text-center">action</th>
                             <th scope="col" class="text-center">الصورة الشخصية</th>
                             <th scope="col" class="text-center">نسبة الارباح</th>
-                            <th scope="col" class="text-center">الربح السنوي</th>
+                            <th scope="col" class="text-center">نسبة الشريك</th>
                             <th scope="col" class="text-center">راس المال</th>
                             <th scope="col" class="text-center">الدور</th>
                             <th scope="col" class="text-center">الاسم</th>
@@ -131,6 +131,7 @@
                                     })
                                     ->whereRaw('name NOT LIKE "%بنشري%"')
                                     ->get();
+
                                 $othersSum = 0;
                                 foreach ($others as $other) {
                                     $user = \App\Models\User::find($other->id);
@@ -155,8 +156,9 @@
                                 $totalPrice = strval($deposit) - strval($withdraw);
 
                                 $partnerSum = 0;
+
                                 if ($item->is_active == 1) {
-                                    $partnerSum = ($item->partnerInfo?->money / $sum) * 100;
+                                    $partnerSum = (($item->partnerInfo?->money == 0 ? 1 : $item->partnerInfo?->money) / $sums) * 100;
                                 }
                             @endphp
                             <tr>
@@ -182,6 +184,7 @@
 
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ ($totalPrice * $partnerSum) / 100 }}</td>
+
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $partnerSum }}%</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">

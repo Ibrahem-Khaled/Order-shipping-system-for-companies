@@ -195,11 +195,12 @@
                         </li>
 
                     </ul>
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             @if (Auth()->user()->role == 'superAdmin')
                                 <th scope="col" class="text-center"></th>
                             @endif
+                            <th scope="col" class="text-center">action</th>
                             <th scope="col" class="text-center">الصورة الشخصية</th>
                             <th scope="col" class="text-center">المهنة</th>
                             <th scope="col" class="text-center">الراتب</th>
@@ -216,6 +217,15 @@
                                         {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
                                     </td>
                                 @endif
+                                <td class="text-center">
+                                    <form action="{{ route('partnerinActive', $item->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-{{ $item->is_active == 1 ? 'success' : 'danger' }}">
+                                            {{ $item->is_active == 1 ? 'مفعل' : 'غير مفعل' }}
+                                        </button>
+                                    </form>
+                                </td>
                                 <td class="text-center">
                                     <img src="{{ $item?->userinfo?->image == null ? 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg' : asset('storage/' . $item->userinfo->image) }}"
                                         alt="{{ $item->name }}" class="img-thumbnail"
@@ -245,7 +255,7 @@
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <h3 class="text-center mb-4"> {{ count($cars) }} السيارات </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua " style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">انتهاء التامين</th>
                             <th scope="col" class="text-center">انتهاء الفحص</th>

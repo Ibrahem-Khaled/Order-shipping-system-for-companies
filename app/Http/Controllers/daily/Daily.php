@@ -22,7 +22,7 @@ class Daily extends Controller
         $query = $request->input('query');
 
         if (is_null($query)) {
-            $daily = days::whereMonth('created_at', $currentMonth)
+            $daily = days::orderBy('created_at', 'desc')->whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->get();
         } else {
@@ -59,7 +59,7 @@ class Daily extends Controller
             'employee_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
         ];
 
-        // تطبيق قواعد الصحة
+        // تطبيق قواعد 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {

@@ -18,9 +18,13 @@
                             <th scope="col">اجمالي الوارد</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="fw-bold">
                         <tr>
-                            <td>اجمالي كشوف حساب العملاء</td>
+                            <td>
+                                <a href="{{ route('getRevenuesClient') }}">
+                                    اجمالي كشوف حساب العملاء
+                                </a>
+                            </td>
                             <td>{{ $deposit }}</td>
                         </tr>
                     </tbody>
@@ -34,21 +38,37 @@
                             <th scope="col">اجمالي المنصرف</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="fw-bold">
                         <tr>
-                            <td>اجمالي مصروفات السيارات</td>
+                            <td>
+                                <a href="{{ route('expensesCarsData') }}">
+                                    اجمالي مصروفات السيارات
+                                </a>
+                            </td>
                             <td>{{ $carSum }}</td>
                         </tr>
                         <tr>
-                            <td>اجمالي المرتبات</td>
+                            <td>
+                                <a href="{{ route('expensesSallaryeEmployee') }}">
+                                    اجمالي المرتبات
+                                </a>
+                            </td>
                             <td>{{ $employeeSum + $employeeTip }}</td>
                         </tr>
                         <tr>
-                            <td>اجمالي مصروفات البنشري</td>
+                            <td>
+                                <a href="{{ route('expensesSallaryAlbancher') }}">
+                                    اجمالي مصروفات البنشري
+                                </a>
+                            </td>
                             <td>{{ $elbancherSum }}</td>
                         </tr>
                         <tr>
-                            <td>اجمالي مصروفات الكشوف الاخري</td>
+                            <td>
+                                <a href="{{ route('expensesOthers') }}">
+                                    اجمالي مصروفات الكشوف الاخري
+                                </a>
+                            </td>
                             <td>{{ $othersSum }}</td>
                         </tr>
                     </tbody>

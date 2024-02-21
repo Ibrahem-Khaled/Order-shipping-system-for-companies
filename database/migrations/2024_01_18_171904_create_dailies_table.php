@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('car_id')->nullable();
             $table->bigInteger('client_id')->nullable();
+            $table->bigInteger('partner_id')->nullable();
             $table->bigInteger('employee_id')->nullable();
             $table->enum('type', ['deposit', 'withdraw'])->nullable();
             $table->bigInteger('price')->nullable();

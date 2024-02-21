@@ -89,7 +89,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3 col-md-6">
-                                                                <select name="employee_id" class="form-control">
+                                                                <select name="partner_id" class="form-control">
                                                                     <option value="">اختيار حساب الشريك</option>
                                                                     @foreach ($partner as $item)
                                                                         <option value="{{ $item->id }}">

@@ -7,7 +7,7 @@
                 <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
                     الحاويات المحملة</h3>
                 <table id="example" class="table table-striped" style="width:100%">
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua " style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
@@ -59,7 +59,7 @@
                 <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($done) }}
                     الحاويات المحملة</h3>
                 <table id="example2" class="table table-striped" style="width:100%">
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
@@ -105,4 +105,14 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function showConfirmation(itemId) {
+            if (confirm("هل انت متاكد من هذا الطلب?")) {
+                document.getElementById("confirmationForm" + itemId).submit();
+            } else {
+                return false;
+            }
+        }
+    </script>
 @stop

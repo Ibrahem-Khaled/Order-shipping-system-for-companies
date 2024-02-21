@@ -18,16 +18,13 @@ class PartnerController extends Controller
         $partner = User::whereIn('role', ['partner', 'company'])
             ->get();
 
-        $sum = 0;
-        foreach ($partner as $key => $value) {
+        $sums = 0;
+        foreach ($partner as $value) {
             if ($value->is_active == 1) {
-                $sum += $value->partnerInfo->money;
+                $sums += $value->partnerInfo->money;
             }
         }
-
-
-        //return view('Company.partner.partner', compact('partner', 'sum', 'container', 'employee', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum', 'partner'));
-        return view('Company.partner.partner', compact('partner', 'sum'));
+        return view('Company.partner.partner', compact('partner', 'sums'));
     }
 
     public function store(Request $request)

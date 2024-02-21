@@ -8,7 +8,7 @@
                 style="max-height: 400px; overflow: auto; position: relative;">
                 <h3 class="text-center mb-4"> {{ count($container) }} تحميل الحاويات</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
@@ -43,7 +43,7 @@
                                         <td></td>
                                     @else
                                         <td class="text-center">
-                                            <select class="form-select" name="car" required>
+                                            <select class="form-select w-100" name="car" required>
                                                 <option value="">اختر السيارة</option>
                                                 @foreach ($cars as $driverItem)
                                                     <option value="{{ $driverItem->id }}">
@@ -54,7 +54,7 @@
                                             </select>
                                         </td>
                                         <td class="text-center">
-                                            <select class="form-select" name="driver" required>
+                                            <select class="form-select w-100" name="driver" required>
                                                 <option value="">اختر السائق</option>
                                                 @foreach ($driver as $driverItem)
                                                     <option value="{{ $driverItem->id }}">{{ $driverItem->name }}
@@ -88,7 +88,7 @@
                 <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
                     الحاويات المحملة</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua " style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
