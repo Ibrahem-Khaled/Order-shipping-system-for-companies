@@ -8,7 +8,6 @@
                 <h3 class="text-center mb-4"> {{ count($employee) }} الموظفين </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <ul class="navbar-nav ms-auto">
-
                         <li class="nav-item">
                             <button type="button" style="margin: 5px" class="btn btn-success d-inline-block"
                                 data-bs-toggle="modal" data-bs-target="#addcarModal">
