@@ -16,6 +16,10 @@ class CompanyController extends Controller
     {
         $container = Container::all();
         $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employeeSum = 0;
+        foreach ($employee as $key => $employe) {
+            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
+        }
         $employeeTips = Container::whereNotNull('driver_id')
             ->get();
 
@@ -57,7 +61,10 @@ class CompanyController extends Controller
         foreach ($clients as $client) {
             $deposit += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
-        return view('Company.index', compact('container', 'deposit', 'withdraw', 'container', 'employee', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum'));
+        return view(
+            'Company.index',
+            compact('container', 'deposit', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum')
+        );
     }
     public function companyDetailes()
     {
@@ -65,6 +72,10 @@ class CompanyController extends Controller
 
         $container = Container::all();
         $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employeeSum = 0;
+        foreach ($employee as $key => $employe) {
+            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
+        }
         $employeeTips = Container::whereNotNull('driver_id')
             ->get();
 
@@ -99,11 +110,15 @@ class CompanyController extends Controller
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
-        return view('Company.companyDetailes', compact('container', 'employee', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum', 'partner'));
+        return view('Company.companyDetailes', compact('container', 'employeeSum', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum', 'partner'));
     }
     public function companyRevExp()
     {
         $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employeeSum = 0;
+        foreach ($employee as $key => $employe) {
+            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
+        }
         $employeeTips = Container::whereNotNull('driver_id')
             ->get();
 
@@ -139,6 +154,6 @@ class CompanyController extends Controller
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
-        return view('Company.companyRevExp', compact('container', 'employee', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum'));
+        return view('Company.companyRevExp', compact('container', 'employee', 'employeeSum', 'daily', 'cars', 'employeeTips', 'elbancherSum', 'othersSum'));
     }
 }

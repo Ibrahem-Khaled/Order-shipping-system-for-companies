@@ -8,7 +8,7 @@
         <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
             <h3 class="text-center mb-4"> {{ count($employee) }} الموظفين </h3>
             <table class="table table-striped table-bordered table-hover table-sm">
-                <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                <thead class="bg-aqua " style="position: sticky; top: 0; z-index: 0;">
                     <tr>
                         @if (Auth()->user()->role == 'superAdmin')
                             <th scope="col" class="text-center"></th>

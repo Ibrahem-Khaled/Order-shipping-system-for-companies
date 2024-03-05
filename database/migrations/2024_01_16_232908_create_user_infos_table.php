@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('job_title')->nullable();
             $table->bigInteger('number_residence')->nullable();
             $table->bigInteger('age')->nullable();
-            $table->string('date_runer')->nullable();
+            $table->timestamp('date_runer')->nullable();
             $table->string('nationality')->nullable();
             $table->string('marital_status')->nullable();
             $table->string('expire_residence')->nullable();

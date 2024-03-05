@@ -10,7 +10,7 @@
                 <h2> الراتب {{ $user->sallary }}</h2>
 
                 <table class="table table-striped table-bordered table-hover table-sm">
-                    <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
+                    <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr class="text-uppercase text-success">
                             <th scope="col">الباقي</th>
                             <th scope="col">الواصل له</th>
@@ -20,18 +20,6 @@
                             <th scope="col">الشهر</th>
                         </tr>
                     </thead>
-                    {{-- <tbody>
-                    @foreach ($employee->employeedaily as $item)
-                        <tr>
-                            <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->created_at }}</td>
-                        </tr>
-                    @endforeach
-                </tbody> --}}
                     <tbody>
                         @php
                             $annualStatement = [];
@@ -40,15 +28,25 @@
                             $sallary = $employee->sallary;
                             $total = 0;
                             $saving = 0;
+                            $date_runer = \Carbon\Carbon::parse($user->userInfo->date_runer);
+                            $month = $date_runer->month; 
                             // Loop through each month of the current year
-                            for ($month = 1; $month <= $currentMonth; $month++) {
+                            for ($month; $month <= $currentMonth; $month++) {
                                 // Filter daily records for the current month
-                                $monthTransactions = $employee->employeedaily->filter(function ($transaction) use ($currentYear, $month) {
-                                    return $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month;
+                                $monthTransactions = $employee->employeedaily->filter(function ($transaction) use (
+                                    $currentYear,
+                                    $month,
+                                ) {
+                                    return $transaction->created_at->year == $currentYear &&
+                                        $transaction->created_at->month == $month;
                                 });
 
-                                $tipsMonth = $employee->driverContainer->filter(function ($transaction) use ($currentYear, $month) {
-                                    return $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month;
+                                $tipsMonth = $employee->driverContainer->filter(function ($transaction) use (
+                                    $currentYear,
+                                    $month,
+                                ) {
+                                    return $transaction->created_at->year == $currentYear &&
+                                        $transaction->created_at->month == $month;
                                 });
                                 // Calculate the total balance for the month
                                 $dailyTransaction = $monthTransactions->where('type', 'withdraw')->sum('price');

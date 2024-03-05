@@ -4,7 +4,6 @@
     @php
         $deposits = $container->sum('price');
         $carSum = $cars->sum('price');
-        $employeeSum = $employee->sum('sallary');
         $employeeTip = $employeeTips->sum('tips');
         $withdraws = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
     @endphp

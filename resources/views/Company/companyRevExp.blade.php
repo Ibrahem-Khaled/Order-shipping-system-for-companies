@@ -8,7 +8,6 @@
                     @php
                         $deposit = $container->sum('price');
                         $carSum = $cars->sum('price');
-                        $employeeSum = $employee->sum('sallary');
                         $employeeTip = $employeeTips->sum('tips');
                         $withdraw = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
                     @endphp
