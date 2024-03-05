@@ -4,8 +4,7 @@
     @php
         $deposits = $container->sum('price');
         $carSum = $cars->sum('price');
-        $employeeTip = $employeeTips->sum('tips');
-        $withdraws = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
+        $withdraws = $carSum + $employeeSum  + $elbancherSum + $othersSum;
     @endphp
 
     <div class="container-fluid py-4">

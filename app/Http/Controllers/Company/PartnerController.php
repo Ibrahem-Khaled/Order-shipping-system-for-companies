@@ -18,13 +18,52 @@ class PartnerController extends Controller
         $partner = User::whereIn('role', ['partner', 'company'])
             ->get();
 
+        $container = Container::all();
+        $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employeeSum = 0;
+        foreach ($employee as $key => $employe) {
+            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
+        }
+
+        $uniqueEmployeeIds = Daily::select('employee_id')
+            ->whereNotNull('employee_id')
+            ->distinct()
+            ->pluck('employee_id');
+
+        $elbancherSum = 0;
+        foreach ($uniqueEmployeeIds as $value) {
+            $user = User::find($value);
+            if (Str::contains($user->name, 'بنشري')) {
+                $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
+                $elbancherSum = $elbancherSum + $sum;
+            }
+        }
+        $others = User::whereIn('role', ['driver', 'company'])
+            ->Where(function ($query) {
+                $query->whereNull('sallary');
+            })->whereRaw('name NOT LIKE "%بنشري%"')
+            ->get();
+        $othersSum = 0;
+        foreach ($others as $other) {
+            $user = User::find($other->id);
+            $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
+            $othersSum = $othersSum + $sum;
+        }
+
+        $cars = Daily::whereNotNull('car_id')
+            ->where('type', 'withdraw')
+            ->get();
+        $daily = Daily::whereNotNull('client_id')
+            ->where('type', 'deposit')
+            ->get();
+
         $sums = 0;
         foreach ($partner as $value) {
             if ($value->is_active == 1) {
                 $sums += $value->partnerInfo->money;
             }
         }
-        return view('Company.partner.partner', compact('partner', 'sums'));
+        return view('Company.partner.partner', compact('partner', 'sums', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', ));
     }
 
     public function store(Request $request)
@@ -47,6 +86,35 @@ class PartnerController extends Controller
             'image' => $image,
         ]);
         PartnerInfo::create([
+            'partner_id' => $user->id,
+            'money' => $request->money,
+        ]);
+        return redirect()->back()->with('success', 'تم انشاء بيانات بنجاح');
+    }
+
+    public function update(Request $request, $userid)
+    {
+        $user = User::find($userid);
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'password' => $request->password,
+            'role' => $request->role,
+        ]);
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('user_images', 'public');
+        } else {
+            $image = null;
+        }
+        $userInfo = UserInfo::where('user_id', $user->id)->latest();
+        $userInfo->update([
+            'user_id' => $user->id,
+            'number_residence' => $request->number_residence,
+            'image' => $image,
+        ]);
+        $partnerInfo = PartnerInfo::where('partner_id', $user->id)->latest();
+        $partnerInfo->update([
             'partner_id' => $user->id,
             'money' => $request->money,
         ]);

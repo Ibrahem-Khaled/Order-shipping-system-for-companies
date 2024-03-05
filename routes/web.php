@@ -111,6 +111,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('company/partner', [PartnerController::class, 'index'])->name('partnerHome');
     Route::post('store/partner', [PartnerController::class, 'store'])->name('partnerStore');
     Route::post('update/partner/status/{id}', [PartnerController::class, 'inActive'])->name('partnerinActive');
+    Route::post('update/partner/data/{userid}', [PartnerController::class, 'update'])->name('partnerUpdate');
 
 });
 

@@ -8,8 +8,7 @@
                     @php
                         $deposit = $container->sum('price');
                         $carSum = $cars->sum('price');
-                        $employeeTip = $employeeTips->sum('tips');
-                        $withdraw = $carSum + $employeeSum + $employeeTip + $elbancherSum + $othersSum;
+                        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
                     @endphp
                     <thead>
                         <tr>
@@ -52,7 +51,7 @@
                                     اجمالي المرتبات
                                 </a>
                             </td>
-                            <td>{{ $employeeSum + $employeeTip }}</td>
+                            <td>{{ $employeeSum }}</td>
                         </tr>
                         <tr>
                             <td>
