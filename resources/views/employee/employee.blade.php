@@ -192,7 +192,7 @@
                         </tr>
                     </thead>
 
-                    {{-- <tbody>
+                    <tbody>
                         @foreach ($employee as $item)
                             <tr>
                                 @if (Auth()->user()->role == 'superAdmin')
@@ -229,7 +229,7 @@
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody> --}}
+                    </tbody>
 
                 </table>
             </div>
