@@ -6,194 +6,178 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <h3 class="text-center mb-4"> {{ count($employee) }} الموظفين </h3>
+                <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
+                    data-bs-target="#addcarModal">
+                    اضافة سيارة
+                </button>
+                <div class="modal fade" id="addcarModal" tabindex="-1" role="dialog"
+                    aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <!-- Modal Content Goes Here -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEmployeeModalLabel">اضافة الموظف</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form to Add Employee Data -->
+                                <form action="{{ route('postCar') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="mb-3 col-md-6">
+                                            <input type="text" name="type_car" required class="form-control"
+                                                placeholder="نوع السيارة" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="number" name="model_car" required class="form-control"
+                                                placeholder="موديل السيارة" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="number" name="serial_number" required class="form-control"
+                                                placeholder="الرقم التسلسلي" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label>تاريخ انتهاء الترخيص</label>
+                                            <input type="date" name="license_expire" required class="form-control" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label>تاريخ الفحص</label>
+                                            <input type="date" name="scan_expire" required class="form-control" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label>انتهاء تاريخ بطاقة التشغيل</label>
+                                            <input type="date" name="card_run_expire" required class="form-control" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label>انتهاء تاريخ التامين</label>
+                                            <input type="date" name="insurance_expire" required class="form-control" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="text" name="number" required class="form-control"
+                                                placeholder="رقم السيارة" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <select name="type" required class="form-control">
+                                                <option value="">اختيار نوع السيارة</option>
+                                                <option value="transfer">نقل</option>
+                                                <option value="private">ملاكي</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <select name="driver_id" class="form-control">
+                                                <option value="">اختيار السائق</option>
+                                                @foreach ($employee as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">حفظ</button>
+                                    </div>
+                                </form>
+                                <!-- Include your form elements for adding employee data here -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <!-- Include your "Add" button here to submit the form -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
+                    data-bs-target="#addEmployeeModal">
+                    إضافة موظف
+                </button>
+                <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog"
+                    aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <!-- Modal Content Goes Here -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEmployeeModalLabel">اضافة الموظف</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form to Add Employee Data -->
+                                <form action="{{ route('postEmployee') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="mb-3 col-md-6">
+                                            <input type="text" name="name" required class="form-control"
+                                                placeholder="الاسم" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <select type="text" name="gender" class="form-control">
+                                                <option value="male">ذكر</option>
+                                                <option value="female">انثي</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="number" required name="sallary" class="form-control"
+                                                placeholder="الراتب" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="number" name="age" class="form-control"
+                                                placeholder="السن" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">تاريخ التعيين"</label>
+                                            <input type="date" name="date_runer" class="form-control"
+                                                placeholder="تاريخ التعيين" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="tel" required name="phone" class="form-control"
+                                                placeholder="رقم الجوال" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="text" name="nationality" class="form-control"
+                                                placeholder="الجنسية" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="number" name="number_residence" class="form-control"
+                                                placeholder="رقم الاقامة" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">انتهاء الاقامة"</label>
+                                            <input type="date" name="expire_residence" class="form-control"
+                                                placeholder="انتهاء الاقامة" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="text" name="marital_status" class="form-control"
+                                                placeholder="الاحالة الاجتماعية" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">ارفع الصورة</label>
+                                            <input type="file" name="image" class="form-control"
+                                                accept="image/*" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <input type="number" required name="password" class="form-control"
+                                                placeholder="كلمة السر" />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <select class="form-control" name="role">
+                                                <option value="driver">سائق</option>
+                                                <option value="administrative">اداري</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">حفظ</button>
+                                    </div>
+                                </form>
+                                <!-- Include your form elements for adding employee data here -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <!-- Include your "Add" button here to submit the form -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <table class="table table-striped table-bordered table-hover table-sm">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <button type="button" style="margin: 5px" class="btn btn-success d-inline-block"
-                                data-bs-toggle="modal" data-bs-target="#addcarModal">
-                                اضافة سيارة
-                            </button>
-                            <!-- Add Employee Modal -->
-                            <div class="modal fade" id="addcarModal" tabindex="-1" role="dialog"
-                                aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <!-- Modal Content Goes Here -->
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة الموظف</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- Form to Add Employee Data -->
-                                            <form action="{{ route('postCar') }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="type_car" required class="form-control"
-                                                            placeholder="نوع السيارة" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="number" name="model_car" required class="form-control"
-                                                            placeholder="موديل السيارة" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="number" name="serial_number" required
-                                                            class="form-control" placeholder="الرقم التسلسلي" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label>تاريخ انتهاء الترخيص</label>
-                                                        <input type="date" name="license_expire" required
-                                                            class="form-control" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label>تاريخ الفحص</label>
-                                                        <input type="date" name="scan_expire" required
-                                                            class="form-control" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label>انتهاء تاريخ بطاقة التشغيل</label>
-                                                        <input type="date" name="card_run_expire" required
-                                                            class="form-control" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label>انتهاء تاريخ التامين</label>
-                                                        <input type="date" name="insurance_expire" required
-                                                            class="form-control" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="number" required class="form-control"
-                                                            placeholder="رقم السيارة" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <select name="type" required class="form-control">
-                                                            <option value="">اختيار نوع السيارة</option>
-                                                            <option value="transfer">نقل</option>
-                                                            <option value="private">ملاكي</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <select name="driver_id" class="form-control">
-                                                            <option value="">اختيار السائق</option>
-                                                            @foreach ($employee as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <button type="submit" class="btn btn-primary">حفظ</button>
-                                                </div>
-                                            </form>
-                                            <!-- Include your form elements for adding employee data here -->
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <!-- Include your "Add" button here to submit the form -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <button type="button" style="margin: 5px" class="btn btn-success d-inline-block"
-                                data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-                                إضافة موظف
-                            </button>
-                            <!-- Add Employee Modal -->
-                            <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog"
-                                aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <!-- Modal Content Goes Here -->
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة الموظف</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- Form to Add Employee Data -->
-                                            <form action="{{ route('postEmployee') }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="name" required
-                                                            class="form-control" placeholder="الاسم" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <select type="text" name="gender" class="form-control">
-                                                            <option value="male">ذكر</option>
-                                                            <option value="female">انثي</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="number" required name="sallary"
-                                                            class="form-control" placeholder="الراتب" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="number" name="age" class="form-control"
-                                                            placeholder="السن" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label class="form-label">تاريخ التعيين"</label>
-                                                        <input type="date" name="date_runer" class="form-control"
-                                                            placeholder="تاريخ التعيين" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="tel" required name="phone"
-                                                            class="form-control" placeholder="رقم الجوال" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="nationality" class="form-control"
-                                                            placeholder="الجنسية" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="number" name="number_residence"
-                                                            class="form-control" placeholder="رقم الاقامة" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label class="form-label">انتهاء الاقامة"</label>
-                                                        <input type="date" name="expire_residence"
-                                                            class="form-control" placeholder="انتهاء الاقامة" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="marital_status" class="form-control"
-                                                            placeholder="الاحالة الاجتماعية" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label class="form-label">ارفع الصورة</label>
-                                                        <input type="file" name="image" class="form-control"
-                                                            accept="image/*" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="number" required name="password"
-                                                            class="form-control" placeholder="كلمة السر" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <select class="form-control" name="role">
-                                                            <option value="driver">سائق</option>
-                                                            <option value="administrative">اداري</option>
-                                                        </select>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">حفظ</button>
-                                                </div>
-                                            </form>
-                                            <!-- Include your form elements for adding employee data here -->
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <!-- Include your "Add" button here to submit the form -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-
-                    </ul>
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             @if (Auth()->user()->role == 'superAdmin')

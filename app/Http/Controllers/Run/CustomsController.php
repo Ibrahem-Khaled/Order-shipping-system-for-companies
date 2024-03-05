@@ -34,6 +34,14 @@ class CustomsController extends Controller
         $sub_client = $request->subClient;
         $contNum = $request->contNum;
 
+        $existingDeclaration = CustomsDeclaration::where('statement_number', $num)
+            ->whereYear('created_at', now()->year)
+            ->first();
+
+        if ($existingDeclaration) {
+            return redirect()->back()->with('error', 'Statement number already exists for this year.');
+        }
+
         $data = CustomsDeclaration::create([
             'statement_number' => $num,
             'subclient_id' => $sub_client,

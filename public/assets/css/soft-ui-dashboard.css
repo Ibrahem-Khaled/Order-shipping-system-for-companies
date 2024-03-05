@@ -24574,30 +24574,48 @@ html {
 }
 
 .table {
-  border-collapse: inherit;
+  border-collapse: collapse;
+  box-shadow: 0 5px 10px #e1e5ee;
+  background-color: #fff;
+  text-align: left;
+  overflow: hidden;
+  border-radius: 10px;
+
 }
 
-.table thead th {
-  padding: 0.75rem 1.5rem;
-  text-transform: capitalize;
-  letter-spacing: 0px;
-  border-bottom: 1px solid #e9ecef;
+.table thead {
+  box-shadow: 0 5px 10px #e1e5ee;
+  background: linear-gradient(#7928CA, #7928CA);
+  color: white;
+}
+
+.table tbody tr {
+  box-shadow: 0 5px 10px #e1e5ee;
+  margin: 5px;
+  border-radius: 5px;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.table tbody tr td {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .table th {
-  font-weight: 600;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  font-weight: bold;
 }
 
-.table td .progress {
-  height: 3px;
-  width: 120px;
-  margin: 0;
+.table td {
+  padding: 1rem 2rem;
 }
 
-.table td,
-.table th {
-  white-space: nowrap;
-}
+
+
 
 .table.align-items-center td,
 .table.align-items-center th {
