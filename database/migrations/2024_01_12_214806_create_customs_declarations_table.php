@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('customs_declarations', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('statement_number')->unique();
+            $table->bigInteger('statement_number');
             $table->bigInteger('client_id');
             $table->string('subclient_id')->nullable();
             $table->string('expire_customs')->nullable();
