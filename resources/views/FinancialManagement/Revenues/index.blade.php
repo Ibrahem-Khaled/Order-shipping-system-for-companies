@@ -42,9 +42,9 @@
                 <tr class="fw-bold">
                     <th scope="row"></th>
                     <td></td>
-                    <td> {{ $contanierCount }}  مجموع الايرادات </td>
+                    <td> {{ $contanierCount }}  مجموع الحاويات </td>
                     <td></td>
-                    <td> {{ $priceSum }}  مجموع الحاويات </td>
+                    <td> {{ $priceSum }}  مجموع الايرادات </td>
                 </tr>
                 <!-- Add more rows as needed -->
             </tbody>

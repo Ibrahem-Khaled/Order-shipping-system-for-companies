@@ -23,4 +23,8 @@ class Daily extends Model
     {
         return $this->belongsTo(User::class, 'employee_id');
     }
+    public function partner()
+    {
+        return $this->belongsTo(User::class, 'partner_id');
+    }
 }

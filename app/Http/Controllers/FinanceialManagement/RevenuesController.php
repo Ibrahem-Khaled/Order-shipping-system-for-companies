@@ -63,9 +63,12 @@ class RevenuesController extends Controller
             for ($i = 0; $i < $count; $i++) {
                 $customId = $customIds[$i];
                 $price = $prices[$i];
-                $custom = Container::where('customs_id', $customId)->where('is_rent', 0)->update([
-                    'price' => $price,
-                ]);
+                $custom = Container::where('customs_id', $customId)
+                    ->where('status', 'transport')
+                    ->where('price', 0)
+                    ->where('is_rent', 0)->update([
+                            'price' => $price,
+                        ]);
             }
             return redirect()->back()->with('success', 'تم التحديث بنجاح');
         } else {

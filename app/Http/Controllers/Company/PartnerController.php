@@ -129,4 +129,10 @@ class PartnerController extends Controller
         return redirect()->back()->with('success', 'تم تعديل بيانات بنجاح');
 
     }
+    public function partnerStatement($id)
+    {
+        $user = User::find($id);
+        return view('Company.partner.partnerStatement', compact('user'));
+
+    }
 }

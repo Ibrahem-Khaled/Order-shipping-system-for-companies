@@ -1,6 +1,16 @@
 @extends('layouts.default')
 
 @section('content')
+
+    <form action="{{ route('getOfices') }}" class="row align-items-center" method="GET">
+        <div class="col">
+            <input type="text" name="query" class="form-control" placeholder="Search...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success">Search</button>
+        </div>
+    </form>
+
     <div class="container mt-5">
         <table class="table">
             <a class="nav-link" href="{{ route('addOffice', 'client') }}">

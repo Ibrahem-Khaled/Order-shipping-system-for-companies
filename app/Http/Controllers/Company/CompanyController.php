@@ -131,7 +131,7 @@ class CompanyController extends Controller
                 $elbancherSum = $elbancherSum + $sum;
             }
         }
-        $others = User::whereIn('role', ['driver', 'company'])
+        $others = User::whereIn('role', ['driver', 'company']) 
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشري%"')

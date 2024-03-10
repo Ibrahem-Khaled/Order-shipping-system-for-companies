@@ -67,6 +67,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Daily::class, 'employee_id');
     }
+    public function partnerdaily()
+    {
+        return $this->hasMany(Daily::class, 'partner_id');
+    }
     public function rentCont()
     {
         return $this->hasMany(Container::class, 'rent_id');

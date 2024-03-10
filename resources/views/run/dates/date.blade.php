@@ -2,10 +2,19 @@
 
 @section('content')
 
+    <form action="{{ route('dates') }}" class="row align-items-center" method="GET">
+        <div class="col">
+            <input type="text" name="query" class="form-control" placeholder="Search...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success">Search</button>
+        </div>
+    </form>
+
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3"
-                style="max-height: 400px; overflow: auto; position: relative;">
+                style="max-height: 700px; overflow: auto; position: relative;">
                 <h3 class="text-center mb-4"> {{ count($container) }} تحميل الحاويات</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
@@ -20,7 +29,6 @@
                             <th scope="col" class="text-center">#</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @foreach ($container as $item)
                             <tr>
@@ -84,7 +92,7 @@
         </div>
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3"
-                style="max-height: 400px; overflow: auto; position: relative;">
+                style="max-height: 700px; overflow: auto; position: relative;">
                 <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
                     الحاويات المحملة</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
@@ -100,7 +108,6 @@
                             <th scope="col" class="text-center">#</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @foreach ($containerPort as $item)
                             <tr>
@@ -124,8 +131,8 @@
                                 <td class="text-center">{{ $item->id }}</td>
                             </tr>
 
-                            <div class="modal fade" id="confirmationModal{{ $item->id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="confirmationModal{{ $item->id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">

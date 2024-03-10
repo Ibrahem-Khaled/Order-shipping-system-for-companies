@@ -10,10 +10,16 @@ use Illuminate\Http\Request;
 
 class CustomsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('role', 'client')->get();
-        //return response()->json($users);
+        $query = $request->input('query');
+        if (is_null($query)) {
+            $users = User::where('role', 'client')->get();
+        } else {
+            $users = User::where('created_at', 'like', '%' . $query . '%')
+                ->orWhere('name', 'like', '%' . $query . '%')
+                ->get();
+        }
         return view('run.Customs', compact('users'));
     }
     public function getOfficeContainerData($clientId)

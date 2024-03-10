@@ -82,6 +82,8 @@
                             <th scope="col" class="text-center">راس المال</th>
                             <th scope="col" class="text-center">الدور</th>
                             <th scope="col" class="text-center">الاسم</th>
+                            <th scope="col" class="text-center">كشف حساب سنوي</th>
+                            <th scope="col" class="text-center">كشف حساب شهري</th>
                             <th scope="col" class="text-center">#</th>
                         </tr>
                     </thead>
@@ -202,6 +204,17 @@
                                         {{ $item->name }}
                                     </a>
                                 </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('getAccountYears', $item->id) }}">
+                                        كشف سنوي
+                                    </a>
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('partnerStatement', $item->id) }}">
+                                        كشف شهري
+                                    </a>
+                                </td>
+
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->id }}
                                 </td>

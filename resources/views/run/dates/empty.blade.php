@@ -1,6 +1,14 @@
 @extends('layouts.default')
 
 @section('content')
+    <form action="{{ route('empty') }}" class="row align-items-center" method="GET">
+        <div class="col">
+            <input type="text" name="query" class="form-control" placeholder="Search...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success">Search</button>
+        </div>
+    </form>
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style=" overflow: auto; position: relative;">
@@ -57,7 +65,7 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style=" overflow: auto; position: relative;">
                 <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($done) }}
-                    الحاويات المحملة</h3>
+                    الحاويات الفارغة</h3>
                 <table id="example2" class="table table-striped" style="width:100%">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>

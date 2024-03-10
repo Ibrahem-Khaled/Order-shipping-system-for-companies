@@ -12,10 +12,30 @@ use Illuminate\Http\Request;
 
 class DatesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $container = Container::whereIn('status', ['wait', 'rent'])->get();
-        $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
+        $query = $request->input('query');
+        if (is_null($query)) {
+            $container = Container::whereIn('status', ['wait', 'rent'])->get();
+            $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
+        } else {
+            $container = Container::where('status', 'wait')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('created_at', 'like', '%' . $query . '%')
+                        ->orWhere('number', 'like', '%' . $query . '%')
+                        ->orWhere('price', 'like', '%' . $query . '%');
+                })
+                ->get();
+
+            $containerPort = Container::where('status', 'transport')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('number', 'like', '%' . $query . '%')
+                        ->orWhere('created_at', 'like', '%' . $query . '%')
+                        ->orWhere('price', 'like', '%' . $query . '%');
+                })
+                ->get();
+        }
+
         $driver = User::where('role', 'driver')
             ->whereNotNull('sallary')
             ->get();
@@ -24,18 +44,39 @@ class DatesController extends Controller
         $cars = Cars::where('type', 'transfer')->get();
         return view('run.dates.date', compact('container', 'driver', 'containerPort', 'cars', 'rents'));
     }
-    public function empty()
+    public function empty(Request $request)
     {
         $now = Carbon::now();
         $year = $now->year;
         $month = $now->month;
 
-        $done = Container::whereYear('created_at', $year)
-            ->whereMonth('created_at', $month)
-            ->whereIn('status', ['done'])
-            ->get();
+        $query = $request->input('query');
+        if (is_null($query)) {
+            $done = Container::whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->whereIn('status', ['done'])
+                ->get();
+            $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
 
-        $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
+        } else {
+            $done = Container::where('status', 'done')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('created_at', 'like', '%' . $query . '%')
+                        ->orWhere('number', 'like', '%' . $query . '%')
+                        ->orWhere('price', 'like', '%' . $query . '%');
+                })
+                ->get();
+
+            $containerPort = Container::where('status', 'transport')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('number', 'like', '%' . $query . '%')
+                        ->orWhere('created_at', 'like', '%' . $query . '%')
+                        ->orWhere('price', 'like', '%' . $query . '%');
+                })
+                ->get();
+        }
+
+
         $driver = User::where('role', 'driver')->get();
         $rents = User::where('role', 'rent')->get();
         $cars = Cars::where('type', 'transfer')->get();

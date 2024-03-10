@@ -48,19 +48,14 @@ class Daily extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'car_id' => 'required_without_all:client_id,employee_id',
-            'client_id' => 'required_without_all:car_id,employee_id',
-            'employee_id' => 'required_without_all:car_id,client_id',
-        ];
-
-        $messages = [
-            'car_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
-            'client_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
-            'employee_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
+            'car_id' => 'required_without_all:client_id,employee_id,partner_id',
+            'client_id' => 'required_without_all:car_id,employee_id,partner_id',
+            'employee_id' => 'required_without_all:car_id,client_id,partner_id',
+            'partner_id' => 'required_without_all:car_id,client_id,employee_id',
         ];
 
         // تطبيق قواعد 
-        $validator = Validator::make($request->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()->with('error', 'الرجاء اختيار قيمة واحدة على الأقل لحساب السيارة أو العميل أو الموظف');
@@ -81,15 +76,17 @@ class Daily extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'car_id' => 'required_without_all:client_id,employee_id',
-            'client_id' => 'required_without_all:car_id,employee_id',
-            'employee_id' => 'required_without_all:car_id,client_id',
+            'car_id' => 'required_without_all:client_id,employee_id,partner_id',
+            'client_id' => 'required_without_all:car_id,employee_id,partner_id',
+            'employee_id' => 'required_without_all:car_id,client_id,partner_id',
+            'partner_id' => 'required_without_all:car_id,client_id,employee_id',
         ];
 
         $messages = [
             'car_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
             'client_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
             'employee_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
+            'partner_id.required_without_all' => 'الرجاء اختيار السيارة أو حساب العميل أو حساب الموظف واحد على الأقل',
         ];
 
         // تطبيق قواعد الصحة

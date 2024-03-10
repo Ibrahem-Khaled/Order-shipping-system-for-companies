@@ -70,7 +70,7 @@ class UsersController extends Controller
 
     public function others()
     {
-        $users = User::where('role', 'driver')
+        $users = User::whereIn('role', ['driver', 'company']) 
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشري%"')
