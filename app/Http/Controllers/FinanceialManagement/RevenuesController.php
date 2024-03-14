@@ -21,10 +21,15 @@ class RevenuesController extends Controller
         return view('FinancialManagement.rent.officeRent', compact('users'));
     }
 
-    public function accountStatement($clientId)
+    public function accountStatement(Request $request, $clientId)
     {
         $user = User::find($clientId);
-        return view('FinancialManagement.Revenues.accountStatement', compact('user'));
+        $query = $request->input('query');
+
+        $container = Container::where('number', 'like', '%' . $query . '%')
+            ->first();
+
+        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container'));
     }
     public function rentMonth($clientId)
     {
@@ -64,8 +69,7 @@ class RevenuesController extends Controller
                 $customId = $customIds[$i];
                 $price = $prices[$i];
                 $custom = Container::where('customs_id', $customId)
-                    ->where('status', 'transport')
-                    ->where('price', 0)
+                    ->whereIn('status', ['transport', 'done'])
                     ->where('is_rent', 0)->update([
                             'price' => $price,
                         ]);
@@ -73,6 +77,22 @@ class RevenuesController extends Controller
             return redirect()->back()->with('success', 'تم التحديث بنجاح');
         } else {
             return redirect()->back()->with('error', 'يوجد خطا ما');
+        }
+    }
+    public function updateContainerOnly(Request $request)
+    {
+        $number = $request->input('number');
+        $price = $request->input('price');
+
+        $container = Container::where('number', $number)->first();
+
+        if ($container) {
+            $container->update([
+                'price' => $price,
+            ]);
+            return redirect()->back()->with('success', 'Container price updated successfully');
+        } else {
+            return redirect()->back()->with('error', 'Container not found');
         }
     }
     public function updateRentContainerPrice(Request $request)

@@ -66,19 +66,20 @@
                                                 <div class="mb-3">
                                                     <label for="exampleFormControlInput1" class="form-label">رقم
                                                         البيان</label>
-                                                    <input type="number" class="form-control" name="statement_number"
-                                                        id="exampleFormControlInput1" placeholder="123">
+                                                    <input type="number" class="form-control" required
+                                                        name="statement_number" id="exampleFormControlInput1"
+                                                        placeholder="123">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="exampleFormControlInput1" class="form-label">اسم
                                                         العميل</label>
-                                                    <input type="text" class="form-control" name="subClient"
+                                                    <input type="text" class="form-control" required name="subClient"
                                                         id="exampleFormControlInput1" placeholder="العميل">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="exampleFormControlInput1" class="form-label">عدد
                                                         الحاويات</label>
-                                                    <input type="number" class="form-control" name="contNum"
+                                                    <input type="number" class="form-control" required name="contNum"
                                                         id="exampleFormControlInput1" placeholder="1">
                                                 </div>
                                                 <div class="modal-footer">

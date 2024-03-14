@@ -91,7 +91,17 @@ class EmployeeController extends Controller
 
     public function storeCar(Request $request)
     {
-        Cars::create($request->all());
-        return redirect()->back()->with('success', 'تم اضافة السيارة بنجاح');
+        if (is_null($request->id)) {
+            Cars::create($request->all());
+            return redirect()->route('getEmployee')->with('success', 'تم إضافة السيارة بنجاح');
+        } else {
+            $car = Cars::find($request->id);
+            if ($car) {
+                $car->update($request->except('id'));
+                return redirect()->route('getEmployee')->with('success', 'تم تعديل السيارة بنجاح');
+            } else {
+                return redirect()->route('getEmployee')->with('error', 'لم يتم العثور على السيارة المطلوبة');
+            }
+        }
     }
 }

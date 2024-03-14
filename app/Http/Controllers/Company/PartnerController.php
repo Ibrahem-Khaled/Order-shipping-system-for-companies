@@ -10,22 +10,36 @@ use App\Models\User;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class PartnerController extends Controller
 {
     public function index()
     {
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
         $partner = User::whereIn('role', ['partner', 'company'])
             ->get();
 
-        $container = Container::all();
+        $container = Container::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->get();
+
+
         $employee = User::whereIn('role', ['driver', 'administrative'])->get();
         $employeeSum = 0;
         foreach ($employee as $key => $employe) {
-            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
+            $employeeSum += $employe->employeedaily()
+                ->whereYear('created_at', $currentYear)
+                ->whereMonth('created_at', $currentMonth)
+                ->where('type', 'withdraw')
+                ->sum('price');
         }
 
-        $uniqueEmployeeIds = Daily::select('employee_id')
+        $uniqueEmployeeIds = Daily::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->select('employee_id')
             ->whereNotNull('employee_id')
             ->distinct()
             ->pluck('employee_id');
@@ -34,7 +48,11 @@ class PartnerController extends Controller
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
             if (Str::contains($user->name, 'بنشري')) {
-                $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
+                $sum = $user?->employeedaily()
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->where('type', 'withdraw')
+                    ->sum('price');
                 $elbancherSum = $elbancherSum + $sum;
             }
         }
@@ -46,14 +64,22 @@ class PartnerController extends Controller
         $othersSum = 0;
         foreach ($others as $other) {
             $user = User::find($other->id);
-            $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
+            $sum = $user?->employeedaily()
+                ->whereYear('created_at', $currentYear)
+                ->whereMonth('created_at', $currentMonth)
+                ->where('type', 'withdraw')
+                ->sum('price');
             $othersSum = $othersSum + $sum;
         }
 
-        $cars = Daily::whereNotNull('car_id')
+        $cars = Daily::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereNotNull('car_id')
             ->where('type', 'withdraw')
             ->get();
-        $daily = Daily::whereNotNull('client_id')
+        $daily = Daily::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
 
@@ -63,7 +89,19 @@ class PartnerController extends Controller
                 $sums += $value->partnerInfo->money;
             }
         }
-        return view('Company.partner.partner', compact('partner', 'sums', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', ));
+        return view(
+            'Company.partner.partner',
+            compact(
+                'partner',
+                'sums',
+                'container',
+                'employeeSum',
+                'daily',
+                'cars',
+                'elbancherSum',
+                'othersSum',
+            )
+        );
     }
 
     public function store(Request $request)

@@ -40,12 +40,16 @@ class CustomsController extends Controller
         $sub_client = $request->subClient;
         $contNum = $request->contNum;
 
+        $customNumis = CustomsDeclaration::where('statement_number', $num)->first();
+        if ($customNumis && !$customNumis->container()->exists()) {
+            $customNumis->delete();
+        }
+
         $existingDeclaration = CustomsDeclaration::where('statement_number', $num)
             ->whereYear('created_at', now()->year)
             ->first();
-
         if ($existingDeclaration) {
-            return redirect()->back()->with('error', 'Statement number already exists for this year.');
+            return redirect()->back()->with('error', 'رقم البيان موجود بالفعل لهذا العام.');
         }
 
         $data = CustomsDeclaration::create([

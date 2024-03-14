@@ -64,7 +64,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     //employee
     Route::get('get/employee/data', [EmployeeController::class, 'index'])->name('getEmployee');
     Route::post('post/employee/data', [EmployeeController::class, 'store'])->name('postEmployee');
-    Route::post('post/cars/data', [EmployeeController::class, 'storeCar'])->name('postCar');
+    Route::post('post/edit/cars/data', [EmployeeController::class, 'storeCar'])->name('postCar');
     Route::get('get/employee/type/{name}/{userId}', [EmployeeController::class, 'type'])->name('getEmployeeType');
     Route::post('update/employee/{userId}', [EmployeeController::class, 'storeType'])->name('updateEmployeeData');
 
@@ -74,6 +74,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('account/statement/data/{clientId}', [RevenuesController::class, 'accountStatement'])->name('getAccountStatement');
     Route::get('account/years/data/{clientId}', [RevenuesController::class, 'accountYears'])->name('getAccountYears');
     Route::post('update/container/price', [RevenuesController::class, 'updateContainerPrice'])->name('updateContainerPrice');
+    Route::post('update/container/only', [RevenuesController::class, 'updateContainerOnly'])->name('updateContainerOnly');
     Route::get('offices/rent/Management', [RevenuesController::class, 'rent'])->name('getOfficesRent');
     Route::get('rent/month/data/{clientId}', [RevenuesController::class, 'rentMonth'])->name('getrentMonth');
     Route::post('update/container/rent/price', [RevenuesController::class, 'updateRentContainerPrice'])->name('updateRentContainerPrice');

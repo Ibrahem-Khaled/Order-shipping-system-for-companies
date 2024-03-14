@@ -7,6 +7,35 @@
     </div>
 
 
+    <form action="{{ route('getAccountStatement', Route::current()->parameter('clientId')) }}" class="row align-items-center"
+        method="GET">
+        <div class="col">
+            <input type="text" name="query" class="form-control" placeholder="Search...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success">Search</button>
+        </div>
+    </form>
+
+    <form action="{{ route('updateContainerOnly') }}" class="row align-items-center" method="post">
+        @csrf
+        <div class="col">
+            <input type="text" name="number" value="{{ $container?->number }}" class="form-control"
+                placeholder="رقم الحاوية">
+        </div>
+        <div class="col">
+            <input type="text" name="price" value="{{ $container?->price }}" class="form-control"
+                placeholder="سعر الحاوية">
+        </div>
+        <div class="col">
+            <input type="text"  value="{{ $container?->customs->subclient_id }}" class="form-control"
+                placeholder="اسم العميل">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success">تحديث</button>
+        </div>
+    </form>
+
     <div class="container mt-5">
         <table class="table">
             <thead>
@@ -47,7 +76,7 @@
                                     @else
                                         <div class="input-group mb-3">
                                             <input type="text" name="price[]"
-                                                value="{{ $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->isNotEmpty()? $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') / $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->count(): 0 }}"
+                                                value="{{ $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->isNotEmpty()? $custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') /$custom->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->count(): 0 }}"
                                                 class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
                                                 aria-describedby="basic-addon2">
                                             <div class="input-group-append">
@@ -74,7 +103,10 @@
             <div class="col-md-12">
                 <h1 class="text-primary">المجموع</h1>
                 @php
-                    $sumPrice = $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price');
+                    $sumPrice = $user->container
+                        ->whereIn('status', ['transport', 'done'])
+                        ->where('is_rent', 0)
+                        ->sum('price');
                 @endphp
                 <h3 class="text-dark">
                     {{ $sumPrice }}
