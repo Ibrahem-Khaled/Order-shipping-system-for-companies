@@ -82,6 +82,12 @@
                                                     <input type="number" class="form-control" required name="contNum"
                                                         id="exampleFormControlInput1" placeholder="1">
                                                 </div>
+                                                <div class="mb-3">
+                                                    <label for="exampleFormControlInput1" class="form-label">عدد
+                                                        التاريخ</label>
+                                                    <input type="date" class="form-control" required name="created_at"
+                                                        id="exampleFormControlInput1">
+                                                </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">انهاء</button>

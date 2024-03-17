@@ -110,4 +110,16 @@ class DatesController extends Controller
         return redirect()->back()->with('success', 'تم التحميل بنجاح');
 
     }
+
+    public function ContainerRentStatus($id, Request $request)
+    {
+        $container = Container::find($id)->update([
+            'status' => $request->status == 'wait' ? 'rent' : 'wait',
+        ]);
+        if ($request->status == 'wait') {
+            return redirect()->back()->with('success', 'تم تاجير الحاوية');
+        } else {
+            return redirect()->back()->with('success', 'تم الغاء تاجير');
+        }
+    }
 }

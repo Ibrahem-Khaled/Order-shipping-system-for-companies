@@ -56,6 +56,7 @@ class CustomsController extends Controller
             'statement_number' => $num,
             'subclient_id' => $sub_client,
             'client_id' => $clientId,
+            'created_at' => $request->created_at,
         ]);
 
         return redirect()->route('showContanierPost', [

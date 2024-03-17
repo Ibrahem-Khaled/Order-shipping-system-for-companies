@@ -19,6 +19,7 @@
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
+                            <th scope="col" class="text-center">حالة الحاوية</th>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
                             <th scope="col" class="text-center">السيارة</th>
@@ -32,6 +33,18 @@
                     <tbody>
                         @foreach ($container as $item)
                             <tr>
+                                <td class="text-center">
+                                    <form action="{{ route('ContainerRentStatus', $item->id) }}" method="GET">
+                                        <input name="status" value="{{ $item->status }}" hidden />
+                                        <button type="submit" class="btn btn-danger d-inline-block">
+                                            @if ($item->status == 'wait')
+                                                تاجير حاوية
+                                            @elseif($item->status == 'rent')
+                                                الغاء تاجير الحاوية
+                                            @endif
+                                        </button>
+                                    </form>
+                                </td>
                                 <form action="{{ route('updateContainer', $item->id) }}" method="POST">
                                     @csrf
                                     <input type="text" hidden name="status" value="transport">
