@@ -122,4 +122,10 @@ class DatesController extends Controller
             return redirect()->back()->with('success', 'تم الغاء تاجير');
         }
     }
+
+    public function deleteContainer($id)
+    {
+        $container = Container::find($id)->delete();
+        return redirect()->back()->with('success', 'تم حذف الحاوية بنجاح ');
+    }
 }

@@ -60,6 +60,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('update/container/{id}', [DatesController::class, 'ContainerRentStatus'])->name('ContainerRentStatus');
     Route::get('empty/contaniers', [DatesController::class, 'empty'])->name('empty');
     Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
+    Route::post('delete/container/{id}', [DatesController::class, 'deleteContainer'])->name('deleteContainer');
     Route::post('update/container/empty/{id}', [DatesController::class, 'updateEmpty'])->name('updateEmpty');
 
     //employee
