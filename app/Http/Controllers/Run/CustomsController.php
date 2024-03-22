@@ -64,4 +64,19 @@ class CustomsController extends Controller
             'customId' => $data->id,
         ])->with('success', 'تم انشاء بيان بنجاح');
     }
+
+    public function deleteOffices($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+        if ($user->role === 'client') {
+            $user->delete();
+            return redirect()->back()->with('success', 'User deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'You do not have permission to delete this user.');
+        }
+    }
 }
