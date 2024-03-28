@@ -19,7 +19,7 @@ class DatesController extends Controller
             $container = Container::whereIn('status', ['wait', 'rent'])->get();
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
         } else {
-            $container = Container::where('status', 'wait')
+            $container = Container::whereIn('status', ['wait', 'rent'])
                 ->where(function ($queryBuilder) use ($query) {
                     $queryBuilder->where('created_at', 'like', '%' . $query . '%')
                         ->orWhere('number', 'like', '%' . $query . '%')
