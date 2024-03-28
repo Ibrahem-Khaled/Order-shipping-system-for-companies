@@ -56,14 +56,17 @@ class CompanyController extends Controller
             ->get();
 
         $clients = User::all();
+
         $deposit = 0;
         $withdraw = Daily::where('type', 'withdraw')->sum('price');
         foreach ($clients as $client) {
             $deposit += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
+        $containerTransport = Container::whereIn('status', ['transport', 'done'])->sum('price');
+        $clintPriceMinesContainer = $containerTransport - $deposit;
         return view(
             'Company.index',
-            compact('container', 'deposit', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum')
+            compact('container', 'deposit', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', 'clintPriceMinesContainer')
         );
     }
     public function companyDetailes()
@@ -131,7 +134,7 @@ class CompanyController extends Controller
                 $elbancherSum = $elbancherSum + $sum;
             }
         }
-        $others = User::whereIn('role', ['driver', 'company']) 
+        $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشري%"')

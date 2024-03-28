@@ -335,7 +335,7 @@
                                                                                     اختيار الحساب</option>
                                                                                 @foreach ($employee as $items)
                                                                                     <option value="{{ $items->id }}">
-                                                                                        {{ $item->names }}
+                                                                                        {{ $items->name }}
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>

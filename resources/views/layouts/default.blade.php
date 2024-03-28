@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('icons/samerNumer.jpeg') }}">
     <title>
         SamerNomer System
-    </title> 
+    </title>
     <!-- Fonts and icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
@@ -54,18 +54,12 @@
             display: block;
             transition: 1s;
         }
-
-        @media print {
-            .no-print {
-                display: none;
-            }
-        }
     </style>
 
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 "
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3"
         id="sidenav-main">
         @include('layouts.sidebar')
     </aside>
@@ -85,13 +79,6 @@
     </main>
 
 
-    <script>
-        async function generatePDF() {
-           await window.print();
-        }
-    </script>
-
-
     <!--   Core JS Files   -->
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
@@ -99,7 +86,23 @@
     <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/chartjs.min.js') }}"></script>
     <script src="{{ asset('assets/js/soft-ui-dashboard.min.js?v=1.0.7') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
+    <script>
+        async function generatePDF() {
+            // Create a new jsPDF instance
+            const doc = new jsPDF();
+            // Get the content of the pageContentPdf div
+            const content = document.getElementById('pageContentPdf').innerHTML;
+            // Add the content to the PDF
+            doc.html(content, {
+                callback: function() {
+                    // Save the PDF
+                    doc.save('document.pdf');
+                }
+            });
+        }
+    </script>
 
     <script>
         var ctx = document.getElementById("chart-bars").getContext("2d");
@@ -271,6 +274,7 @@
             },
         });
     </script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {

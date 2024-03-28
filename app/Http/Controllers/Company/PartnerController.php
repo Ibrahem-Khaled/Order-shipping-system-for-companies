@@ -86,7 +86,9 @@ class PartnerController extends Controller
         $sums = 0;
         foreach ($partner as $value) {
             if ($value->is_active == 1) {
-                $sums += $value->partnerInfo->money;
+                $sums += $value->partnerInfo?->money -
+                    $value->partnerdaily->where('type', 'withdraw')->sum('price') +
+                    $value->partnerdaily->where('type', 'deposit')->sum('price');
             }
         }
         return view(

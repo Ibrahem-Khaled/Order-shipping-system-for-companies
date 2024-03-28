@@ -12,6 +12,7 @@ class RevenuesController extends Controller
 {
     public function index()
     {
+        
         $users = User::where('role', 'client')->get();
         return view('FinancialManagement.Revenues.index', compact('users'));
     }

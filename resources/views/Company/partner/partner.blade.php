@@ -97,9 +97,15 @@
                                 $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
                                 $totalPrice = strval($deposit) - strval($withdraw);
 
+                                $prtnerPrice =
+                                    $item->partnerInfo?->money -
+                                    $item->partnerdaily->where('type', 'withdraw')->sum('price') +
+                                    $item->partnerdaily->where('type', 'deposit')->sum('price');
+
                                 if ($item->is_active == 1) {
-                                    $partnerSum = ($item->partnerInfo?->money / $sums) * 100;
+                                    $partnerSum = ($prtnerPrice / $sums) * 100;
                                 }
+
                             @endphp
                             <tr>
                                 <td class="text-center">
@@ -107,8 +113,8 @@
                                         data-bs-target="#editModal{{ $item->id }}">
                                         تعديل
                                     </button>
-                                    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" role="dialog"
-                                        aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <!-- Modal Content Goes Here -->
@@ -195,7 +201,8 @@
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? $partnerSum : 0 }}%</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    ر.س{{ $item->partnerInfo?->money }}</td>
+                                    ر.س{{ $prtnerPrice }}
+                                </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->role == 'company' ? 'الشركة' : 'شريك' }}
                                 </td>
