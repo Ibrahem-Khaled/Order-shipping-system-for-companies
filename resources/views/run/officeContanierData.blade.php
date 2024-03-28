@@ -8,6 +8,7 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">التاريخ</th>
                     <th scope="col">البيان الجمركي</th>
                     <th scope="col">رقم الحاوية</th>
                     <th scope="col">حالة الحاوية</th>
@@ -19,6 +20,7 @@
                 @foreach ($users->container->whereIn('status', ['wait', 'rent']) as $item)
                     <tr>
                         <th scope="row">{{ $item->id }}</th>
+                        <th scope="row">{{ $item->created_at }}</th>
                         <td style="font-weight: bold">{{ $item->customs->statement_number }}</td>
                         <td>{{ $item->number }}</td>
                         <td>{{ $item->status == 'wait' ? 'انتظار' : 'ايجار' }}</td>
