@@ -115,6 +115,7 @@ class DatesController extends Controller
     {
         $container = Container::find($id)->update([
             'status' => $request->status == 'wait' ? 'rent' : 'wait',
+            'is_rent' => $request->status == 'wait' ? 1 : 0,
         ]);
         if ($request->status == 'wait') {
             return redirect()->back()->with('success', 'تم تاجير الحاوية');
