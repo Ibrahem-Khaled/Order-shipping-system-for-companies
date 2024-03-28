@@ -22,6 +22,7 @@
                             <th scope="col" class="text-center">حالة الحاوية</th>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
+                            <th scope="col" class="text-center">التاريخ</th>
                             <th scope="col" class="text-center">السيارة</th>
                             <th scope="col" class="text-center">السائق</th>
                             <th scope="col" class="text-center">حجم الحاوية</th>
@@ -59,6 +60,9 @@
 
                                     @if ($item->status == 'rent')
                                         <td class="text-center">
+                                            <input class="form-select" required type="date" name="created_at" />
+                                        </td>
+                                        <td class="text-center">
                                             <select class="form-select" name="rent_id" required>
                                                 <option value="">اختر شركة الاجار</option>
                                                 @foreach ($rents as $items)
@@ -69,6 +73,9 @@
                                         </td>
                                         <td></td>
                                     @else
+                                        <td class="text-center">
+                                            <input class="form-select" required type="date" name="created_at" />
+                                        </td>
                                         <td class="text-center">
                                             <select class="form-select w-100" name="car" required>
                                                 <option value="">اختر السيارة</option>
@@ -119,6 +126,7 @@
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
+                            <th scope="col" class="text-center">التاريخ</th>
                             <th scope="col" class="text-center">السيارة</th>
                             <th scope="col" class="text-center">السائق</th>
                             <th scope="col" class="text-center">حجم الحاوية</th>
@@ -132,6 +140,7 @@
                             <tr>
                                 <td class="text-center">{{ $item->customs->subclient_id }}</td>
                                 <td class="text-center">{{ $item->client->name }}</td>
+                                <td class="text-center">{{ $item->created_at }}</td>
                                 @if ($item->rent_id == null)
                                     <td class="text-center">{{ $item->car->number ?? 0 }}</td>
                                     <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
