@@ -22,7 +22,7 @@
                         <td><a href="{{ route('getrentMonth', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->rentCont->where('is_rent', 1)->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->rentCont->where('is_rent', 1)->sum('price') - $user->clientdaily->sum('price') }}
+                        <td>{{ $user->rentCont->where('is_rent', 1)->sum('price') - $user->clientdaily->where('type','deposit')->sum('price') }}
                         </td>
                     </tr>
                 @endforeach
