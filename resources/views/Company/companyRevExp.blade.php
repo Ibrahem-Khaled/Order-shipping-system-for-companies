@@ -8,7 +8,8 @@
                     @php
                         $deposit = $container->sum('price');
                         $carSum = $cars->sum('price');
-                        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
+                        $rent_price = $container->sum('rent_price');
+                        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $rent_price;
                     @endphp
                     <thead>
                         <tr>
@@ -69,12 +70,35 @@
                             </td>
                             <td>{{ $othersSum }}</td>
                         </tr>
+                        <tr>
+                            <td>
+                                <a href="{{ route('getOfficesRent') }}">
+                                    اجمالي كشوف حسابات الايجارات
+                                </a>
+                            </td>
+                            <td>{{ $rent_price }}</td>
+                        </tr>
                     </tbody>
                 </table>
-                <h3> اجمالي ايرادات الشركة {{ strval($deposit) - strval($withdraw) }}</h3>
-
             </div>
         </div>
+        <table class="table table-striped table-bordered">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th scope="col">صافي ربح الشركة</th>
+                    <th scope="col">اجمالي المصروفات</th>
+                    <th scope="col">اجمالي الايرادات</th>
+                </tr>
+            </thead>
+            <tbody class="fw-bold">
+                <tr>
+                    <td>{{ strval($deposit) - strval($withdraw) }}</td>
+                    <td>{{ strval($withdraw) }}</td>
+                    <td>{{ strval($deposit) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 
 

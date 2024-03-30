@@ -22,6 +22,29 @@
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 
     <style>
+        .custom-form-control {
+            display: block;
+            width: 50%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .custom-form-control:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #f480ff;
+            outline: 0;
+            box-shadow: 0 0 0 .2rem rgba(205, 35, 248, 0.25);
+        }
+    </style>
+    <style>
         .dropdown {
             position: relative;
             display: inline-block;
@@ -54,6 +77,78 @@
             display: block;
             transition: 1s;
         }
+
+        @media print {
+
+            .btn,
+            .footer,
+            .input-group-text,
+            .form-control {
+                display: none;
+            }
+
+            .custom-form-control {
+                display: block;
+                width: 100%;
+                height: 100%;
+                vertical-align: middle;
+                /* Center align vertically */
+                font-size: 12px;
+                line-height: 1.5;
+                color: #495057;
+                background-color: transparent;
+                background-clip: padding-box;
+                border: 0px solid #fff;
+                text-align: center;
+                font-weight: bold;
+                transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+            }
+
+            .table tbody td,
+            .table tbody th {
+                font-size: 12px;
+                padding: 2px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+                /* Center align vertically */
+            }
+
+            .table thead th {
+                font-size: 13px;
+                padding: 5px;
+                font-weight: bold;
+            }
+
+            .col-md-12,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                text-align: center;
+                align-self: center;
+            }
+
+            .table {
+                width: 100%;
+                font-size: 16px;
+            }
+
+            body,
+            p,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-size: 20px;
+                text-align: center;
+                align-self: center;
+            }
+        }
     </style>
 
 </head>
@@ -69,14 +164,54 @@
         <!-- End Navbar -->
         <div id="pageContentPdf">
             @include('layouts.body')
+            <footer class="footer pt-3  ">
+                <div class="container-fluid">
+                    <div class="row align-items-center justify-content-lg-between">
+                        <div class="col-lg-6 mb-lg-0 mb-4">
+                            <div class="copyright text-center text-sm text-muted text-lg-start">
+                                ©
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script>,
+                                made with <i class="fa fa-heart"></i> by
+                                <a href="https://www.facebook.com/sgoon130/" target="_blank" class="font-weight-bold"
+                                    target="_blank">Ibrahem Khaled</a>
+                                for a better web.
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                                <li class="nav-item">
+                                    <a href="https://www.creative-tim.com" class="nav-link text-muted"
+                                        target="_blank">Creative
+                                        Tim</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted"
+                                        target="_blank">About Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="https://www.creative-tim.com/blog" class="nav-link text-muted"
+                                        target="_blank">Blog</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted"
+                                        target="_blank">License</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
 
         <div class="dropup position-fixed bottom-0 end-0 rounded-circle m-5">
-            <button onclick="generatePDF()" type="button" class="btn btn-danger">
+            <button onclick="printDiv('pageContentPdf')" type="button" class="btn btn-danger">
                 PDF
             </button>
         </div>
     </main>
+
 
 
     <!--   Core JS Files   -->
@@ -89,18 +224,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
     <script>
-        async function generatePDF() {
-            // Create a new jsPDF instance
-            const doc = new jsPDF();
-            // Get the content of the pageContentPdf div
-            const content = document.getElementById('pageContentPdf').innerHTML;
-            // Add the content to the PDF
-            doc.html(content, {
-                callback: function() {
-                    // Save the PDF
-                    doc.save('document.pdf');
-                }
-            });
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
         }
     </script>
 

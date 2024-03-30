@@ -12,7 +12,7 @@ class RevenuesController extends Controller
 {
     public function index()
     {
-        
+
         $users = User::where('role', 'client')->get();
         return view('FinancialManagement.Revenues.index', compact('users'));
     }
@@ -70,10 +70,10 @@ class RevenuesController extends Controller
                 $customId = $customIds[$i];
                 $price = $prices[$i];
                 $custom = Container::where('customs_id', $customId)
-                    ->whereIn('status', ['transport', 'done'])
-                    ->where('is_rent', 0)->update([
-                            'price' => $price,
-                        ]);
+                    ->whereIn('status', ['transport', 'done', 'rent'])
+                    ->update([
+                        'price' => $price,
+                    ]);
             }
             return redirect()->back()->with('success', 'تم التحديث بنجاح');
         } else {
@@ -99,7 +99,7 @@ class RevenuesController extends Controller
     public function updateRentContainerPrice(Request $request)
     {
         $customIds = $request->input('id');
-        $prices = $request->input('price');
+        $prices = $request->input('rent_price');
 
         $count = count($prices);
         if ($count > 0) {
@@ -110,7 +110,7 @@ class RevenuesController extends Controller
                 $custom = Container::find($customId);
                 if ($custom->is_rent == 1) {
                     $custom->update([
-                        'price' => $price,
+                        'rent_price' => $price,
                     ]);
                 }
             }

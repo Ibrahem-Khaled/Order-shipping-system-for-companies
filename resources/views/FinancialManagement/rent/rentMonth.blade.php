@@ -35,7 +35,7 @@
                             <td>
                                 @if ($item->is_rent == 1)
                                     <div class="input-group mb-3">
-                                        <input type="text" name="price[]"  value="{{ $item->price }}"
+                                        <input type="text" name="rent_price[]"  value="{{ $item->rent_price }}"
                                             class="form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية"
                                             aria-describedby="basic-addon2">
                                         <div class="input-group-append">
@@ -61,7 +61,7 @@
             <div class="col-md-12">
                 <h1 class="text-danger">الاجمالي</h1>
                 <h3 class="text-dark">
-                    {{ $user->rentCont->whereIn('status', ['transport','done'])->sum('price') }}
+                    {{ $user->rentCont->whereIn('status', ['transport','done'])->sum('rent_price') }}
                 </h3>
             </div>
         </div>

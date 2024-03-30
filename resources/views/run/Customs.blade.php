@@ -13,7 +13,7 @@
 
     <div class="container mt-5">
         <table class="table">
-            <a class="nav-link" href="{{ route('addOffice', 'client') }}">
+            <a class="btn btn-primary " href="{{ route('addOffice', 'client') }}">
                 <i class="fas fa-plus"></i> اضافة مكتب
             </a>
             <thead>
