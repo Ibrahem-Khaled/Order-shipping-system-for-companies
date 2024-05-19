@@ -19,7 +19,7 @@ class ContanierController extends Controller
         ]);
         // Check if validation fails
         if ($validator->fails()) {
-            return redirect()->back()->with('error','يجب أن يحتوي رقم الحاوية على 7 أرقام');
+            return redirect()->back()->with('error', 'يجب أن يحتوي رقم الحاوية على 7 أرقام');
         }
 
         $sizes = $request->input('size');
@@ -43,6 +43,7 @@ class ContanierController extends Controller
                     'client_id' => $custom->client_id,
                     'status' => $rent == 'rent' ? 'rent' : 'wait',
                     'is_rent' => $rent == 'rent' ? 1 : 0,
+                    'created_at' => $custom->created_at,
                 ]);
             }
 

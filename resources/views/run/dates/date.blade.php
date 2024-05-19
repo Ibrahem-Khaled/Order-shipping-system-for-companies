@@ -153,7 +153,7 @@
                                 <td class="text-center">
                                     <button type="button" class="btn btn-success d-inline-block" data-bs-toggle="modal"
                                         data-bs-target="#confirmationModal{{ $item->id }}">
-                                        {{ $item->status == 'transport' ? 'محملة' : $item->status }}
+                                        {{ $item->status == 'transport' ? 'الغاء التحميل' : $item->status }}
                                     </button>
                                 </td>
                                 <td class="text-center">{{ $item->id }}</td>

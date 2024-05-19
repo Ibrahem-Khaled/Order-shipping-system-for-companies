@@ -67,7 +67,7 @@ class UsersController extends Controller
 
         return view('FinancialManagement.Expenses.users.employeeTips', compact('user'));
     }
-
+ 
     public function others()
     {
         $users = User::whereIn('role', ['driver']) 

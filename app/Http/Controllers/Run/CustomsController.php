@@ -30,22 +30,21 @@ class CustomsController extends Controller
     public function showContainerPost($customId)
     {
         $custom = CustomsDeclaration::find($customId);
-        //return response()->json($custom);
         return view('run.addContanier', compact('custom'));
     }
 
     public function store(Request $request, $clientId)
     {
-        $num = $request->statement_number;
+        $statement_number = $request->statement_number;
         $sub_client = $request->subClient;
         $contNum = $request->contNum;
 
-        $customNumis = CustomsDeclaration::where('statement_number', $num)->first();
+        $customNumis = CustomsDeclaration::where('statement_number', $statement_number)->first();
         if ($customNumis && !$customNumis->container()->exists()) {
             $customNumis->delete();
         }
 
-        $existingDeclaration = CustomsDeclaration::where('statement_number', $num)
+        $existingDeclaration = CustomsDeclaration::where('statement_number', $statement_number)
             ->whereYear('created_at', now()->year)
             ->first();
         if ($existingDeclaration) {
@@ -53,7 +52,7 @@ class CustomsController extends Controller
         }
 
         $data = CustomsDeclaration::create([
-            'statement_number' => $num,
+            'statement_number' => $statement_number,
             'subclient_id' => $sub_client,
             'client_id' => $clientId,
             'created_at' => $request->created_at,

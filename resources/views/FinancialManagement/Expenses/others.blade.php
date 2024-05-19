@@ -9,6 +9,7 @@
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
+                            <th scope="col" class="text-center">حركة</th>
                             <th scope="col" class="text-center">الباقي</th>
                             <th scope="col" class="text-center">اجمالي الدفع</th>
                             <th scope="col" class="text-center">اجمالي المستحق</th>
@@ -21,7 +22,11 @@
                         @foreach ($users as $item)
                             <tr>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-
+                                    <a href="{{ route('profileSettings', $item->id) }}">
+                                        تعديل
+                                    </a>
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->role == 'company' ? null : $item->employeedaily->where('type', 'deposit')->sum('price') - $item->employeedaily->where('type', 'withdraw')->sum('price') }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">

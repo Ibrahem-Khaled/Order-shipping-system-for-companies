@@ -14,7 +14,7 @@
                             <th scope="col" class="text-center">#</th>
                         </tr>
                     </thead>
-
+ 
                     <tbody>
                         @foreach ($users as $item)
                             <tr>

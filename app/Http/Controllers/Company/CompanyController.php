@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\Container;
+use App\Models\CustomsDeclaration;
 use App\Models\Daily;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -64,9 +65,21 @@ class CompanyController extends Controller
         }
         $containerTransport = Container::whereIn('status', ['transport', 'done'])->sum('price');
         $clintPriceMinesContainer = $containerTransport - $deposit;
+
+        $dailyData = Daily::latest()->take(8)->get();
+        $UserData = User::latest()->take(8)->get();
+        $CustomsDeclarationData = CustomsDeclaration::with('container')->latest()->take(8)->get();
+
+        $dailyDataArray = $dailyData->toArray();
+        $CustomsDeclarationDataArray = $CustomsDeclarationData->toArray();
+        $userDataArray = $UserData->toArray();
+
+        $notifications = array_merge($dailyDataArray, $CustomsDeclarationDataArray, $userDataArray);
+        //return response()->json($notifications);
+
         return view(
             'Company.index',
-            compact('container', 'deposit', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', 'clintPriceMinesContainer')
+            compact('container', 'deposit', 'notifications', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', 'clintPriceMinesContainer')
         );
     }
     public function companyDetailes()
