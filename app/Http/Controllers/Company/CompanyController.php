@@ -78,7 +78,7 @@ class CompanyController extends Controller
         $carData = Cars::with([
             'driver',
             'container' => function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->where('status', 'transport')->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+                $query->whereIn('status', ['transport','done'])->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
             },
             'daily' => function ($query) use ($startOfMonth, $endOfMonth) {
                 $query->where('type', 'withdraw')->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
