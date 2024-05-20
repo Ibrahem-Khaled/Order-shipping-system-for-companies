@@ -340,17 +340,13 @@
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-xxs text-cyan-50 font-weight-bolder ">
-                                            التاريخ</th>
-                                        <th class="text-uppercase text-xxs text-cyan-50 font-weight-bolder ">
-                                            الوصف</th>
-                                        <th class="text-uppercase text-xxs text-cyan-50 font-weight-bolder ">
-                                            المبلغ</th>
-
+                                        <th class="text-uppercase text-xxs text-cyan-50 font-weight-bolder">التاريخ</th>
+                                        <th class="text-uppercase text-xxs text-cyan-50 font-weight-bolder">الوصف</th>
+                                        <th class="text-uppercase text-xxs text-cyan-50 font-weight-bolder">المبلغ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -372,7 +368,6 @@
                                                     {{ isset($notification['name']) ? $notification['name'] : '' }}
                                                 </h6>
                                             </td>
-
                                             <td>
                                                 <h6 class="mb-0 text-sm">
                                                     {{ $notification['price'] ?? '' }}
@@ -380,20 +375,20 @@
                                             </td>
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100">
                     <div class="card-header pb-0">
-                        <h6>Orders overview</h6>
+                        <h6>اخر حركة للسيارات </h6>
                         <p class="text-sm">
                             <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
-                            <span class="font-weight-bold">24%</span> this month
+                            <span class="font-weight-bold">لهذا</span> الشهر
                         </p>
                     </div>
                     <div class="card-body p-3">

@@ -16,7 +16,7 @@ class CompanyController extends Controller
     public function index()
     {
         $container = Container::all();
-        $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employee = User::whereIn('role', ['driver', 'administrative'])->whereNotNull('sallary')->get();
         $employeeSum = 0;
         foreach ($employee as $key => $employe) {
             $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
@@ -87,7 +87,7 @@ class CompanyController extends Controller
         $partner = User::where('role', 'partner')->get();
 
         $container = Container::all();
-        $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employee = User::whereIn('role', ['driver', 'administrative'])->whereNotNull('sallary')->get();
         $employeeSum = 0;
         foreach ($employee as $key => $employe) {
             $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
@@ -128,7 +128,7 @@ class CompanyController extends Controller
     }
     public function companyRevExp()
     {
-        $employee = User::whereIn('role', ['driver', 'administrative'])->get();
+        $employee = User::whereIn('role', ['driver', 'administrative'])->whereNotNull('sallary')->get();
         $employeeSum = 0;
         foreach ($employee as $key => $employe) {
             $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
