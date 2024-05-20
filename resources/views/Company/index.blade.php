@@ -400,9 +400,11 @@
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $car->driver->name ?? '' }}
                                             #{{ $car->number }}</h6>
-                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
-                                            عدد الحاويات المحملة {{ $car->container->count() }}
-                                        </p>
+                                        @if ($car->type !== 'private')
+                                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                                عدد الحاويات المحملة {{ $car->container->count() }}
+                                            </p>
+                                        @endif
                                         <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
                                             مصاريف السيارة {{ $car->daily->sum('price') }}
                                         </p>
