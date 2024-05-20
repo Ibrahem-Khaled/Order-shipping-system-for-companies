@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cars;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
 use App\Models\Daily;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 
 class CompanyController extends Controller
@@ -70,16 +72,29 @@ class CompanyController extends Controller
         $UserData = User::latest()->take(8)->get();
         $CustomsDeclarationData = CustomsDeclaration::with('container')->latest()->take(8)->get();
 
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        $carData = Cars::with([
+            'driver',
+            'container' => function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->where('status', 'done')->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+            },
+            'daily' => function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->where('type', 'withdraw')->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+            }
+        ])->get();
+
         $dailyDataArray = $dailyData->toArray();
         $CustomsDeclarationDataArray = $CustomsDeclarationData->toArray();
         $userDataArray = $UserData->toArray();
 
         $notifications = array_merge($dailyDataArray, $CustomsDeclarationDataArray, $userDataArray);
-        //return response()->json($notifications);
+        // return response()->json($notifications);
 
         return view(
             'Company.index',
-            compact('container', 'deposit', 'notifications', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', 'clintPriceMinesContainer')
+            compact('container', 'deposit', 'notifications', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'carData', 'elbancherSum', 'othersSum', 'clintPriceMinesContainer')
         );
     }
     public function companyDetailes()
