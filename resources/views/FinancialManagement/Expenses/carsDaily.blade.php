@@ -2,16 +2,23 @@
 
 @section('content')
 
-
-
     <div class="container mt-5">
+        <h4 style="text-align: center">مصروفات السيارات</h4>
+        <form method="GET" action="{{ url()->current() }}" class="row col-md-4">
+            <div class="form-group">
+                <label for="date">البحث من خلال التاريخ :</label>
+                <input type="month" name="date" id="date" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">البحث</button>
+        </form>
+
+
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr class="text-uppercase text-success">
                             <th scope="col"></th>
-                            <th scope="col">الديزل</th>
                             <th scope="col">المنصرف</th>
                             <th scope="col">البيان</th>
                             <th scope="col">التاريخ</th>
@@ -28,19 +35,9 @@
                                         {{ null }}
                                     @endif
                                 </td>
+
                                 <td>
-                                    @if (Str::contains($item->description, 'ديزل') && $item->type === 'withdraw')
-                                        {{ $item->price }}
-                                    @else
-                                        {{ null }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if (Str::contains($item->description, 'ديزل') && $item->type == 'withdraw')
-                                        {{ null }}
-                                    @else
-                                        {{ $item->price }}
-                                    @endif
+                                    {{ $item->price }}
                                 </td>
                                 <td>
                                     @if ($item->car_id !== null)
@@ -68,14 +65,8 @@
                                 $totalPrice += $daily->price;
                             @endphp
                         @endif
-                        @if (Str::contains($daily->description, 'ديزل') && $daily->type == 'withdraw')
-                            @php
-                                $desl += $daily->price;
-                            @endphp
-                        @endif
                     @endforeach
                 </table>
-                <h3> اجمالي الديزل {{ $desl }}</h3>
                 <h3> الاجمالي {{ $totalPrice }}</h3>
             </div>
         </div>

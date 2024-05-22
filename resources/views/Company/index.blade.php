@@ -360,9 +360,17 @@
                                             <td>
                                                 <h6 class="mb-0 text-sm">
                                                     {{ $notification['description'] ?? '' }}
-                                                    {{ isset($notification['statement_number']) ? $notification['statement_number'] . ' ' : '' }}
-                                                    {{ isset($notification['subclient_id']) ? $notification['subclient_id'] . ' ' : '' }}
-                                                    {{ isset($notification['container']) ? count($notification['container']) . ' ' : '' }}
+                                                    {{ isset($notification['statement_number']) ? $notification['statement_number'] . ' -  ' : '' }}
+                                                    {{ isset($notification['subclient_id']) ? $notification['subclient_id'] . ' - ' : '' }}
+                                                    @if (isset($notification['customs']))
+                                                        البيان: {{ $notification['customs']['statement_number']}}
+                                                    @endif
+                                                    @if (isset($notification['driver']))
+                                                        السائق: {{ $notification['driver']['name'] }}
+                                                    @endif
+                                                    @if (isset($notification['car']))
+                                                        السيارة: {{ $notification['car']['number'] }}
+                                                    @endif
                                                     {{ $notification['name'] ?? '' }}
                                                 </h6>
                                             </td>

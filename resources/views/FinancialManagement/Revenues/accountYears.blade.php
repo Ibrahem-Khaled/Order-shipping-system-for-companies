@@ -60,7 +60,6 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">ملاحظات</th>
                             <th scope="col">المبلغ</th>
                             <th scope="col">الوصف</th>
                             <th scope="col">التاريخ</th>
@@ -73,7 +72,6 @@
                         @endphp
                         @foreach ($daily->sortBy('created_at') as $item)
                             <tr>
-                                <td>{{ $item->notes }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->description }}</td>
                                 <td>{{ $item->created_at }}</td>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\expenses;
 use App\Http\Controllers\Controller;
 use App\Models\Cars;
 use Illuminate\Http\Request;
+use Str;
 
 class CarsController extends Controller
 {
@@ -13,9 +14,21 @@ class CarsController extends Controller
         $cars = Cars::all();
         return view('FinancialManagement.Expenses.cars', compact('cars'));
     }
-    public function carsDaily($id)
+    public function carsDaily(Request $request, $id)
     {
-        $car = Cars::find($id);
+        $date = $request->query('date');
+
+        $car = Cars::with([
+            'daily' => function ($query) use ($date) {
+                if ($date) {
+                    $query->where('created_at', 'LIKE', "%$date%");
+                }
+            }
+        ])->find($id);
+
         return view('FinancialManagement.Expenses.carsDaily', compact('car'));
     }
+
+
+
 }

@@ -17,6 +17,9 @@ class CompanyController extends Controller
 {
     public function index()
     {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
         $container = Container::all();
         $employee = User::whereIn('role', ['driver', 'administrative'])->whereNotNull('sallary')->get();
         $employeeSum = 0;
@@ -68,12 +71,36 @@ class CompanyController extends Controller
         $containerTransport = Container::whereIn('status', ['transport', 'done'])->sum('price');
         $clintPriceMinesContainer = $containerTransport - $deposit;
 
-        $dailyData = Daily::latest()->take(8)->get();
-        $UserData = User::latest()->take(8)->get();
-        $CustomsDeclarationData = CustomsDeclaration::with('container')->latest()->take(8)->get();
+        $dailyData = Daily::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->latest()
+            ->get();
 
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        $UserData = User::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->latest()
+            ->get();
+
+        $CustomsDeclarationData = CustomsDeclaration::with('container')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->latest()
+            ->get();
+
+        $containerData = Container::with('customs', 'driver', 'car')
+            ->where('status', 'transport')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->latest()
+            ->get();
+
+        $dailyDataArray = $dailyData->toArray();
+        $CustomsDeclarationDataArray = $CustomsDeclarationData->toArray();
+        $userDataArray = $UserData->toArray();
+        $containerDataArray = $containerData->toArray();
+
+        $notifications = array_merge($dailyDataArray, $CustomsDeclarationDataArray, $userDataArray, $containerDataArray);
+        usort($notifications, function ($a, $b) {
+            return strtotime($a['created_at']) - strtotime($b['created_at']);
+        });
+        
+        //return response()->json($notifications);
 
         $carData = Cars::with([
             'driver',
@@ -84,13 +111,6 @@ class CompanyController extends Controller
                 $query->where('type', 'withdraw')->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
             }
         ])->get();
-
-        $dailyDataArray = $dailyData->toArray();
-        $CustomsDeclarationDataArray = $CustomsDeclarationData->toArray();
-        $userDataArray = $UserData->toArray();
-
-        $notifications = array_merge($dailyDataArray, $CustomsDeclarationDataArray, $userDataArray);
-        // return response()->json($notifications);
 
         return view(
             'Company.index',
@@ -148,6 +168,7 @@ class CompanyController extends Controller
         foreach ($employee as $key => $employe) {
             $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
         }
+        
 
         $uniqueEmployeeIds = Daily::select('employee_id')
             ->whereNotNull('employee_id')
@@ -165,7 +186,7 @@ class CompanyController extends Controller
         $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
-            })->whereRaw('name NOT LIKE "%بنشري%"')
+            })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
         $othersSum = 0;
         foreach ($others as $other) {

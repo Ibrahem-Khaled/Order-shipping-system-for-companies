@@ -10,7 +10,7 @@
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr class="text-uppercase text-success">
                             <th scope="col"></th>
-                            @if ($user->role !== 'company')
+                            @if ($user->role !== 'company' && Str::contains($user->name, 'بنشر'))
                                 <th scope="col">الفواتير</th>
                             @endif
                             <th scope="col">المنصرف</th>
@@ -29,7 +29,7 @@
                                         {{ null }}
                                     @endif
                                 </td>
-                                @if ($user->role !== 'company')
+                                @if ($user->role !== 'company'&& Str::contains($user->name, 'بنشر'))
                                     <td>
                                         @if ($item->type == 'deposit')
                                             {{ $item->price }}
@@ -57,14 +57,21 @@
                         @endforeach
                     </tbody>
                     @php
-                        $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
-                        $deposit = $user->employeedaily->where('type', 'deposit')->sum('price');
+                        if (Str::contains($item->name, 'بنشر')) {
+                            $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
+                            $deposit = $user->employeedaily->where('type', 'deposit')->sum('price');
+                        } else {
+                            $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
+                        }
                     @endphp
                 </table>
-                @if ($user->role !== 'company')
+                @if ($user->role !== 'company' && Str::contains($user->name, 'بنشر'))
                     <h3> الباقي {{ $deposit - $withdraw }}</h3>
                 @endif
                 @if ($user->role == 'company')
+                    <h3> الاجمالي {{ $withdraw }}</h3>
+                @endif
+                @if (!Str::contains($user->name, 'بنشر'))
                     <h3> الاجمالي {{ $withdraw }}</h3>
                 @endif
             </div>

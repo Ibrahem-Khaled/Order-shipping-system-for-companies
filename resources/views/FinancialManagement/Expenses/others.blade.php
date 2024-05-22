@@ -10,9 +10,7 @@
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">حركة</th>
-                            <th scope="col" class="text-center">الباقي</th>
-                            <th scope="col" class="text-center">اجمالي الدفع</th>
-                            <th scope="col" class="text-center">اجمالي المستحق</th>
+                            <th scope="col" class="text-center">اجمالي المنصرف</th>
                             <th scope="col" class="text-center">الاسم</th>
                             <th scope="col" class="text-center">#</th>
                         </tr>
@@ -27,12 +25,8 @@
                                     </a>
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->role == 'company' ? null : $item->employeedaily->where('type', 'deposit')->sum('price') - $item->employeedaily->where('type', 'withdraw')->sum('price') }}
+                                    {{ $item->role == 'company' ? null : $item->employeedaily->where('type', 'withdraw')->sum('price') }}
                                 </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->employeedaily->where('type', 'withdraw')->sum('price') }}</td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->employeedaily->where('type', 'deposit')->sum('price') }}</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     <a href="{{ route('expensesAlbancherDaily', $item->id) }}">
                                         {{ $item->name }}
