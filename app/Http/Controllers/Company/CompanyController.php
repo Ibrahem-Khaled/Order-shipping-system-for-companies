@@ -97,7 +97,7 @@ class CompanyController extends Controller
 
         $notifications = array_merge($dailyDataArray, $CustomsDeclarationDataArray, $userDataArray, $containerDataArray);
         usort($notifications, function ($a, $b) {
-            return strtotime($a['created_at']) - strtotime($b['created_at']);
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
         
         //return response()->json($notifications);
