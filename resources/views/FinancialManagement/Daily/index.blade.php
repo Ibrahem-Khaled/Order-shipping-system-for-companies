@@ -116,8 +116,7 @@
                                     <div class="modal-content">
                                         <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة حركة
-                                                مالية جديد</h5>
+                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة حركة مالية جديد</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -135,50 +134,45 @@
                                                             class="form-control" placeholder="المبلغ" />
                                                     </div>
                                                     <div class="mb-3 col-md-6">
-                                                        <select name="type" required class="form-control">
+                                                        <select name="type" id="type" required
+                                                            class="form-control">
                                                             <option value="">نوع الحركة</option>
                                                             <option value="deposit">وارد</option>
                                                             <option value="withdraw">منصرف</option>
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-6 toggle-field" id="carField">
                                                         <select name="car_id" class="form-control">
                                                             <option value="">اختيار السيارة</option>
                                                             @foreach ($cars as $item)
-                                                                <option value="{{ $item->id }}">
-                                                                    {{ $item->number }} -
-                                                                    {{ $item->driver?->name }}
-                                                                </option>
+                                                                <option value="{{ $item->id }}">{{ $item->number }} -
+                                                                    {{ $item->driver?->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-6 toggle-field" id="clientField">
                                                         <select name="client_id" class="form-control">
-                                                            <option value="">اختيار حساب العميل
-                                                            </option>
+                                                            <option value="">اختيار حساب العميل</option>
                                                             @foreach ($client as $item)
-                                                                <option value="{{ $item->id }}">
-                                                                    {{ $item->name }}
+                                                                <option value="{{ $item->id }}">{{ $item->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-6 toggle-field" id="employeeField">
                                                         <select name="employee_id" class="form-control">
                                                             <option value="">اختيار الحساب</option>
                                                             @foreach ($employee as $item)
-                                                                <option value="{{ $item->id }}">
-                                                                    {{ $item->name }}
+                                                                <option value="{{ $item->id }}">{{ $item->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-6 toggle-field" id="partnerField">
                                                         <select name="partner_id" class="form-control">
                                                             <option value="">اختيار حساب الشريك</option>
                                                             @foreach ($partner as $item)
-                                                                <option value="{{ $item->id }}">
-                                                                    {{ $item->name }}
+                                                                <option value="{{ $item->id }}">{{ $item->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -381,6 +375,42 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('type');
+            const carField = document.getElementById('carField');
+            const clientField = document.getElementById('clientField');
+            const employeeField = document.getElementById('employeeField');
+            const partnerField = document.getElementById('partnerField');
+
+            function toggleFields() {
+                const selectedType = typeSelect.value;
+
+                if (selectedType === 'withdraw') {
+                    carField.style.display = 'block';
+                    employeeField.style.display = 'block';
+                    partnerField.style.display = 'block';
+                    clientField.style.display = 'none';
+                } else if (selectedType === 'deposit') {
+                    clientField.style.display = 'block';
+                    carField.style.display = 'none';
+                    employeeField.style.display = 'none';
+                    partnerField.style.display = 'none';
+                } else {
+                    carField.style.display = 'none';
+                    clientField.style.display = 'none';
+                    employeeField.style.display = 'none';
+                    partnerField.style.display = 'none';
+                }
+            }
+
+            // Initialize the fields visibility based on the current selected type
+            toggleFields();
+
+            // Add event listener to handle changes in the select element
+            typeSelect.addEventListener('change', toggleFields);
+        });
+    </script>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -72,6 +72,51 @@
                             </div>
                         </div>
                     </div>
+                    <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
+                        data-bs-target="#addHeadMoney">
+                        إضافة رأس مال
+                    </button>
+                    <!-- Add Employee Modal -->
+                    <div class="modal fade" id="addHeadMoney" tabindex="-1" role="dialog"
+                        aria-labelledby="addHeadMoneylLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <!-- Modal Content Goes Here -->
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addHeadMoneylLabel">اضافة رأس مال</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Form to Add Employee Data -->
+                                    <form action="{{ route('updateHeadMoney') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+
+                                            <div class="mb-3 col-md-6">
+                                                <input type="number" name="money" class="form-control"
+                                                    placeholder="راس مال" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <select class="form-control" name="id">
+                                                    @foreach ($partner as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">حفظ</button>
+                                        </div>
+                                    </form>
+                                    <!-- Include your form elements for adding employee data here -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <!-- Include your "Add" button here to submit the form -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <thead class="bg-gray" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
@@ -98,7 +143,7 @@
                                 $totalPrice = strval($deposit) - strval($withdraw);
 
                                 $prtnerPrice =
-                                    $item->partnerInfo?->money -
+                                    $item->partnerInfo?->sum('money') -
                                     $item->partnerdaily->where('type', 'withdraw')->sum('price') +
                                     $item->partnerdaily->where('type', 'deposit')->sum('price');
 
@@ -137,8 +182,9 @@
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <input type="number"
-                                                                    value="{{ $item->partnerInfo->money }}" name="money"
-                                                                    class="form-control" placeholder="راس مال الشريك" />
+                                                                    value="{{ $item->partnerInfo->sum('money') }}"
+                                                                    name="money" class="form-control"
+                                                                    placeholder="راس مال الشريك" />
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <input type="number"

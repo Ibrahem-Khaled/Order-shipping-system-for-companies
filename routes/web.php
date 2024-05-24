@@ -115,6 +115,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::post('update/partner/status/{id}', [PartnerController::class, 'inActive'])->name('partnerinActive');
     Route::post('update/partner/data/{userid}', [PartnerController::class, 'update'])->name('partnerUpdate');
     Route::get('partner/Statement/{id}', [PartnerController::class, 'partnerStatement'])->name('partnerStatement');
+    Route::post('partner/update/heade/money', [PartnerController::class, 'updateHeadMoney'])->name('updateHeadMoney');
 
 });
 

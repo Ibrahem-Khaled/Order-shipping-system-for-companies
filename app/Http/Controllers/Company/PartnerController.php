@@ -86,7 +86,7 @@ class PartnerController extends Controller
         $sums = 0;
         foreach ($partner as $value) {
             if ($value->is_active == 1) {
-                $sums += $value->partnerInfo?->money -
+                $sums += $value->partnerInfo?->sum('money') -
                     $value->partnerdaily->where('type', 'withdraw')->sum('price') +
                     $value->partnerdaily->where('type', 'deposit')->sum('price');
             }
@@ -173,6 +173,14 @@ class PartnerController extends Controller
     {
         $user = User::find($id);
         return view('Company.partner.partnerStatement', compact('user'));
+    }
+    public function updateHeadMoney(Request $request)
+    {
+        $partnerInfo = PartnerInfo::create([
+            'partner_id' => $request->id,
+            'money' => $request->money,
+        ]);
 
+        return redirect()->back()->with('success', 'تم اضافة راس المال بنجاح');
     }
 }

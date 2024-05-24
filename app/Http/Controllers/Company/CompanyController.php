@@ -99,7 +99,7 @@ class CompanyController extends Controller
         usort($notifications, function ($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
-        
+
         //return response()->json($notifications);
 
         $carData = Cars::with([
@@ -163,12 +163,12 @@ class CompanyController extends Controller
     }
     public function companyRevExp()
     {
-        $employee = User::whereIn('role', ['driver', 'administrative'])->whereNotNull('sallary')->get();
-        $employeeSum = 0;
-        foreach ($employee as $key => $employe) {
-            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
-        }
-        
+        $employees = User::whereIn('role', ['driver', 'administrative'])
+            ->whereNotNull('sallary')
+            ->with('employeedaily')
+            ->get();
+            
+        $customs = User::where('role', 'client')->get();
 
         $uniqueEmployeeIds = Daily::select('employee_id')
             ->whereNotNull('employee_id')
@@ -176,32 +176,52 @@ class CompanyController extends Controller
             ->pluck('employee_id');
 
         $elbancherSum = 0;
+        $elbancher = [];
+
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
-            if (Str::contains($user->name, 'بنشري')) {
-                $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
-                $elbancherSum = $elbancherSum + $sum;
+            if ($user && Str::contains($user->name, 'بنشري')) {
+                $sum = $user->employeedaily
+                    ->where('type', 'withdraw')
+                    ->sum('price');
+                $elbancherSum += $sum;
+                $elbancher[] = $user->employeedaily;
+                $elbancher = [...$elbancher];
             }
         }
+        $mergedArrayAlbancher = [];
+        foreach ($elbancher as $collection) {
+            $mergedArrayAlbancher = array_merge($mergedArrayAlbancher, $collection->toArray());
+        }
+
+        //return response()->json($mergedArrayAlbancher);
+
         $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
-        $othersSum = 0;
-        foreach ($others as $other) {
-            $user = User::find($other->id);
-            $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
-            $othersSum = $othersSum + $sum;
-        }
 
-        $container = Container::get();
+        $container = Container::all();
+
         $cars = Daily::whereNotNull('car_id')
             ->where('type', 'withdraw')
             ->get();
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
-        return view('Company.companyRevExp', compact('container', 'employee', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum'));
+        return view(
+            'Company.companyRevExp',
+            compact(
+                'container',
+                'mergedArrayAlbancher',
+                'employees',
+                'daily',
+                'cars',
+                'elbancherSum',
+                'others',
+                'customs',
+            )
+        );
     }
 }

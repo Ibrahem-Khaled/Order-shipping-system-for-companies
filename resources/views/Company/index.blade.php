@@ -120,10 +120,9 @@
                                 </div>
                             </div>
                             <a href="{{ route('companyDetailes') }}" class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
-                                <div class="bg-gradient-primary border-radius-lg h-100">
+                                <div class="bg-gradient-primary border-radius-lg h-50 m-5">
                                     <div class="position-relative d-flex align-items-center justify-content-center h-100">
-                                        <img class="w-100 position-relative z-index-2 pt-4"
-                                            src="{{ asset('icons/samerNumer.jpeg') }}" alt="rocket">
+                                       <h4 class="text-white">شركة الأمجاد المتعددة</h4>
                                     </div>
                                 </div>
                             </a>
@@ -363,7 +362,7 @@
                                                     {{ isset($notification['statement_number']) ? $notification['statement_number'] . ' -  ' : '' }}
                                                     {{ isset($notification['subclient_id']) ? $notification['subclient_id'] . ' - ' : '' }}
                                                     @if (isset($notification['customs']))
-                                                        البيان: {{ $notification['customs']['statement_number']}}
+                                                        البيان: {{ $notification['customs']['statement_number'] }}
                                                     @endif
                                                     @if (isset($notification['driver']))
                                                         السائق: {{ $notification['driver']['name'] }}

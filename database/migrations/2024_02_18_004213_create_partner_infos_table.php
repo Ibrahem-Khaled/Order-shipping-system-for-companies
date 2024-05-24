@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('partner_infos', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('partner_id')->unique();
+            $table->bigInteger('partner_id');
             $table->bigInteger('money')->nullable();
             $table->timestamps();
         });
