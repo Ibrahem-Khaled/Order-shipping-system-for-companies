@@ -26,11 +26,23 @@ class RevenuesController extends Controller
     {
         $user = User::find($clientId);
         $query = $request->input('query');
+        $date = $query ? Carbon::createFromFormat('Y-m', $query) : Carbon::now();
+
+        $customs = $user->customs()
+            ->whereYear('created_at', $date->year)
+            ->whereMonth('created_at', $date->month)
+            ->get();
+
+        $sumPrice = $user->container()
+            ->whereYear('created_at', $date->year)
+            ->whereMonth('created_at', $date->month)
+            ->whereIn('status', ['transport', 'done', 'rent'])
+            ->sum('price');
 
         $container = Container::where('number', 'like', '%' . $query . '%')
             ->first();
 
-        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container'));
+        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs', 'sumPrice'));
     }
     public function rentMonth($clientId)
     {

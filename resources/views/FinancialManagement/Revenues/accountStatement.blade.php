@@ -51,7 +51,7 @@
             <form action="{{ route('updateContainerPrice') }}" method="POST">
                 @csrf
                 <tbody>
-                    @foreach ($user->customs as $custom)
+                    @foreach ($customs as $custom)
                         @php
                             $transportContainers = $custom->container->whereIn('status', ['transport', 'done']);
                         @endphp
@@ -100,11 +100,6 @@
         <div class="container">
             <div class="col-md-12">
                 <h1 class="text-primary">المجموع</h1>
-                @php
-                    $sumPrice = $user->container
-                        ->whereIn('status', ['transport', 'done','rent'])    
-                        ->sum('price');
-                @endphp
                 <h3 class="text-dark">
                     {{ $sumPrice }}
                 </h3>
