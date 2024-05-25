@@ -20,11 +20,15 @@ class CarsController extends Controller
 
         $car = Cars::with([
             'daily' => function ($query) use ($date) {
-                if ($date) {
+                if (!$date) {
+                    $query->whereYear('created_at', now()->year)
+                        ->whereMonth('created_at', now()->month);
+                } else {
                     $query->where('created_at', 'LIKE', "%$date%");
                 }
             }
         ])->find($id);
+
 
         return view('FinancialManagement.Expenses.carsDaily', compact('car'));
     }

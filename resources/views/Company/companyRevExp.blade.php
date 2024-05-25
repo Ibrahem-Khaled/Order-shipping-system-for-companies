@@ -26,7 +26,7 @@
             return Carbon::parse($item->created_at)->month == $currentMonth;
         });
         $carSum = $carsFiltered->sum('price');
-
+ 
         $sumYearContainer = $container->sum('price');
 
         $othersSum = 0;

@@ -5,12 +5,12 @@
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
-                <h3 class="text-center mb-4"> مسحوبات {{ $user->name }} </h3>
+                <h3 class="text-center mb-4">{{ $user->name }} </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-gray" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
-                            <th scope="col" class="text-center">المنصرف</th>
-                            <th scope="col" class="text-center">الوارد </th>
+                            <th scope="col" class="text-center">منصرف راس المال</th>
+                            <th scope="col" class="text-center">وارد راس المال</th>
                             <th scope="col" class="text-center">الوصف</th>
                             <th scope="col" class="text-center">التاريخ</th>
                             <th scope="col" class="text-center">#</th>
@@ -18,7 +18,6 @@
                     </thead>
 
                     <tbody>
-
                         @foreach ($user->partnerdaily as $item)
                             <tr>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
@@ -30,6 +29,21 @@
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->description }}
                                 </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->created_at }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->id }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        @foreach ($user->partnerInfo as $item)
+                            <tr>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;"></td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->money }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;"></td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->created_at }}
                                 </td>

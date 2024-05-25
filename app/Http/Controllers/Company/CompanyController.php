@@ -144,7 +144,7 @@ class CompanyController extends Controller
         $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
-            })->whereRaw('name NOT LIKE "%بنشري%"')
+            })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
         $othersSum = 0;
         foreach ($others as $other) {
@@ -180,7 +180,7 @@ class CompanyController extends Controller
 
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
-            if ($user && Str::contains($user->name, 'بنشري')) {
+            if ($user && Str::contains($user->name, 'بنشر')) {
                 $sum = $user->employeedaily
                     ->where('type', 'withdraw')
                     ->sum('price');

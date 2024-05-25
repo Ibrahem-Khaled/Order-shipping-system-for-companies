@@ -15,15 +15,24 @@ class UsersController extends Controller
         $users = User::where('name', 'like', '%بنشر%')->get();
         return view('FinancialManagement.Expenses.users.albancher', compact('users'));
     }
-    public function albancherDaily($id)
+    public function albancherDaily(Request $request, $id)
     {
-        // Get the current month and year
+        $query = $request->input('query');
+        $q = null;
+        if ($query) {
+            $q = Carbon::createFromFormat('Y-m', $query);
+        }
+
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
         $user = User::with([
-            'employeedaily' => function ($query) use ($currentMonth, $currentYear) {
-                $query->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear);
+            'employeedaily' => function ($query) use ($currentMonth, $currentYear, $q) {
+                if (!$q) {
+                    $query->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear);
+                } else {
+                    $query->whereMonth('created_at', $q->month)->whereYear('created_at', $q->year);
+                }
             }
         ])->find($id);
 
@@ -67,10 +76,10 @@ class UsersController extends Controller
 
         return view('FinancialManagement.Expenses.users.employeeTips', compact('user'));
     }
- 
+
     public function others()
     {
-        $users = User::whereIn('role', ['driver']) 
+        $users = User::whereIn('role', ['driver'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشري%"')

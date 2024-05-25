@@ -2,7 +2,6 @@
 
 @section('content')
 
-
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
@@ -57,7 +56,7 @@
                         @endforeach
                     </tbody>
                     @php
-                        if (Str::contains($item->name, 'بنشر')) {
+                        if (Str::contains($user->name, 'بنشر')) {
                             $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
                             $deposit = $user->employeedaily->where('type', 'deposit')->sum('price');
                         } else {
