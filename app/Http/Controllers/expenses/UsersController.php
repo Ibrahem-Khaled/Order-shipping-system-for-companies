@@ -82,7 +82,7 @@ class UsersController extends Controller
         $users = User::whereIn('role', ['driver'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
-            })->whereRaw('name NOT LIKE "%بنشري%"')
+            })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
 
         return view('FinancialManagement.Expenses.others', compact('users'));

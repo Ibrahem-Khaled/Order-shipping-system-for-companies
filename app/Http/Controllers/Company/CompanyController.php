@@ -163,11 +163,14 @@ class CompanyController extends Controller
     }
     public function companyRevExp()
     {
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
         $employees = User::whereIn('role', ['driver', 'administrative'])
             ->whereNotNull('sallary')
             ->with('employeedaily')
             ->get();
-            
+
         $customs = User::where('role', 'client')->get();
 
         $uniqueEmployeeIds = Daily::select('employee_id')
@@ -181,7 +184,9 @@ class CompanyController extends Controller
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
             if ($user && Str::contains($user->name, 'بنشر')) {
-                $sum = $user->employeedaily
+                $sum = $user->employeedaily()
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
                     ->where('type', 'withdraw')
                     ->sum('price');
                 $elbancherSum += $sum;

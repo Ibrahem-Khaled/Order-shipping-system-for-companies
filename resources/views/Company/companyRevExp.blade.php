@@ -82,7 +82,7 @@
                             <td>{{ $carSum }}</td>
                         </tr>
                         <tr>
-                            <td>
+                             <td>
                                 <a href="{{ route('expensesSallaryeEmployee') }}">
                                     اجمالي المرتبات
                                 </a>
