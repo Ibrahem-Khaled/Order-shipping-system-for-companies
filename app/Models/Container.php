@@ -33,4 +33,9 @@ class Container extends Model
     {
         return $this->belongsTo(User::class, 'rent_id');
     }
+
+    public function daily()
+    {
+        return $this->hasOne(Daily::class, 'container_id');
+    }
 }

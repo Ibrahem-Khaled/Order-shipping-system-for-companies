@@ -24,7 +24,7 @@ class RevenuesController extends Controller
 
     public function accountStatement(Request $request, $clientId)
     {
-        $user = User::find($clientId);
+        $user = User::with(['customs.container.daily'])->find($clientId);
         $query = $request->input('query');
         $date = $query ? Carbon::createFromFormat('Y-m', $query) : Carbon::now();
 
@@ -33,16 +33,9 @@ class RevenuesController extends Controller
             ->whereMonth('created_at', $date->month)
             ->get();
 
-        $sumPrice = $user->container()
-            ->whereYear('created_at', $date->year)
-            ->whereMonth('created_at', $date->month)
-            ->whereIn('status', ['transport', 'done', 'rent'])
-            ->sum('price');
+        $container = Container::where('number', 'like', '%' . $query . '%')->first();
 
-        $container = Container::where('number', 'like', '%' . $query . '%')
-            ->first();
-
-        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs', 'sumPrice'));
+        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs',));
     }
     public function rentMonth($clientId)
     {

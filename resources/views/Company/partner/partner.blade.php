@@ -89,7 +89,8 @@
                                 </div>
                                 <div class="modal-body">
                                     <!-- Form to Add Employee Data -->
-                                    <form action="{{ route('updateHeadMoney') }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('updateHeadMoney') }}" method="POST"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
 
@@ -134,7 +135,6 @@
                     </thead>
 
                     <tbody>
-
                         @foreach ($partner as $item)
                             @php
                                 $deposit = $container->sum('price');
@@ -180,12 +180,7 @@
                                                                     value="{{ $item->name }}" class="form-control"
                                                                     placeholder="الاسم" />
                                                             </div>
-                                                            <div class="mb-3 col-md-6">
-                                                                <input type="number"
-                                                                    value="{{ $item->partnerInfo->sum('money') }}"
-                                                                    name="money" class="form-control"
-                                                                    placeholder="راس مال الشريك" />
-                                                            </div>
+
                                                             <div class="mb-3 col-md-6">
                                                                 <input type="number"
                                                                     value="{{ $item->userinfo->number_residence }}"

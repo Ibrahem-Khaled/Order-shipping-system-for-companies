@@ -47,7 +47,7 @@ class PartnerController extends Controller
         $elbancherSum = 0;
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
-            if (Str::contains($user->name, 'بنشري')) {
+            if (Str::contains($user->name, 'بنشر')) {
                 $sum = $user?->employeedaily()
                     ->whereYear('created_at', $currentYear)
                     ->whereMonth('created_at', $currentMonth)
@@ -56,11 +56,13 @@ class PartnerController extends Controller
                 $elbancherSum = $elbancherSum + $sum;
             }
         }
+
         $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشري%"')
             ->get();
+
         $othersSum = 0;
         foreach ($others as $other) {
             $user = User::find($other->id);
@@ -77,6 +79,7 @@ class PartnerController extends Controller
             ->whereNotNull('car_id')
             ->where('type', 'withdraw')
             ->get();
+
         $daily = Daily::whereYear('created_at', $currentYear)
             ->whereMonth('created_at', $currentMonth)
             ->whereNotNull('client_id')
@@ -91,6 +94,7 @@ class PartnerController extends Controller
                     $value->partnerdaily->where('type', 'deposit')->sum('price');
             }
         }
+
         return view(
             'Company.partner.partner',
             compact(
@@ -156,7 +160,6 @@ class PartnerController extends Controller
         $partnerInfo = PartnerInfo::where('partner_id', $user->id)->latest();
         $partnerInfo->update([
             'partner_id' => $user->id,
-            'money' => $request->money,
         ]);
         return redirect()->back()->with('success', 'تم انشاء بيانات بنجاح');
     }

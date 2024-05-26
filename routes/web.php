@@ -87,6 +87,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::post('delete/daily/data/{id}', [Daily::class, 'delete'])->name('deleteDailyData');
     Route::post('add/statment/data', [Daily::class, 'addStatement'])->name('addOtherStateMent');
     Route::post('edit/contanier/tips', [Daily::class, 'editContanierTips'])->name('editContanierTips');
+    Route::post('add/contanier/price/transfer', [Daily::class, 'addContanierPriceTransfer'])->name('addContanierPriceTransfer');
 
     //profile settings
     Route::get('user/profile/settnigs/{userId}', [AuthController::class, 'profile'])->name('profileSettings');

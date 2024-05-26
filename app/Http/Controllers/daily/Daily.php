@@ -124,6 +124,21 @@ class Daily extends Controller
             return redirect()->back()->with('success', 'تم التعديل بنجاح');
         }
     }
+    public function addContanierPriceTransfer(Request $request)
+    {
+        $container = Container::where('number', $request->number)->first();
+        if (!$container) {
+            return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
+        } else {
+            days::create([
+                'type' => 'withdraw',
+                'price' => $request->price,
+                'container_id' => $container->id,
+                'client_id' => $container->client_id,
+            ]);
+            return redirect()->back()->with('success', 'تم اضافة السعر بنجاح');
+        }
+    }
 
 
 }

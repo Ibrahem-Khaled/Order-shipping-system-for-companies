@@ -27,4 +27,8 @@ class Daily extends Model
     {
         return $this->belongsTo(User::class, 'partner_id');
     }
+    public function container()
+    {
+        return $this->belongsTo(Container::class, 'container_id');
+    }
 }

@@ -3,9 +3,8 @@
 @section('content')
 
     <div class="col-md-12">
-        <h1 class="text-success" style="text-align: right"> كشف حساب {{ $user->name }}</h1>
+        <h1 class="text-success" style="text-align: right">كشف حساب {{ $user->name }}</h1>
     </div>
-
 
     <form action="{{ route('getAccountStatement', Route::current()->parameter('clientId')) }}" class="row align-items-center"
         method="GET">
@@ -42,6 +41,7 @@
                 <tr>
                     <th scope="col">اجمالي سعر النقل</th>
                     <th scope="col">سعر النقل</th>
+                    <th scope="col">سعر امر النقل</th>
                     <th scope="col">عدد الحاويات</th>
                     <th scope="col">العميل</th>
                     <th scope="col">رقم البيان</th>
@@ -51,6 +51,10 @@
             <form action="{{ route('updateContainerPrice') }}" method="POST">
                 @csrf
                 <tbody>
+                    @php
+                        $totalPrice = 0;
+                        $totalWithdrawPrice = 0;
+                    @endphp
                     @foreach ($customs as $custom)
                         @php
                             $transportContainers = $custom->container->whereIn('status', ['transport', 'done']);
@@ -58,13 +62,23 @@
                         @if ($transportContainers->isNotEmpty())
                             <input hidden value="{{ $custom->id }}" name="id[]" />
                             <tr>
-                                <td>{{ $custom->container->whereIn('status', ['transport', 'done','rent'])->sum('price') }}
-                                </td>
+                                @php
+                                    $containerPrice = $custom->container
+                                        ->whereIn('status', ['transport', 'done', 'rent'])
+                                        ->sum('price');
+                                    $withdrawPrice = $custom->container
+                                        ->flatMap(fn($c) => $c->daily)
+                                        ->where('type', 'withdraw')
+                                        ->sum('price');
+                                    $totalPrice += $containerPrice;
+                                    $totalWithdrawPrice += $withdrawPrice;
+                                @endphp
+                                <td>{{ $containerPrice }}</td>
                                 <td>
-                                    @if ($custom->container->whereIn('status', ['transport', 'done','rent'])->sum('price') == 0)
+                                    @if ($containerPrice == 0)
                                         <div class="input-group mb-3">
                                             <input type="text" name="price[]"
-                                                value="{{ $custom->container->whereIn('status', ['transport', 'done','rent'])->isNotEmpty()? $custom->container->whereIn('status', ['transport', 'done','rent'])->sum('price') /$custom->container->whereIn('status', ['transport', 'done','rent'])->count(): 0 }}"
+                                                value="{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->isNotEmpty() ? $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() : 0 }}"
                                                 class="custom-form-control" placeholder="سعر الحاوية"
                                                 aria-label="سعر الحاوية" aria-describedby="basic-addon2">
                                             <div class="input-group-append">
@@ -74,7 +88,7 @@
                                     @else
                                         <div class="input-group mb-3">
                                             <input type="text" name="price[]"
-                                                value="{{ $custom->container->whereIn('status', ['transport', 'done','rent'])->isNotEmpty()? $custom->container->whereIn('status', ['transport', 'done','rent'])->sum('price') /$custom->container->whereIn('status', ['transport', 'done'])->count(): 0 }}"
+                                                value="{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->isNotEmpty() ? $containerPrice / $custom->container->whereIn('status', ['transport', 'done'])->count() : 0 }}"
                                                 class="custom-form-control" placeholder="سعر الحاوية"
                                                 aria-label="سعر الحاوية" aria-describedby="basic-addon2">
                                             <div class="input-group-append">
@@ -83,7 +97,8 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td>{{ $custom->container->whereIn('status', ['transport', 'done','rent'])->count() }}
+                                <td>{{ $withdrawPrice }}</td>
+                                <td>{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}
                                 </td>
                                 <td scope="row">{{ $custom->subclient_id }}</td>
                                 <td scope="row">{{ $custom->statement_number }}</td>
@@ -96,33 +111,61 @@
             </form>
         </table>
 
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th scope="col">التفاصيل</th>
+                    <th scope="col">المبلغ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <h6 class="text-dark">{{ $totalPrice }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="text-primary">مجموع سعر الحاويات</h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6 class="text-dark">{{ $totalWithdrawPrice }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="text-dark">مجموع اوامر النقل</h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6 class="text-dark">{{ $totalWithdrawPrice + $totalPrice }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="text-dark">الاجمالي</h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @php
+                            $sumWith = ($totalWithdrawPrice + $totalPrice) * 0.15;
+                        @endphp
+                        <h6 class="text-dark">{{ $sumWith }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="text-success">(% 15) القيمة المضافة</h6>
+                    </td>
+                </tr>
 
-        <div class="container">
-            <div class="col-md-12">
-                <h1 class="text-primary">المجموع</h1>
-                <h3 class="text-dark">
-                    {{ $sumPrice }}
-                </h3>
-            </div>
-
-            <div class="col-md-12">
-                <h1 class="text-success"> (% 15) القيمة المضافة</h1>
-                <h3 class="text-dark">
-                    @php
-                        $sumWith = $sumPrice * 0.15;
-                    @endphp
-                    {{ $sumWith }}
-                </h3>
-            </div>
-            <div class="col-md-12">
-                <h1 class="text-danger">الاجمالي</h1>
-                <h3 class="text-dark">
-                    {{ $sumPrice + $sumWith }}
-                </h3>
-            </div>
-        </div>
+                <tr>
+                    <td>
+                        <h6 class="text-dark">{{ $totalWithdrawPrice + $totalPrice + $sumWith }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="text-danger">الاجمالي شامل القيمة المضافة</h6>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
     </div>
-
 
 @stop

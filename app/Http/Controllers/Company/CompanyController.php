@@ -136,7 +136,7 @@ class CompanyController extends Controller
         $elbancherSum = 0;
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
-            if (Str::contains($user->name, 'بنشري')) {
+            if (Str::contains($user->name, 'بنشر')) {
                 $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
                 $elbancherSum = $elbancherSum + $sum;
             }
