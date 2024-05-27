@@ -21,7 +21,7 @@
                         @foreach ($user->partnerdaily as $item)
                             <tr>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->type == 'withdraw' ? $item->price : null }}
+                                    {{ $item->type == 'partner_withdraw' ? $item->price : null }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->type == 'deposit' ? $item->price : null }}

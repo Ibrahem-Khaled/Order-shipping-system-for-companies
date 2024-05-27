@@ -2,7 +2,7 @@
 
 @section('content')
     @php
-        use Carbon\Carbon;
+        use Carbon\Carbon; 
         $currentMonth = Carbon::now()->month;
         $totalPriceForYear = 0;
 

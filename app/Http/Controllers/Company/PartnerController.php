@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cars;
 use App\Models\Container;
 use App\Models\Daily;
 use App\Models\PartnerInfo;
@@ -22,24 +23,20 @@ class PartnerController extends Controller
         $partner = User::whereIn('role', ['partner', 'company'])
             ->get();
 
-        $container = Container::whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $currentMonth)
+        $container = Container::get();
+
+        $employee = User::whereIn('role', ['driver', 'administrative'])
+            ->whereNotNull('sallary')
+            ->with('employeedaily')
             ->get();
-
-
-        $employee = User::whereIn('role', ['driver', 'administrative'])->get();
         $employeeSum = 0;
         foreach ($employee as $key => $employe) {
             $employeeSum += $employe->employeedaily()
-                ->whereYear('created_at', $currentYear)
-                ->whereMonth('created_at', $currentMonth)
                 ->where('type', 'withdraw')
                 ->sum('price');
         }
 
-        $uniqueEmployeeIds = Daily::whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $currentMonth)
-            ->select('employee_id')
+        $uniqueEmployeeIds = Daily::select('employee_id')
             ->whereNotNull('employee_id')
             ->distinct()
             ->pluck('employee_id');
@@ -49,50 +46,45 @@ class PartnerController extends Controller
             $user = User::find($value);
             if (Str::contains($user->name, 'بنشر')) {
                 $sum = $user?->employeedaily()
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
                     ->where('type', 'withdraw')
                     ->sum('price');
-                $elbancherSum = $elbancherSum + $sum;
+                $elbancherSum += $sum;
             }
         }
 
         $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
-            })->whereRaw('name NOT LIKE "%بنشري%"')
+            })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
 
         $othersSum = 0;
         foreach ($others as $other) {
             $user = User::find($other->id);
             $sum = $user?->employeedaily()
-                ->whereYear('created_at', $currentYear)
-                ->whereMonth('created_at', $currentMonth)
                 ->where('type', 'withdraw')
                 ->sum('price');
-            $othersSum = $othersSum + $sum;
+            $othersSum += $sum;
         }
 
-        $cars = Daily::whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $currentMonth)
-            ->whereNotNull('car_id')
-            ->where('type', 'withdraw')
-            ->get();
-
-        $daily = Daily::whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $currentMonth)
-            ->whereNotNull('client_id')
-            ->where('type', 'deposit')
-            ->get();
+        $cars = Cars::with('daily')->get();
+        $carSum = $cars->sum(function ($car) {
+            return $car->daily->sum('price');
+        });
 
         $sums = 0;
         foreach ($partner as $value) {
             if ($value->is_active == 1) {
-                $sums += $value->partnerInfo?->sum('money') -
-                    $value->partnerdaily->where('type', 'withdraw')->sum('price') +
-                    $value->partnerdaily->where('type', 'deposit')->sum('price');
+                $sums += $value->partnerInfo?->sum('money');
             }
+        }
+        $clients = User::all();
+
+        $depositCash = 0;
+        $withdrawCash = Daily::where('type', 'withdraw')->sum('price');
+
+        foreach ($clients as $client) {
+            $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
 
         return view(
@@ -102,10 +94,11 @@ class PartnerController extends Controller
                 'sums',
                 'container',
                 'employeeSum',
-                'daily',
-                'cars',
+                'carSum',
                 'elbancherSum',
                 'othersSum',
+                'depositCash',
+                'withdrawCash',
             )
         );
     }
@@ -176,6 +169,83 @@ class PartnerController extends Controller
     {
         $user = User::find($id);
         return view('Company.partner.partnerStatement', compact('user'));
+    }
+    public function partnerYearStatement($id)
+    {
+        $user = User::find($id);
+
+        $partner = User::whereIn('role', ['partner', 'company'])
+            ->get();
+
+        $container = Container::get();
+
+        $employees = User::whereIn('role', ['driver', 'administrative'])
+            ->whereNotNull('sallary')
+            ->with('employeedaily')
+            ->get();
+
+
+        $uniqueEmployeeIds = Daily::select('employee_id')
+            ->whereNotNull('employee_id')
+            ->distinct()
+            ->pluck('employee_id');
+
+        $elbancherSum = 0;
+        foreach ($uniqueEmployeeIds as $value) {
+            $userBancher = User::find($value);
+            if (Str::contains($userBancher->name, 'بنشر')) {
+                $sum = $userBancher?->employeedaily()
+                    ->where('type', 'withdraw')
+                    ->sum('price');
+                $elbancherSum += $sum;
+            }
+        }
+
+        $others = User::whereIn('role', ['driver', 'company'])
+            ->Where(function ($query) {
+                $query->whereNull('sallary');
+            })->whereRaw('name NOT LIKE "%بنشر%"')
+            ->get();
+
+        $cars = Cars::with('daily')->get();
+
+        $sums = 0;
+        foreach ($partner as $value) {
+            if ($value->is_active == 1) {
+                $sums += $value->partnerInfo?->sum('money');
+            }
+        }
+
+        $elbancher = [];
+        foreach ($uniqueEmployeeIds as $value) {
+            $userElbancher = User::find($value);
+            if ($userElbancher && Str::contains($userElbancher->name, 'بنشر')) {
+                $sum = $userElbancher->employeedaily()
+                    ->where('type', 'withdraw')
+                    ->sum('price');
+                $elbancher[] = $userElbancher->employeedaily;
+                $elbancher = [...$elbancher];
+            }
+        }
+        $mergedArrayAlbancher = [];
+        foreach ($elbancher as $collection) {
+            $mergedArrayAlbancher = array_merge($mergedArrayAlbancher, $collection->toArray());
+        }
+
+        return view(
+            'Company.partner.partnerYear',
+            compact(
+                'user',
+                'partner',
+                'sums',
+                'container',
+                'employees',
+                'cars',
+                'elbancherSum',
+                'others',
+                'mergedArrayAlbancher',
+            )
+        );
     }
     public function updateHeadMoney(Request $request)
     {

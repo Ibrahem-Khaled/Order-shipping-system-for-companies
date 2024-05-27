@@ -210,7 +210,8 @@
                                                         <select name="employee_id" class="form-control">
                                                             <option value="">اختيار الحساب</option>
                                                             @foreach ($employee as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->name }}
+                                                                <option value="{{ $item->id }}">
+                                                                    {{ $item->role == 'company' ? 'مصاريف نثرية وادارية' : $item->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -219,7 +220,8 @@
                                                         <select name="partner_id" class="form-control">
                                                             <option value="">اختيار حساب الشريك</option>
                                                             @foreach ($partner as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->name }}
+                                                                <option value="{{ $item->id }}">
+                                                                    {{ $item->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>

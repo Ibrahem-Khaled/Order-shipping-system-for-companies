@@ -35,6 +35,7 @@ class Daily extends Controller
         $client = User::whereIn('role', ['client', 'rent'])->get();
         $partner = User::whereIn('role', ['partner', 'company'])->get();
         $employee = User::whereIn('role', ['driver', 'administrative', 'company'])->get();
+
         return view('FinancialManagement.Daily.index', compact('daily', 'cars', 'client', 'partner', 'employee'));
     }
 
@@ -54,21 +55,24 @@ class Daily extends Controller
             'partner_id' => 'required_without_all:car_id,client_id,employee_id',
         ];
 
-        // تطبيق قواعد 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()->with('error', 'الرجاء اختيار قيمة واحدة على الأقل لحساب السيارة أو العميل أو الموظف');
         }
 
-        // If validation passes, create the record
         $data = days::create($request->except('created_at'));
+        $daily = days::find($data->id);
 
         if (!is_null($request->created_at)) {
-            $daily = days::find($data->id);
             $daily->update([
                 'created_at' => $request->created_at,
                 'updated_at' => $request->created_at,
+            ]);
+        }
+        if ($request->partner_id !== null) {
+            $daily->update([
+                'type' => 'partner_withdraw'
             ]);
         }
         return redirect()->back()->with('success', 'تم تريحل البيانات بنجاح');
@@ -99,6 +103,11 @@ class Daily extends Controller
         // If validation passes, create the record
         $daily = days::find($id);
         $daily->update($request->all());
+        if ($request->partner_id !== null) {
+            $daily->update([
+                'type' => 'partner_withdraw'
+            ]);
+        }
 
         return redirect()->back()->with('success', 'تم تريحل البيانات بنجاح');
     }

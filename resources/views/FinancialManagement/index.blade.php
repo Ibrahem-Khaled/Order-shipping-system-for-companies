@@ -25,8 +25,11 @@
                                 class="list-group-item list-group-item-action">المرتبات</a>
                             <a href="{{ route('expensesSallaryAlbancher') }}"
                                 class="list-group-item list-group-item-action">البنشري</a>
-                            <a href="{{ route('expensesCompany') }}" class="list-group-item list-group-item-action">مصروفات
-                               ادارية ونثرية </a>
+                            @foreach ($users as $item)
+                                <a href="{{ route('expensesAlbancherDaily', $item->id) }}"
+                                    class="list-group-item list-group-item-action">مصروفات
+                                    ادارية ونثرية </a>
+                            @endforeach
                             <a href="{{ route('expensesOthers') }}" class="list-group-item list-group-item-action">كشوف
                                 أخرى</a>
                         </div>

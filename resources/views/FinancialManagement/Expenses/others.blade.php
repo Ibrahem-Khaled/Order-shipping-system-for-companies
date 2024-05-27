@@ -25,7 +25,9 @@
                                     </a>
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->role == 'company' ? null : $item->employeedaily->where('type', 'withdraw')->sum('price') }}
+                                    {{ $item->role == 'company'
+                                        ? null
+                                        : $item->employeedaily()->whereMonth('created_at', now()->month)->where('type', 'withdraw')->sum('price') }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     <a href="{{ route('expensesAlbancherDaily', $item->id) }}">

@@ -123,6 +123,7 @@
                         <tr>
                             <th scope="col" class="text-center">action</th>
                             <th scope="col" class="text-center">الصورة الشخصية</th>
+                            <th scope="col" class="text-center">ما يمكن سحبه</th>
                             <th scope="col" class="text-center">نسبة الارباح</th>
                             <th scope="col" class="text-center">نسبة الشريك</th>
                             <th scope="col" class="text-center">راس المال</th>
@@ -135,22 +136,23 @@
                     </thead>
 
                     <tbody>
+
                         @foreach ($partner as $item)
                             @php
                                 $deposit = $container->sum('price');
-                                $carSum = $cars->sum('price');
+
                                 $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
-                                $totalPrice = strval($deposit) - strval($withdraw);
+                                $totalPrice = $deposit - $withdraw;
 
-                                $prtnerPrice =
-                                    $item->partnerInfo?->sum('money') -
-                                    $item->partnerdaily->where('type', 'withdraw')->sum('price') +
-                                    $item->partnerdaily->where('type', 'deposit')->sum('price');
-
+                                $prtnerPrice = $item->partnerInfo?->sum('money');
                                 if ($item->is_active == 1) {
                                     $partnerSum = ($prtnerPrice / $sums) * 100;
                                 }
+                                $partnerWithdraw = $item->partnerdaily->where('type', 'partner_withdraw')->sum('price');
 
+                                $partnerCashCanWithdraw = (($depositCash - $withdrawCash) * $partnerSum) / 100;
+
+                                $calculatedValue = $partnerCashCanWithdraw - $partnerWithdraw;
                             @endphp
                             <tr>
                                 <td class="text-center">
@@ -180,7 +182,12 @@
                                                                     value="{{ $item->name }}" class="form-control"
                                                                     placeholder="الاسم" />
                                                             </div>
-
+                                                            <div class="mb-3 col-md-6">
+                                                                <input type="number"
+                                                                    value="{{ $item->partnerInfo->sum('money') }}"
+                                                                    name="money" class="form-control"
+                                                                    placeholder="راس مال الشريك" />
+                                                            </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <input type="number"
                                                                     value="{{ $item->userinfo->number_residence }}"
@@ -238,6 +245,9 @@
                                         style="max-width: 100px; max-height: 100px;">
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $calculatedValue <= 0 ? 0 : $calculatedValue }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? ($totalPrice * $partnerSum) / 100 : 0 }}</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? $partnerSum : 0 }}%</td>
@@ -253,7 +263,7 @@
                                     </a>
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    <a href="{{ route('getAccountYears', $item->id) }}">
+                                    <a href="{{ route('partnerYearStatement', $item->id) }}">
                                         كشف سنوي
                                     </a>
                                 </td>

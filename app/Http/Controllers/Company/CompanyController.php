@@ -64,7 +64,8 @@ class CompanyController extends Controller
         $clients = User::all();
 
         $deposit = 0;
-        $withdraw = Daily::where('type', 'withdraw')->sum('price');
+        $withdraw = Daily::whereIn('type', ['withdraw', 'partner_withdraw'])->sum('price');
+
         foreach ($clients as $client) {
             $deposit += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }

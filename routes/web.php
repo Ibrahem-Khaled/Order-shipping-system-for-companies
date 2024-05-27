@@ -102,7 +102,6 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('expenses/daily/employee/{id}', [UsersController::class, 'employeeDaily'])->name('expensesEmployeeDaily');
     Route::get('expenses/tips/employee/{id}', [UsersController::class, 'employeeTips'])->name('expensesEmployeeTips');
     Route::get('expenses/others', [UsersController::class, 'others'])->name('expensesOthers');
-    Route::get('expenses/company', [UsersController::class, 'company'])->name('expensesCompany');
 
     //company 
     Route::get('company/home', [CompanyController::class, 'index'])->name('CompanyHome');
@@ -116,6 +115,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::post('update/partner/status/{id}', [PartnerController::class, 'inActive'])->name('partnerinActive');
     Route::post('update/partner/data/{userid}', [PartnerController::class, 'update'])->name('partnerUpdate');
     Route::get('partner/Statement/{id}', [PartnerController::class, 'partnerStatement'])->name('partnerStatement');
+    Route::get('partner/year/statement/{id}', [PartnerController::class, 'partnerYearStatement'])->name('partnerYearStatement');
     Route::post('partner/update/heade/money', [PartnerController::class, 'updateHeadMoney'])->name('updateHeadMoney');
 
 });

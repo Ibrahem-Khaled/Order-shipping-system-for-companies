@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->bigInteger('partner_id')->nullable();
             $table->bigInteger('employee_id')->nullable();
             $table->bigInteger('container_id')->nullable();
-            $table->enum('type', ['deposit', 'withdraw'])->nullable();
+            $table->enum('type', ['deposit', 'withdraw', 'partner_withdraw'])->nullable();
             $table->float('price')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
