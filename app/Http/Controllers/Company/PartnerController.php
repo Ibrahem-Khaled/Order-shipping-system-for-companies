@@ -7,6 +7,7 @@ use App\Models\Cars;
 use App\Models\Container;
 use App\Models\Daily;
 use App\Models\PartnerInfo;
+use App\Models\SellAndBuy;
 use App\Models\User;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
@@ -72,10 +73,10 @@ class PartnerController extends Controller
             return $car->daily->sum('price');
         });
 
-        $sums = 0;
+        $sumCompany = 0;
         foreach ($partner as $value) {
             if ($value->is_active == 1) {
-                $sums += $value->partnerInfo?->sum('money');
+                $sumCompany += $value->partnerInfo?->sum('money');
             }
         }
         $clients = User::all();
@@ -87,11 +88,15 @@ class PartnerController extends Controller
             $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
 
+        $buyCash = SellAndBuy::where('type', 'buy')->get();
+        $sellCash = SellAndBuy::where('type', 'sell')->get();
+        $sellFromHeadMony = SellAndBuy::where('type', 'sell')->whereNotNull('parent_id')->get();
+
         return view(
             'Company.partner.partner',
             compact(
                 'partner',
-                'sums',
+                'sumCompany',
                 'container',
                 'employeeSum',
                 'carSum',
@@ -99,6 +104,9 @@ class PartnerController extends Controller
                 'othersSum',
                 'depositCash',
                 'withdrawCash',
+                'buyCash',
+                'sellCash',
+                'sellFromHeadMony',
             )
         );
     }
@@ -209,10 +217,10 @@ class PartnerController extends Controller
 
         $cars = Cars::with('daily')->get();
 
-        $sums = 0;
+        $sumCompany = 0;
         foreach ($partner as $value) {
             if ($value->is_active == 1) {
-                $sums += $value->partnerInfo?->sum('money');
+                $sumCompany += $value->partnerInfo?->sum('money');
             }
         }
 
@@ -237,7 +245,7 @@ class PartnerController extends Controller
             compact(
                 'user',
                 'partner',
-                'sums',
+                'sumCompany',
                 'container',
                 'employees',
                 'cars',

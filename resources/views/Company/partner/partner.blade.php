@@ -144,15 +144,25 @@
                                 $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
                                 $totalPrice = $deposit - $withdraw;
 
-                                $prtnerPrice = $item->partnerInfo?->sum('money');
+                                $prtnerPriceSum = $item->partnerInfo?->sum('money');
                                 if ($item->is_active == 1) {
-                                    $partnerSum = ($prtnerPrice / $sums) * 100;
+                                    $partnerPriceRate = ($prtnerPriceSum / $sumCompany) * 100;
                                 }
+
                                 $partnerWithdraw = $item->partnerdaily->where('type', 'partner_withdraw')->sum('price');
 
-                                $partnerCashCanWithdraw = (($depositCash - $withdrawCash) * $partnerSum) / 100;
+                                $partnerCashCanWithdraw =
+                                    (($depositCash - $withdrawCash - $buyCash->sum('price')) * $partnerPriceRate) / 100;
 
-                                $calculatedValue = $partnerCashCanWithdraw - $partnerWithdraw;
+                                $rateBuyFromPartenr = ($buyCash->sum('price') * $partnerPriceRate) / 100;
+                                $rateSellFromHeadMony = ($sellFromHeadMony->sum('price') * $partnerPriceRate) / 100;
+                                $rateSellFromPartenr = ($sellCash->sum('price') * $partnerPriceRate) / 100;
+
+                                $calculatedValue =
+                                    $partnerCashCanWithdraw -
+                                    $partnerWithdraw +
+                                    $rateSellFromHeadMony +
+                                    $rateSellFromPartenr;
                             @endphp
                             <tr>
                                 <td class="text-center">
@@ -248,11 +258,12 @@
                                     {{ $calculatedValue <= 0 ? 0 : $calculatedValue }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->is_active == 1 ? ($totalPrice * $partnerSum) / 100 : 0 }}</td>
+                                    {{ $item->is_active == 1 ? ($totalPrice * $partnerPriceRate) / 100 : 0 }}
+                                </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->is_active == 1 ? $partnerSum : 0 }}%</td>
+                                    {{ $item->is_active == 1 ? $partnerPriceRate : 0 }}%</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    ر.س{{ $prtnerPrice }}
+                                    ر.س{{ $prtnerPriceSum + $rateBuyFromPartenr - $rateSellFromHeadMony }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->role == 'company' ? 'الشركة' : 'شريك' }}

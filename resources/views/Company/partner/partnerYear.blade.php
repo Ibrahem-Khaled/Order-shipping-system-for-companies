@@ -60,7 +60,7 @@
 
                                 $partnerSum =
                                     $user->is_active == 1
-                                        ? (($user->partnerInfo?->sum('money') ?? 0) / $sums) * 100
+                                        ? (($user->partnerInfo?->sum('money') ?? 0) / $sumCompany) * 100
                                         : 0;
                                 $monthlyProfit = $user->is_active == 1 ? ($totalPrice * $partnerSum) / 100 : 0;
 

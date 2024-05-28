@@ -61,7 +61,8 @@
                         <div class="list-group">
                             <a href="{{ route('getRevenuesClient') }}" class="list-group-item list-group-item-action">كشف
                                 حساب مكتب تخليص جمركي</a>
-                            <a href="#" class="list-group-item list-group-item-action">حركة البيع وشراء</a>
+                            <a href="{{ route('sell.buy') }}" class="list-group-item list-group-item-action">حركة البيع
+                                وشراء</a>
                             <a href="#" class="list-group-item list-group-item-action">أخرى</a>
                         </div>
                         <!-- Include your form elements for adding employee data here -->

@@ -400,7 +400,8 @@
                                                 </div>
                                             </td>
                                             <td>{{ $item->type == 'deposit' ? $item->price : null }}</td>
-                                            <td>{{ $item->type == 'withdraw' ? $item->price : null }}</td>
+                                            <td>{{ $item->type == 'withdraw' ? $item->price : null }}{{ $item->type == 'partner_withdraw' ? $item->price : null }}
+                                            </td>
                                             <td>
                                                 @if ($item->car_id !== null)
                                                     {{ $item->description }} - {{ $item?->car?->number }}

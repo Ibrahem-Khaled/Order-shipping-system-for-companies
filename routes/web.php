@@ -9,6 +9,7 @@ use App\Http\Controllers\expenses\CarsController;
 use App\Http\Controllers\expenses\UsersController;
 use App\Http\Controllers\FinanceialManagement\DashController;
 use App\Http\Controllers\FinanceialManagement\RevenuesController;
+use App\Http\Controllers\FinanceialManagement\SellAndBuyController;
 use App\Http\Controllers\Run\CustomsController;
 use App\Http\Controllers\Run\DatesController;
 use App\Http\Controllers\Run\OfficeController;
@@ -117,6 +118,14 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::get('partner/Statement/{id}', [PartnerController::class, 'partnerStatement'])->name('partnerStatement');
     Route::get('partner/year/statement/{id}', [PartnerController::class, 'partnerYearStatement'])->name('partnerYearStatement');
     Route::post('partner/update/heade/money', [PartnerController::class, 'updateHeadMoney'])->name('updateHeadMoney');
+
+
+    //sell and buy routes
+    Route::get('sell/and/buy', [SellAndBuyController::class, 'index'])->name('sell.buy');
+    Route::post('sell/buy/store', [SellAndBuyController::class, 'store'])->name('transactions.store');
+    Route::put('sellAndBuy/update/{transactionId}', [SellAndBuyController::class, 'update'])->name('transactions.update');
+    Route::delete('sellAndBuy/update/{transactionId}', [SellAndBuyController::class, 'destroy'])->name('transactions.destroy');
+
 
 });
 
