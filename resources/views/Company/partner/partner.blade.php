@@ -263,7 +263,7 @@
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? $partnerPriceRate : 0 }}%</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    ر.س{{ $prtnerPriceSum + $rateBuyFromPartenr - $rateSellFromHeadMony }}
+                                    ر.س{{ $prtnerPriceSum + $rateBuyFromPartenr - $rateSellFromHeadMony - $rateSellFromPartenr }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->role == 'company' ? 'الشركة' : 'شريك' }}
