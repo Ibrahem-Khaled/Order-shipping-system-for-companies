@@ -1,6 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
+
     <div class="col-md-12">
         <h1 class="text-success text-end">كشف حساب</h1>
     </div>
@@ -17,7 +18,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('transactions.store') }}" method="POST">
+                    <form id="transactionForm" action="{{ route('transactions.store') }}" method="POST"
+                        data-cash-withdraw="{{ $canCashWithdraw }}">
                         @csrf
                         <div class="mb-3">
                             <input type="text" name="title" class="form-control" placeholder="اسم الحركة" required>
@@ -26,6 +28,7 @@
                             <select name="type" id="transactionType" class="form-select" required>
                                 <option value="">اختر نوع الحركة</option>
                                 <option value="sell">بيع</option>
+                                <option value="sell_from_head_mony">بيع من راس مال الشركة</option>
                                 <option value="buy">شراء</option>
                             </select>
                         </div>
@@ -107,7 +110,8 @@
             <tbody>
                 @foreach ($transactions as $transaction)
                     <tr>
-                        <td>{{ $transaction->type == 'sell' ? $transaction->price : '' }}</td>
+                        <td>{{ $transaction->type == 'sell' ? $transaction->price : '' }}{{ $transaction->type == 'sell_from_head_mony' ? $transaction->price : '' }}
+                        </td>
                         <td>{{ $transaction->type == 'buy' ? $transaction->price : '' }}</td>
                         <td>{{ $transaction->title }}</td>
                         <td>{{ $transaction->created_at }}</td>
@@ -165,12 +169,25 @@
         document.addEventListener('DOMContentLoaded', function() {
             var transactionType = document.getElementById('transactionType');
             var parentSelect = document.getElementById('parentSelect');
+            var form = document.getElementById('transactionForm');
+            var priceInput = form.querySelector('input[name="price"]');
+            var canCashWithdraw = parseFloat(form.getAttribute('data-cash-withdraw'));
 
             transactionType.addEventListener('change', function() {
                 if (this.value === 'sell') {
                     parentSelect.style.display = 'block';
                 } else {
                     parentSelect.style.display = 'none';
+                }
+            });
+
+            form.addEventListener('submit', function(event) {
+                if (transactionType.value === 'buy') {
+                    var enteredPrice = parseFloat(priceInput.value);
+                    if (enteredPrice > canCashWithdraw) {
+                        alert('لا يمكن تنفيذ العملية. المبلغ المدخل أكبر من المتاح للسحب.');
+                        event.preventDefault();
+                    }
                 }
             });
         });

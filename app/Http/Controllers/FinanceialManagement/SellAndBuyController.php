@@ -14,11 +14,19 @@ class SellAndBuyController extends Controller
         $transactions = SellAndBuy::all();
         $buyTransactions = SellAndBuy::where('type', 'buy')->get();
         $sellTransactions = SellAndBuy::where('type', 'sell')->get();
+        $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
+
         $deposit = Daily::where('type', 'deposit')->get();
         $withdraw = Daily::where('type', 'withdraw')->get();
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
 
-        $canCashWithdraw = $deposit->sum('price') - $withdraw->sum('price') - $partnerWithdraw->sum('price');
+        $Profits_from_buying_and_selling = $buyTransactions->sum('price') - $sellTransactions->sum('price');
+        $canCashWithdraw =
+            $deposit->sum('price') -
+            $withdraw->sum('price') -
+            $partnerWithdraw->sum('price') +
+            $sellFromHeadMony->sum('price') -
+            $Profits_from_buying_and_selling;
 
         return view('FinancialManagement.Revenues.SellAndBuy', compact('transactions', 'buyTransactions', 'sellTransactions', 'canCashWithdraw'));
     }
@@ -27,7 +35,7 @@ class SellAndBuyController extends Controller
         // Validate the request
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'type' => 'required|in:sell,buy',
+            'type' => 'required|in:sell,buy,sell_from_head_mony',
             'parent_id' => 'nullable|',
             'price' => 'required|numeric|min:0',
         ]);

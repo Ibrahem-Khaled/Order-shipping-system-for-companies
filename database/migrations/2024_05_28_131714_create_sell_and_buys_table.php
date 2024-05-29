@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('sell_and_buys', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('type', ['buy', 'sell'])->nullable();
+            $table->enum('type', ['buy', 'sell', 'sell_from_head_mony'])->nullable();
             $table->float('price')->nullable()->default(0);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')

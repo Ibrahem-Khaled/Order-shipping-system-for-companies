@@ -177,7 +177,7 @@
                                                             class="form-control" placeholder="الوصف" />
                                                     </div>
                                                     <div class="mb-3 col-md-6">
-                                                        <input type="number" name="price" required
+                                                        <input type="text" name="price" required
                                                             class="form-control" placeholder="المبلغ" />
                                                     </div>
                                                     <div class="mb-3 col-md-6">
@@ -232,15 +232,14 @@
                                                             name="created_at">
                                                     </div>
                                                 </div>
-                                                <button id="submitBtn" class="btn btn-primary">Submit</button>
                                                 <p id="error" class="error-message"></p>
+                                                <div class="modal-footer">
+                                                    <button type="close" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                        
+                                                    <button id="submitBtn" class="btn btn-primary">Submit</button>
+                                                </div>
                                             </form>
-                                            <!-- Include your form elements for adding employee data here -->
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <!-- Include your "Add" button here to submit the form -->
                                         </div>
                                     </div>
                                 </div>
@@ -329,7 +328,7 @@
                                                                                 placeholder="الوصف" />
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
-                                                                            <input type="number" name="price" required
+                                                                            <input type="text" name="price" required
                                                                                 class="form-control"
                                                                                 value="{{ $item->price }}"
                                                                                 placeholder="المبلغ" />
@@ -406,9 +405,9 @@
                                                 @if ($item->car_id !== null)
                                                     {{ $item->description }} - {{ $item?->car?->number }}
                                                 @elseif ($item->client_id !== null)
-                                                    {{ $item?->description }}
+                                                    {{ $item?->description }}-
+                                                    {{ $item?->client?->name }}-
                                                     @if ($item->container_id !== null)
-                                                        {{ $item?->client?->name }}-
                                                         {{ $item?->client?->customs?->first()?->statement_number }}
                                                         {{ $item?->client?->customs?->first()?->subclient_id }}-
                                                         {{ $item?->container?->number }}

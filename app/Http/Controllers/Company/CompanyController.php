@@ -7,6 +7,7 @@ use App\Models\Cars;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
 use App\Models\Daily;
+use App\Models\SellAndBuy;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -63,14 +64,14 @@ class CompanyController extends Controller
 
         $clients = User::all();
 
-        $deposit = 0;
-        $withdraw = Daily::whereIn('type', ['withdraw', 'partner_withdraw'])->sum('price');
+        $depositCash = 0;
+        $withdrawCash = Daily::whereIn('type', ['withdraw', 'partner_withdraw']);
 
         foreach ($clients as $client) {
-            $deposit += $client?->clientdaily->where('type', 'deposit')->sum('price');
+            $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
         $containerTransport = Container::whereIn('status', ['transport', 'done'])->sum('price');
-        $clintPriceMinesContainer = $containerTransport - $deposit;
+        $clintPriceMinesContainer = $containerTransport - $depositCash;
 
         $dailyData = Daily::whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->latest()
@@ -113,9 +114,34 @@ class CompanyController extends Controller
             }
         ])->get();
 
+        $buyTransactions = SellAndBuy::where('type', 'buy')->get();
+        $sellTransactions = SellAndBuy::where('type', 'sell')->get();
+        $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
+        $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
+
+        $Profits_from_buying_and_selling = $buyTransactions->sum('price') - $sellTransactions->sum('price');
+        $canCashWithdraw =
+            $depositCash -
+            $withdrawCash->sum('price') -
+            $partnerWithdraw->sum('price') +
+            $sellFromHeadMony->sum('price') -
+            $Profits_from_buying_and_selling;
+
         return view(
             'Company.index',
-            compact('container', 'deposit', 'notifications', 'withdraw', 'container', 'employeeSum', 'daily', 'cars', 'carData', 'elbancherSum', 'othersSum', 'clintPriceMinesContainer')
+            compact(
+                'container',
+                'notifications',
+                'container',
+                'employeeSum',
+                'daily',
+                'cars',
+                'carData',
+                'elbancherSum',
+                'othersSum',
+                'clintPriceMinesContainer',
+                'canCashWithdraw',
+            )
         );
     }
     public function companyDetailes()

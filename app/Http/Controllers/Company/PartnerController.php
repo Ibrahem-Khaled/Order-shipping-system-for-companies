@@ -18,9 +18,6 @@ class PartnerController extends Controller
 {
     public function index()
     {
-        $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->month;
-
         $partner = User::whereIn('role', ['partner', 'company'])
             ->get();
 
@@ -90,7 +87,8 @@ class PartnerController extends Controller
 
         $buyCash = SellAndBuy::where('type', 'buy')->get();
         $sellCash = SellAndBuy::where('type', 'sell')->get();
-        $sellFromHeadMony = SellAndBuy::where('type', 'sell')->whereNotNull('parent_id')->get();
+
+        $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
 
         return view(
             'Company.partner.partner',

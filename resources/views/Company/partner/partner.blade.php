@@ -151,18 +151,23 @@
 
                                 $partnerWithdraw = $item->partnerdaily->where('type', 'partner_withdraw')->sum('price');
 
-                                $partnerCashCanWithdraw =
-                                    (($depositCash - $withdrawCash - $buyCash->sum('price')) * $partnerPriceRate) / 100;
+                                $partnerCashCanWithdraw = (($depositCash - $withdrawCash) * $partnerPriceRate) / 100;
 
-                                $rateBuyFromPartenr = ($buyCash->sum('price') * $partnerPriceRate) / 100;
+                                $rateBuy = ($buyCash->sum('price') * $partnerPriceRate) / 100;
                                 $rateSellFromHeadMony = ($sellFromHeadMony->sum('price') * $partnerPriceRate) / 100;
-                                $rateSellFromPartenr = ($sellCash->sum('price') * $partnerPriceRate) / 100;
+                                $rateSell = ($sellCash->sum('price') * $partnerPriceRate) / 100;
+
+                                $Profits_from_buying_and_selling = $rateSell - $rateBuy;
 
                                 $calculatedValue =
                                     $partnerCashCanWithdraw -
                                     $partnerWithdraw +
                                     $rateSellFromHeadMony +
-                                    $rateSellFromPartenr;
+                                    $Profits_from_buying_and_selling;
+
+                                $companyHeadMoney =
+                                    $prtnerPriceSum - $rateSellFromHeadMony - $Profits_from_buying_and_selling;
+
                             @endphp
                             <tr>
                                 <td class="text-center">
@@ -263,7 +268,7 @@
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? $partnerPriceRate : 0 }}%</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    ر.س{{ $prtnerPriceSum + $rateBuyFromPartenr - $rateSellFromHeadMony - $rateSellFromPartenr }}
+                                    ر.س{{ $companyHeadMoney }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->role == 'company' ? 'الشركة' : 'شريك' }}
