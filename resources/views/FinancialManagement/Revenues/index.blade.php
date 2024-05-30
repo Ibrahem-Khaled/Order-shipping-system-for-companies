@@ -33,7 +33,18 @@
                     <tr>
                         <th scope="row">{{ $user->id }}</th>
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->whereIn('status', ['transport', 'done'])->count() }}</td>
+                        @php
+                            use Carbon\Carbon;
+
+                            $containersCount = $user
+                                ->container()
+                                ->whereIn('status', ['transport', 'done'])
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->whereYear('created_at', Carbon::now()->year)
+                                ->count();
+                        @endphp
+                        
+                        <td>{{ $containersCount }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') - ($sumDaily = $user->clientdaily->sum('price')) }}
                         </td>
@@ -42,9 +53,9 @@
                 <tr class="fw-bold">
                     <th scope="row"></th>
                     <td></td>
-                    <td> {{ $contanierCount }}  مجموع الحاويات </td>
+                    <td> {{ $contanierCount }} مجموع الحاويات </td>
                     <td></td>
-                    <td> {{ $priceSum }}  مجموع الايرادات </td>
+                    <td> {{ $priceSum }} مجموع الايرادات </td>
                 </tr>
                 <!-- Add more rows as needed -->
             </tbody>
