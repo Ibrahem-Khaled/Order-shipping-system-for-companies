@@ -10,12 +10,33 @@ use Carbon\Carbon;
 
 class RevenuesController extends Controller
 {
+
     public function index()
     {
+        $users = User::with(['container', 'clientdaily'])->where('role', 'client')->get();
 
-        $users = User::where('role', 'client')->get();
-        return view('FinancialManagement.Revenues.index', compact('users'));
+        $containersCount = [];
+        $priceSum = 0;
+        $containerCount = 0;
+
+        foreach ($users as $user) {
+            $monthlyContainers = $user->container()
+                ->whereIn('status', ['transport', 'done'])
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->count();
+
+            $containersCount[$user->id] = $monthlyContainers;
+
+            $containerCount += $user->container->whereIn('status', ['transport', 'done'])->count();
+            $priceSum += $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price')
+                - $user->clientdaily->sum('price');
+        }
+
+        return view('FinancialManagement.Revenues.index', compact('users', 'containersCount', 'priceSum', 'containerCount'));
     }
+
+
     public function rent()
     {
         $users = User::where('role', 'rent')->get();
@@ -35,7 +56,7 @@ class RevenuesController extends Controller
 
         $container = Container::where('number', 'like', '%' . $query . '%')->first();
 
-        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs',));
+        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs', ));
     }
     public function rentMonth($clientId)
     {
