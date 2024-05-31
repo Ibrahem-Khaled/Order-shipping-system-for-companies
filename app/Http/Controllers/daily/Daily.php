@@ -136,18 +136,39 @@ class Daily extends Controller
     public function addContanierPriceTransfer(Request $request)
     {
         $container = Container::where('number', $request->number)->first();
+
         if (!$container) {
             return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
         } else {
-            days::create([
-                'type' => 'withdraw',
-                'price' => $request->price,
-                'container_id' => $container->id,
-                'client_id' => $container->client_id,
-            ]);
-            return redirect()->back()->with('success', 'تم اضافة السعر بنجاح');
+            $existingDay = days::where('container_id', $container->id)->first();
+
+            if ($existingDay) {
+                $existingDay->update([
+                    'type' => 'withdraw',
+                    'price' => $request->price,
+                    'client_id' => $container->client_id,
+                ]);
+
+                $message = 'تم تحديث السعر بنجاح';
+            } else {
+                days::create([
+                    'type' => 'withdraw',
+                    'price' => $request->price,
+                    'container_id' => $container->id,
+                    'client_id' => $container->client_id,
+                ]);
+
+                $message = 'تم اضافة السعر بنجاح';
+            }
+
+            if ($container->status == 'wait') {
+                return redirect()->back()->with('success', $message . ' لكن هي انتظار');
+            }
+
+            return redirect()->back()->with('success', $message);
         }
     }
+
 
 
 }

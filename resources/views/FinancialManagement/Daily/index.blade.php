@@ -236,7 +236,7 @@
                                                 <div class="modal-footer">
                                                     <button type="close" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-                                                        
+
                                                     <button id="submitBtn" class="btn btn-primary">Submit</button>
                                                 </div>
                                             </form>
@@ -266,7 +266,7 @@
                                                     {{ null }}
                                                 @endif
                                             </td>
-                                             <td>
+                                            <td>
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#confirmationModal{{ $item->id }}"
                                                     class="btn btn-danger">مسح</button>
@@ -405,13 +405,13 @@
                                                 @if ($item->car_id !== null)
                                                     {{ $item->description }} - {{ $item?->car?->number }}
                                                 @elseif ($item->client_id !== null)
+                                                    {{ $item->container_id !== null ?'امر نقل -': null }}
                                                     {{ $item?->description }}-
                                                     {{ $item?->client?->name }}-
                                                     @if ($item->container_id !== null)
-                                                    {{ $item?->client?->customs?->first()?->statement_number }}
-                                                        {{ $item?->client?->customs?->first()?->subclient_id }}-
+                                                        {{ $item?->container?->customs->statement_number }}
+                                                        {{ $item?->container?->customs->subclient_id }}
                                                         {{ $item?->container?->number }}
-                                                        امر نقل 
                                                     @endif
                                                 @elseif ($item->employee_id !== null)
                                                     {{ $item->description }} - {{ $item?->emplyee?->name }}
