@@ -36,6 +36,6 @@ class Container extends Model
 
     public function daily()
     {
-        return $this->hasOne(Daily::class, 'container_id');
+        return $this->hasMany(Daily::class, 'container_id');
     }
 }

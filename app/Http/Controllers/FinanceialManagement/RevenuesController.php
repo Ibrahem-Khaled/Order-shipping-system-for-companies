@@ -66,17 +66,14 @@ class RevenuesController extends Controller
 
     public function accountYears($clientId)
     {
-        // Get the current month
         $currentYear = Carbon::now()->year;
 
-        // Retrieve records for the current month
         $user = User::find($clientId);
 
         $daily = $user->clientdaily
             ->filter(function ($item) use ($currentYear) {
                 return $item->created_at?->year == $currentYear;
             });
-        // Retrieve container records for the current month
         $container = $user->container
             ->filter(function ($item) use ($currentYear) {
                 return $item->created_at->year == $currentYear;

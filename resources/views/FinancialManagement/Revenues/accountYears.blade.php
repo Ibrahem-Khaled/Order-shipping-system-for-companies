@@ -22,9 +22,7 @@
                             $totalBalance = 0;
                             $currentYear = now()->year;
 
-                            // Loop through each month of the current year
                             for ($month = 1; $month <= 12; $month++) {
-                                // Filter daily records for the current month
                                 if ($user->role == 'rent') {
                                     $monthTransactions = $user->rentCont->filter(function ($transaction) use ($currentYear, $month) {
                                         return $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month;
@@ -35,10 +33,8 @@
                                     });
                                 }
 
-                                // Calculate the total balance for the month
                                 $monthlyTotal = $monthTransactions->sum('price');
 
-                                // Store the month and total balance in the annual statement array
                                 $annualStatement[$month] = [
                                     'month' => $month,
                                     'monthlyTotal' => $monthlyTotal,

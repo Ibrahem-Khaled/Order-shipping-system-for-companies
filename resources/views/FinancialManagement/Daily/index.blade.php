@@ -266,7 +266,7 @@
                                                     {{ null }}
                                                 @endif
                                             </td>
-                                            <td>
+                                             <td>
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#confirmationModal{{ $item->id }}"
                                                     class="btn btn-danger">مسح</button>
@@ -408,9 +408,10 @@
                                                     {{ $item?->description }}-
                                                     {{ $item?->client?->name }}-
                                                     @if ($item->container_id !== null)
-                                                        {{ $item?->client?->customs?->first()?->statement_number }}
+                                                    {{ $item?->client?->customs?->first()?->statement_number }}
                                                         {{ $item?->client?->customs?->first()?->subclient_id }}-
                                                         {{ $item?->container?->number }}
+                                                        امر نقل 
                                                     @endif
                                                 @elseif ($item->employee_id !== null)
                                                     {{ $item->description }} - {{ $item?->emplyee?->name }}
