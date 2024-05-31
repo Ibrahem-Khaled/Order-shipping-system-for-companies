@@ -193,6 +193,15 @@ class CompanyController extends Controller
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
+        $companyPriceWithdraw = User::where('role', 'company')
+            ->first()
+            ->employeedaily()
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->where('type', 'withdraw')
+            ->sum('price');
+
+
         $employees = User::whereIn('role', ['driver', 'administrative'])
             ->whereNotNull('sallary')
             ->with('employeedaily')
@@ -228,7 +237,7 @@ class CompanyController extends Controller
 
         //return response()->json($mergedArrayAlbancher);
 
-        $others = User::whereIn('role', ['driver', 'company'])
+        $others = User::whereIn('role', ['driver'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
             })->whereRaw('name NOT LIKE "%بنشر%"')
@@ -253,6 +262,7 @@ class CompanyController extends Controller
                 'elbancherSum',
                 'others',
                 'customs',
+                'companyPriceWithdraw',
             )
         );
     }

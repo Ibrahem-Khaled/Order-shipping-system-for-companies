@@ -405,7 +405,7 @@
                                                 @if ($item->car_id !== null)
                                                     {{ $item->description }} - {{ $item?->car?->number }}
                                                 @elseif ($item->client_id !== null)
-                                                    {{ $item->container_id !== null ?'امر نقل -': null }}
+                                                    {{ $item->container_id !== null ? 'امر نقل -' : null }}
                                                     {{ $item?->description }}-
                                                     {{ $item?->client?->name }}-
                                                     @if ($item->container_id !== null)
@@ -419,7 +419,7 @@
                                                     {{ $item->description }}
                                                 @endif
                                             </td>
-                                            <td>{{ $item->created_at }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

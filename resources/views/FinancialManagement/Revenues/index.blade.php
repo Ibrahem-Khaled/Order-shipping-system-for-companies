@@ -14,7 +14,6 @@
                 </tr>
             </thead>
             @php
-                $priceSum = 0;
                 $containerCount = 0;
             @endphp
             <tbody>
@@ -22,7 +21,7 @@
                     <tr>
                         <th scope="row">{{ $user->id }}</th>
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $containersCount[$user->id] }}</td>
+                        <td>{{ $containerCount += $containersCount[$user->id] }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') - $user->clientdaily->sum('price') }}
                         </td>

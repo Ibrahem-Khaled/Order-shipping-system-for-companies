@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
@@ -21,10 +19,7 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($user->driverContainer as $item)
-                            @php
-                                $clint = App\Models\CustomsDeclaration::find($item->customs_id);
-                            @endphp
+                        @foreach ($currentMonthContainers as $item)
                             <tr>
                                 <td>
                                     @if ($item->created_at != $item->updated_at)
@@ -43,15 +38,12 @@
                                     {{ $item->number }}
                                 </td>
                                 <td>
-                                    {{ $clint->subclient_id }}
+                                    {{ $item->customs->subclient_id }}
                                 </td>
-                                <td>{{ $item->created_at }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->transfer_date)->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
-                    @php
-                        $allTrips = $user->driverContainer->sum('tips');
-                    @endphp
                 </table>
                 @if ($user->role == 'driver')
                     <h3> اجمالي التربات {{ $allTrips }}</h3>
@@ -59,6 +51,5 @@
             </div>
         </div>
     </div>
-
 
 @stop

@@ -74,7 +74,7 @@
                                         <td></td>
                                     @else
                                         <td class="text-center">
-                                            <input class="form-select" required type="date" name="created_at" />
+                                            <input class="form-select" required type="date" name="transfer_date" />
                                         </td>
                                         <td class="text-center">
                                             <select class="form-select w-100" name="car" required>

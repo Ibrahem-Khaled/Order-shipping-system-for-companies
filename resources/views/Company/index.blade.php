@@ -39,7 +39,7 @@
                                 <div class="numbers">
                                     <p class="text-sm mb-0 text-capitalize font-weight-bold">النقدية بنك او كاش</p>
                                     <h5 class="font-weight-bolder mb-0">
-                                        {{ $canCashWithdraw }}
+                                        {{ number_format($canCashWithdraw, 2) }}
                                         <span class="text-success text-sm font-weight-bolder">+3%</span>
                                     </h5>
                                 </div>
@@ -122,7 +122,7 @@
                             <a href="{{ route('companyDetailes') }}" class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
                                 <div class="bg-gradient-primary border-radius-lg h-50 m-5">
                                     <div class="position-relative d-flex align-items-center justify-content-center h-100">
-                                       <h4 class="text-white">شركة الأمجاد المتعددة</h4>
+                                        <h4 class="text-white">شركة الأمجاد المتعددة</h4>
                                     </div>
                                 </div>
                             </a>

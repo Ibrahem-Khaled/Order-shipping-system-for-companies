@@ -89,7 +89,7 @@ class DatesController extends Controller
         $driver = User::find($request->driver);
         $container->update([
             'status' => $request->status,
-            'created_at' => $request->created_at,
+            'transfer_date' => $request->transfer_date,
             'driver_id' => $request->driver,
             'tips' => $driver->tips ?? null,
             'car_id' => $request->car,

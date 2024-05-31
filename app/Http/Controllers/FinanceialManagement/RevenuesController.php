@@ -20,6 +20,7 @@ class RevenuesController extends Controller
         $containerCount = 0;
 
         foreach ($users as $user) {
+
             $monthlyContainers = $user->container()
                 ->whereIn('status', ['transport', 'done'])
                 ->whereMonth('created_at', Carbon::now()->month)
@@ -27,13 +28,22 @@ class RevenuesController extends Controller
                 ->count();
 
             $containersCount[$user->id] = $monthlyContainers;
-
-            $containerCount += $user->container->whereIn('status', ['transport', 'done'])->count();
+            
             $priceSum += $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price')
                 - $user->clientdaily->sum('price');
         }
 
-        return view('FinancialManagement.Revenues.index', compact('users', 'containersCount', 'priceSum', 'containerCount'));
+        //return response()->json($priceSum);
+
+        return view(
+            'FinancialManagement.Revenues.index',
+            compact(
+                'users',
+                'containersCount',
+                'priceSum',
+                'containerCount'
+            )
+        );
     }
 
 

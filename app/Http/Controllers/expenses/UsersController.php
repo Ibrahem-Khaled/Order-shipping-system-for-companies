@@ -64,17 +64,20 @@ class UsersController extends Controller
     }
     public function employeeTips($id)
     {
-        // Get the current month and year
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
-        $user = User::with([
-            'employeedaily' => function ($query) use ($currentMonth, $currentYear) {
-                $query->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear);
-            }
-        ])->find($id);
+        $user = User::find($id);
 
-        return view('FinancialManagement.Expenses.users.employeeTips', compact('user'));
+        $currentMonthContainers = $user->driverContainer()
+            ->whereMonth('transfer_date', Carbon::now()->month)
+            ->whereYear('transfer_date', Carbon::now()->year)
+            ->with('customs')
+            ->get();
+
+        $allTrips = $currentMonthContainers->sum('tips');
+
+        return view('FinancialManagement.Expenses.users.employeeTips', compact('user', 'currentMonthContainers', 'allTrips'));
     }
 
     public function others()

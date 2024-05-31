@@ -2,7 +2,7 @@
 
 @section('content')
     @php
-        use Carbon\Carbon; 
+        use Carbon\Carbon;
         $currentMonth = Carbon::now()->month;
         $totalPriceForYear = 0;
 
@@ -19,6 +19,7 @@
         $containerFiltered = $container->filter(function ($item) use ($currentMonth) {
             return Carbon::parse($item->created_at)->month == $currentMonth;
         });
+
         $depositFromMonth = $containerFiltered->sum('price');
         $rent_price = $containerFiltered->sum('rent_price');
 
@@ -26,7 +27,7 @@
             return Carbon::parse($item->created_at)->month == $currentMonth;
         });
         $carSum = $carsFiltered->sum('price');
- 
+
         $sumYearContainer = $container->sum('price');
 
         $othersSum = 0;
@@ -82,12 +83,20 @@
                             <td>{{ $carSum }}</td>
                         </tr>
                         <tr>
-                             <td>
+                            <td>
                                 <a href="{{ route('expensesSallaryeEmployee') }}">
                                     اجمالي المرتبات
                                 </a>
                             </td>
                             <td>{{ $employeeSum }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="{{ route('expensesSallaryeEmployee') }}">
+                                    كشوف نثرية وادارية
+                                </a>
+                            </td>
+                            <td>{{ number_format($companyPriceWithdraw, 2) }}</td>
                         </tr>
                         <tr>
                             <td>
