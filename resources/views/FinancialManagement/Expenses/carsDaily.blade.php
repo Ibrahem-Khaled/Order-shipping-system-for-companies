@@ -50,7 +50,7 @@
                                         {{ $item->description }}
                                     @endif
                                 </td>
-                                <td>{{ $item->created_at }}</td>
+                                <td>{{ $item->created_at->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
                     </tbody>

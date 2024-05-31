@@ -32,7 +32,7 @@
                     <td></td>
                     <td>{{ $containerCount }} مجموع الحاويات </td>
                     <td></td>
-                    <td>{{ $priceSum }} مجموع الايرادات </td>
+                    <td>{{ $priceSum }} مجموع باقي الايرادات </td>
                 </tr>
                 <!-- Add more rows as needed -->
             </tbody>

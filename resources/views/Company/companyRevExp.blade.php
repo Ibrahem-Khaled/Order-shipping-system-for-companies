@@ -93,7 +93,7 @@
                         <tr>
                             <td>
                                 <a href="{{ route('expensesSallaryeEmployee') }}">
-                                    كشوف نثرية وادارية
+                                    اجمالي المصروفات النثرية والادارية
                                 </a>
                             </td>
                             <td>{{ number_format($companyPriceWithdraw, 2) }}</td>

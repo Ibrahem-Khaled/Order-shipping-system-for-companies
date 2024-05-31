@@ -140,7 +140,7 @@
                             <tr>
                                 <td class="text-center">{{ $item->customs->subclient_id }}</td>
                                 <td class="text-center">{{ $item->client->name }}</td>
-                                <td class="text-center">{{ $item->created_at }}</td>
+                                <td class="text-center">{{ $item->transfer_date }}</td>
                                 @if ($item->rent_id == null)
                                     <td class="text-center">{{ $item->car->number ?? 0 }}</td>
                                     <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
