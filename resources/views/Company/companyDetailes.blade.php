@@ -1,11 +1,6 @@
 @extends('layouts.default')
 
 @section('content')
-    @php
-        $deposit = $container->sum('price');
-        $carSum = $cars->sum('price');
-        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
-    @endphp
 
     <section class="lis-bg-light">
         <div class="container">

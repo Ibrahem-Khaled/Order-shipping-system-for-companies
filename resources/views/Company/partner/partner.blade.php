@@ -139,9 +139,6 @@
 
                         @foreach ($partner as $item)
                             @php
-                                $deposit = $container->sum('price');
-
-                                $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum;
                                 $totalPrice = $deposit - $withdraw;
 
                                 $prtnerPriceSum = $item->partnerInfo?->sum('money');
@@ -263,7 +260,7 @@
                                     {{ $calculatedValue <= 0 ? 0 : $calculatedValue }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->is_active == 1 ? ($totalPrice * $partnerPriceRate) / 100 : 0 }}
+                                    {{ round($item->is_active == 1 ? ($totalPrice * $partnerPriceRate) / 100 : 0, 2) }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? $partnerPriceRate : 0 }}%</td>

@@ -38,15 +38,16 @@ class CompanyController extends Controller
         $elbancherSum = 0;
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
-            if (Str::contains($user->name, 'بنشري')) {
+            if (Str::contains($user->name, 'بنشر')) {
                 $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
                 $elbancherSum = $elbancherSum + $sum;
             }
         }
+
         $others = User::whereIn('role', ['driver', 'company'])
             ->Where(function ($query) {
                 $query->whereNull('sallary');
-            })->whereRaw('name NOT LIKE "%بنشري%"')
+            })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
         $othersSum = 0;
         foreach ($others as $other) {
@@ -57,7 +58,8 @@ class CompanyController extends Controller
 
         $cars = Daily::whereNotNull('car_id')
             ->where('type', 'withdraw')
-            ->get();
+            ->sum('price');
+
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
@@ -102,7 +104,6 @@ class CompanyController extends Controller
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
 
-        //return response()->json($notifications);
 
         $carData = Cars::with([
             'driver',
@@ -120,27 +121,31 @@ class CompanyController extends Controller
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
 
         $Profits_from_buying_and_selling = $buyTransactions->sum('price') - $sellTransactions->sum('price');
+
         $canCashWithdraw =
             $depositCash -
             $withdrawCash->sum('price') -
-            $partnerWithdraw->sum('price') +
             $sellFromHeadMony->sum('price') -
             $Profits_from_buying_and_selling;
+
+
+        $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
+
+        $deposits = $container->sum('price') + $transferPrice;
+
+        $withdraws = $cars + $employeeSum + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
 
         return view(
             'Company.index',
             compact(
                 'container',
                 'notifications',
-                'container',
-                'employeeSum',
                 'daily',
-                'cars',
                 'carData',
-                'elbancherSum',
-                'othersSum',
                 'clintPriceMinesContainer',
                 'canCashWithdraw',
+                'withdraws',
+                'deposits',
             )
         );
     }
@@ -186,21 +191,37 @@ class CompanyController extends Controller
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
-        return view('Company.companyDetailes', compact('container', 'employeeSum', 'daily', 'cars', 'elbancherSum', 'othersSum', 'partner'));
+
+        $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
+
+        $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
+
+        $deposit = $container->sum('price') + $transferPrice;
+
+        $withdraw = $cars->sum('price') + $employeeSum + $elbancherSum + $othersSum + $transferPrice + $partnerWithdraw->sum('price');
+
+        return view(
+            'Company.companyDetailes',
+            compact(
+                'container',
+                'daily',
+                'withdraw',
+                'partner',
+                'deposit',
+            )
+        );
     }
     public function companyRevExp()
     {
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
-        $companyPriceWithdraw = User::where('role', 'company')
-            ->first()
-            ->employeedaily()
-            ->whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->where('type', 'withdraw')
-            ->sum('price');
+        $companyPriceWithdraw = User::where('role', 'company')->with('employeedaily')
+            ->first();
 
+        //return response()->json($companyPriceWithdraw);
+
+        $transferPrice = Daily::whereNotNull('container_id')->where('type', 'withdraw');
 
         $employees = User::whereIn('role', ['driver', 'administrative'])
             ->whereNotNull('sallary')
@@ -243,14 +264,16 @@ class CompanyController extends Controller
             })->whereRaw('name NOT LIKE "%بنشر%"')
             ->get();
 
-        $container = Container::all();
+        $container = Container::with('daily')->get();
 
         $cars = Daily::whereNotNull('car_id')
             ->where('type', 'withdraw')
             ->get();
+
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
+            
         return view(
             'Company.companyRevExp',
             compact(
@@ -263,6 +286,7 @@ class CompanyController extends Controller
                 'others',
                 'customs',
                 'companyPriceWithdraw',
+                'transferPrice',
             )
         );
     }

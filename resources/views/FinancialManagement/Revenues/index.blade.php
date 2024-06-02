@@ -13,26 +13,36 @@
                     <th scope="col">اجمالي المطلوب من المكتب</th>
                 </tr>
             </thead>
-            @php
-                $containerCount = 0;
-            @endphp
             <tbody>
+                @php
+                    $totalContainers = 0;
+                    $totalRemainingRevenue = 0;
+                @endphp
                 @foreach ($users as $user)
+                    @php
+                        $userContainerCount = $containersCount[$user->id] ?? 0;
+                        $totalContainers += $userContainerCount;
+                        $userRemainingRevenue =
+                            $user->container
+                                ->whereIn('status', ['transport', 'done'])
+                                ->where('is_rent', 0)
+                                ->sum('price') - $user->clientdaily->sum('price');
+                        $totalRemainingRevenue += $userRemainingRevenue;
+                    @endphp
                     <tr>
                         <th scope="row">{{ $user->id }}</th>
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $containerCount += $containersCount[$user->id] }}</td>
+                        <td>{{ $userContainerCount }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price') - $user->clientdaily->sum('price') }}
-                        </td>
+                        <td>{{ $userRemainingRevenue }}</td>
                     </tr>
                 @endforeach
                 <tr class="fw-bold">
                     <th scope="row"></th>
                     <td></td>
-                    <td>{{ $containerCount }} مجموع الحاويات </td>
+                    <td>{{ $totalContainers }} مجموع الحاويات </td>
                     <td></td>
-                    <td>{{ $priceSum }} مجموع باقي الايرادات </td>
+                    <td>{{ $totalRemainingRevenue }} مجموع باقي الايرادات </td>
                 </tr>
                 <!-- Add more rows as needed -->
             </tbody>

@@ -1,12 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
-    @php
-        $deposits = $container->sum('price');
-        $carSum = $cars->sum('price');
-        $withdraws = $carSum + $employeeSum + $elbancherSum + $othersSum;
-    @endphp
-
+    
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">

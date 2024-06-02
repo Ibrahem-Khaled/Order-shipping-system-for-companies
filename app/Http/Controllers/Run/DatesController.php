@@ -16,7 +16,7 @@ class DatesController extends Controller
     {
         $query = $request->input('query');
         if (is_null($query)) {
-            $container = Container::whereIn('status', ['wait', 'rent'])->get();
+            $container = Container::whereIn('status', ['wait', 'rent'])->orderBy('created_at','desc')->get();
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
         } else {
             $container = Container::whereIn('status', ['wait', 'rent'])

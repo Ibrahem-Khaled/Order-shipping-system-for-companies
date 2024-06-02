@@ -21,7 +21,12 @@ class PartnerController extends Controller
         $partner = User::whereIn('role', ['partner', 'company'])
             ->get();
 
-        $container = Container::get();
+        $containers = Container::with('daily')->get();
+
+        $treansferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
+
+        $deposit = $containers->sum('price') + $treansferPrice;
+
 
         $employee = User::whereIn('role', ['driver', 'administrative'])
             ->whereNotNull('sallary')
@@ -79,7 +84,7 @@ class PartnerController extends Controller
         $clients = User::all();
 
         $depositCash = 0;
-        $withdrawCash = Daily::where('type', 'withdraw')->sum('price');
+        $withdrawCash = Daily::where('type', 'withdraw')->whereNull('container_id')->sum('price');
 
         foreach ($clients as $client) {
             $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
@@ -90,21 +95,20 @@ class PartnerController extends Controller
 
         $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
 
+        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $treansferPrice;
+
         return view(
             'Company.partner.partner',
             compact(
                 'partner',
                 'sumCompany',
-                'container',
-                'employeeSum',
-                'carSum',
-                'elbancherSum',
-                'othersSum',
                 'depositCash',
                 'withdrawCash',
                 'buyCash',
                 'sellCash',
                 'sellFromHeadMony',
+                'withdraw',
+                'deposit'
             )
         );
     }

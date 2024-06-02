@@ -22,6 +22,8 @@
                     </thead>
                     <tbody>
                         @php
+                            use Carbon\Carbon;
+
                             $annualStatement = [];
                             $currentYear = now()->year;
                             $currentMonth = now()->month;
@@ -29,7 +31,7 @@
                             $total = 0;
                             $saving = 0;
                             $date_runer = \Carbon\Carbon::parse($user->userInfo->date_runer);
-                            $month = $date_runer->month; 
+                            $month = $date_runer->month;
                             // Loop through each month of the current year
                             for ($month; $month <= $currentMonth; $month++) {
                                 // Filter daily records for the current month
@@ -45,9 +47,10 @@
                                     $currentYear,
                                     $month,
                                 ) {
-                                    return $transaction->created_at->year == $currentYear &&
-                                        $transaction->created_at->month == $month;
+                                    $transferDate = Carbon::parse($transaction->transfer_date);
+                                    return $transferDate->year == $currentYear && $transferDate->month == $month;
                                 });
+
                                 // Calculate the total balance for the month
                                 $dailyTransaction = $monthTransactions->where('type', 'withdraw')->sum('price');
                                 $monthlyTotal = $monthTransactions->where('type', 'withdraw')->sum('price');

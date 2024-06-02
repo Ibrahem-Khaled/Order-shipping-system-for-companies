@@ -28,7 +28,7 @@ class RevenuesController extends Controller
                 ->count();
 
             $containersCount[$user->id] = $monthlyContainers;
-            
+
             $priceSum += $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price')
                 - $user->clientdaily->sum('price');
         }
@@ -84,6 +84,7 @@ class RevenuesController extends Controller
             ->filter(function ($item) use ($currentYear) {
                 return $item->created_at?->year == $currentYear;
             });
+
         $container = $user->container
             ->filter(function ($item) use ($currentYear) {
                 return $item->created_at->year == $currentYear;
