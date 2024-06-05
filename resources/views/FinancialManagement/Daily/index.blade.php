@@ -301,102 +301,113 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#editModal{{ $item->id }}"
-                                                    class="btn btn-success">تعديل</button>
-                                                <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
-                                                    role="dialog" aria-labelledby="exampleModalLabel"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <!-- Modal Content Goes Here -->
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="addEmployeeModalLabel"> تعديل
-                                                                </h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form action="{{ route('updateDailyData', $item->id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    <div class="row">
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <input type="text" name="description"
-                                                                                required class="form-control"
-                                                                                value="{{ $item->description }}"
-                                                                                placeholder="الوصف" />
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <input type="text" name="price" required
-                                                                                class="form-control"
-                                                                                value="{{ $item->price }}"
-                                                                                placeholder="المبلغ" />
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <select name="type" required
-                                                                                class="form-control">
-                                                                                <option value="">نوع
-                                                                                    الحركة</option>
-                                                                                <option value="deposit">
-                                                                                    وارد</option>
-                                                                                <option value="withdraw">
-                                                                                    منصرف</option>
-                                                                            </select>
-                                                                        </div>
+                                                @if ($item->container_id == null)
+                                                    <button type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#editModal{{ $item->id }}"
+                                                        class="btn btn-success">تعديل</button>
+                                                    <div class="modal fade" id="editModal{{ $item->id }}"
+                                                        tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <!-- Modal Content Goes Here -->
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="addEmployeeModalLabel">
+                                                                        تعديل
+                                                                    </h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form
+                                                                        action="{{ route('updateDailyData', $item->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <div class="row">
+                                                                            <div class="mb-3 col-md-6">
+                                                                                <input type="text" name="description"
+                                                                                    required class="form-control"
+                                                                                    value="{{ $item->description }}"
+                                                                                    placeholder="الوصف" />
+                                                                            </div>
+                                                                            <div class="mb-3 col-md-6">
+                                                                                <input type="text" name="price"
+                                                                                    required class="form-control"
+                                                                                    value="{{ $item->price }}"
+                                                                                    placeholder="المبلغ" />
+                                                                            </div>
+                                                                            <div class="mb-3 col-md-6">
+                                                                                <select name="type" required
+                                                                                    class="form-control">
+                                                                                    <option value="">نوع
+                                                                                        الحركة</option>
+                                                                                    <option value="deposit">
+                                                                                        وارد</option>
+                                                                                    <option value="withdraw">
+                                                                                        منصرف</option>
+                                                                                </select>
+                                                                            </div>
 
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <select name="car_id" class="form-control">
-                                                                                <option value="">
-                                                                                    اختيار السيارة</option>
-                                                                                @foreach ($cars as $items)
-                                                                                    <option value="{{ $items->id }}">
-                                                                                        {{ $items->number }}
-                                                                                        -
-                                                                                        {{ $items->driver?->name }}
+                                                                            <div class="mb-3 col-md-6">
+                                                                                <select name="car_id"
+                                                                                    class="form-control">
+                                                                                    <option value="">
+                                                                                        اختيار السيارة</option>
+                                                                                    @foreach ($cars as $items)
+                                                                                        <option
+                                                                                            value="{{ $items->id }}">
+                                                                                            {{ $items->number }}
+                                                                                            -
+                                                                                            {{ $items->driver?->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="mb-3 col-md-6">
+                                                                                <select name="client_id"
+                                                                                    class="form-control">
+                                                                                    <option value="">
+                                                                                        اختيار حساب العميل
                                                                                     </option>
-                                                                                @endforeach
-                                                                            </select>
+                                                                                    @foreach ($client as $items)
+                                                                                        <option
+                                                                                            value="{{ $items->id }}">
+                                                                                            {{ $items->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="mb-3 col-md-6">
+                                                                                <select name="employee_id"
+                                                                                    class="form-control">
+                                                                                    <option value="">
+                                                                                        اختيار الحساب</option>
+                                                                                    @foreach ($employee as $items)
+                                                                                        <option
+                                                                                            value="{{ $items->id }}">
+                                                                                            {{ $items->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <select name="client_id" class="form-control">
-                                                                                <option value="">
-                                                                                    اختيار حساب العميل
-                                                                                </option>
-                                                                                @foreach ($client as $items)
-                                                                                    <option value="{{ $items->id }}">
-                                                                                        {{ $items->name }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <select name="employee_id"
-                                                                                class="form-control">
-                                                                                <option value="">
-                                                                                    اختيار الحساب</option>
-                                                                                @foreach ($employee as $items)
-                                                                                    <option value="{{ $items->id }}">
-                                                                                        {{ $items->name }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button id="submitBtn" type="submit"
-                                                                        class="btn btn-primary">عدل</button>
-                                                                </form>
-                                                            </div>
+                                                                        <button id="submitBtn" type="submit"
+                                                                            class="btn btn-primary">عدل</button>
+                                                                    </form>
+                                                                </div>
 
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">اغلاق</button>
-                                                                <!-- Include your "Add" button here to submit the form -->
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">اغلاق</button>
+                                                                    <!-- Include your "Add" button here to submit the form -->
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                </div>
+                                                    </div>
+                                                @endif
+
                                             </td>
                                             <td>{{ $item->type == 'deposit' ? $item->price : null }}</td>
                                             <td>{{ $item->type == 'withdraw' ? $item->price : null }}{{ $item->type == 'partner_withdraw' ? $item->price : null }}

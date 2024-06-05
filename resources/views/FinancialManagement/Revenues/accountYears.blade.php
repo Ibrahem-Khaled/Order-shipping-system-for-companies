@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="col-md-12">
-        <h1 class="text-success" style="text-align: right"> كشف حساب سنوي ل {{ $user->name }}</h1>
+        <h1 class="text-success text-right">كشف حساب سنوي ل {{ $user->name }}</h1>
     </div>
 
     <div class="container mt-5">
@@ -12,6 +12,8 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th scope="col">المتبقي</th>
+                            <th scope="col">اجمالي الوارد</th>
                             <th scope="col">الرصيد الكلي</th>
                             <th scope="col">الشهر</th>
                         </tr>
@@ -20,51 +22,47 @@
                         @php
                             $annualStatement = [];
                             $currentYear = now()->year;
+                            $cumulativeResidual = 0;
 
                             for ($month = 1; $month <= 12; $month++) {
                                 $priceTransfer = 0;
 
-                                if ($user->role == 'rent') {
-                                    $monthTransactions = $user->rentCont->filter(function ($transaction) use (
-                                        $currentYear,
-                                        $month,
-                                    ) {
-                                        return $transaction->created_at->year == $currentYear &&
-                                            $transaction->created_at->month == $month;
-                                    });
-                                } else {
-                                    $container = $user->container;
+                                $monthTransactions = $user->role == 'rent' 
+                                    ? $user->rentCont->filter(fn($transaction) => $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month)
+                                    : $user->container->filter(fn($transaction) => $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month);
 
-                                    $monthTransactions = $container->filter(function ($transaction) use (
-                                        $currentYear,
-                                        $month,
-                                    ) {
-                                        return $transaction->created_at->year == $currentYear &&
-                                            $transaction->created_at->month == $month;
-                                    });
-
-                                    foreach ($monthTransactions as $key => $value) {
-                                        $priceTransfer += $value->daily
-                                            ->filter(function ($item) use ($month) {
-                                                return Carbon\Carbon::parse($item->created_at)->month;
-                                            })
+                                if ($user->role != 'rent') {
+                                    $monthDeposit = $user->clientdaily->filter(fn($transaction) => $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month);
+                                    
+                                    foreach ($monthTransactions as $transaction) {
+                                        $priceTransfer += $transaction->daily
+                                            ->filter(fn($item) => $item->created_at->month == $month)
                                             ->where('type', 'withdraw')
                                             ->sum('price');
                                     }
                                 }
 
-                                $monthlyTotal = $monthTransactions->sum('price') + $priceTransfer;
+                                $monthlyTotalFromContainer = $monthTransactions->sum('price') + $priceTransfer;
+                                $monthlyDeposit = isset($monthDeposit) ? $monthDeposit->where('type', 'deposit')->sum('price') : 0;
+                                
+                                $residual = $monthlyTotalFromContainer - $monthlyDeposit;
+                                $cumulativeResidual += $residual;
 
-                                $annualStatement[$month] = [
+                                $annualStatement[] = [
                                     'month' => $month,
-                                    'monthlyTotal' => $monthlyTotal,
+                                    'monthlyTotalFromContainer' => $monthlyTotalFromContainer + $cumulativeResidual,
+                                    'monthlyTotalFromContainerCurrent' => $monthlyTotalFromContainer,
+                                    'monthlyDeposit' => $monthlyDeposit,
+                                    'residual' => $cumulativeResidual,
                                 ];
                             }
                         @endphp
 
                         @foreach ($annualStatement as $statement)
                             <tr>
-                                <td>{{ $statement['monthlyTotal'] }}</td>
+                                <td>{{ $statement['residual'] }}</td>
+                                <td>{{ $statement['monthlyDeposit'] }}</td>
+                                <td>{{ $statement['monthlyTotalFromContainerCurrent'] }}</td>
                                 <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}</td>
                             </tr>
                         @endforeach
@@ -82,7 +80,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($daily->where('type', 'deposit')->sortBy('created_at') as $item)
+                        @foreach ($user->clientdaily->where('type', 'deposit')->sortBy('created_at') as $item)
                             <tr>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->description }}</td>
@@ -102,11 +100,9 @@
                 $sumPrice = $user->rentCont->sum('price');
             } else {
                 $priceTransferTotal = 0;
-                foreach ($container as $key => $value) {
+                foreach ($user->container as $value) {
                     $priceTransferTotal += $value->daily
-                        ->filter(function ($item) use ($month) {
-                            return Carbon\Carbon::parse($item->created_at)->month;
-                        })
+                        ->filter(fn($item) => $item->created_at->month == $value->created_at->month)
                         ->where('type', 'withdraw')
                         ->sum('price');
                 }
