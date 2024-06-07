@@ -106,25 +106,9 @@
 
     <div class="col-md-12">
         <h1 class="text-primary">المتبقي</h1>
-        @php
-            if ($user->role == 'rent') {
-                $sumPrice = $user->rentCont->sum('price');
-            } else {
-                $priceTransferTotal = 0;
-                foreach ($user->container as $value) {
-                    $priceTransferTotal += $value->daily
-                        ->filter(
-                            fn($item) => $item->created_at->month == $value->created_at->month &&
-                                $item->type == 'withdraw',
-                        )
-                        ->sum('price');
-                }
-                $sumPrice = $user->container->sum('price') + $priceTransferTotal;
-            }
-            $sumDaily = $user->clientdaily->where('type', 'deposit')->sum('price');
-        @endphp
+
         <h3 class="text-dark">
-            {{ $sumPrice - $sumDaily }}
+            {{ $cumulativeResidual }}
         </h3>
     </div>
 
