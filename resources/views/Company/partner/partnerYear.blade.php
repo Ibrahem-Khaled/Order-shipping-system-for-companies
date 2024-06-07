@@ -12,7 +12,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">الارباح</th>
+                            <th scope="col">الأرباح</th>
                             <th scope="col">الشهر</th>
                         </tr>
                     </thead>
@@ -23,53 +23,63 @@
                             $annualStatement = [];
                             $totalEarnMoney = 0;
 
+                            // User creation month
+                            $userCreationMonth = Carbon::parse($user->created_at)->month;
+
                             for ($month = 1; $month <= 12; $month++) {
-                                $monthlyDeposits = $container
-                                    ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
-                                    ->sum('price');
-
-                                $employeeSum = $employees->sum(
-                                    fn($employee) => $employee->employeedaily
-                                        ->where('type', 'withdraw')
-                                        ->filter(fn($daily) => Carbon::parse($daily->created_at)->month == $month)
-                                        ->sum('price'),
-                                );
-
-                                $carsFiltered = $cars->sum(
-                                    fn($car) => $car->daily
+                                if ($month >= $userCreationMonth) {
+                                    $monthlyDeposits = $container
                                         ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
-                                        ->sum('price'),
-                                );
+                                        ->sum('price');
 
-                                $othersSum = $others->sum(
-                                    fn($other) => $other->employeedaily
-                                        ->where('type', 'withdraw')
-                                        ->filter(fn($daily) => Carbon::parse($daily->created_at)->month == $month)
-                                        ->sum('price'),
-                                );
+                                    $employeeSum = $employees->sum(
+                                        fn($employee) => $employee->employeedaily
+                                            ->where('type', 'withdraw')
+                                            ->filter(fn($daily) => Carbon::parse($daily->created_at)->month == $month)
+                                            ->sum('price'),
+                                    );
 
-                                $elbancherFiltered = collect($mergedArrayAlbancher)
-                                    ->filter(
-                                        fn($item) => Carbon::parse($item['created_at'])->month == $month &&
-                                            $item['type'] == 'withdraw',
-                                    )
-                                    ->sum('price');
+                                    $carsFiltered = $cars->sum(
+                                        fn($car) => $car->daily
+                                            ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
+                                            ->sum('price'),
+                                    );
 
-                                $withdrawMonth = $carsFiltered + $employeeSum + $elbancherFiltered + $othersSum;
-                                $totalPrice = $monthlyDeposits - $withdrawMonth;
+                                    $othersSum = $others->sum(
+                                        fn($other) => $other->employeedaily
+                                            ->where('type', 'withdraw')
+                                            ->filter(fn($daily) => Carbon::parse($daily->created_at)->month == $month)
+                                            ->sum('price'),
+                                    );
 
-                                $partnerSum =
-                                    $user->is_active == 1
-                                        ? (($user->partnerInfo?->sum('money') ?? 0) / $sumCompany) * 100
-                                        : 0;
-                                $monthlyProfit = $user->is_active == 1 ? ($totalPrice * $partnerSum) / 100 : 0;
+                                    $elbancherFiltered = collect($mergedArrayAlbancher)
+                                        ->filter(
+                                            fn($item) => Carbon::parse($item['created_at'])->month == $month &&
+                                                $item['type'] == 'withdraw',
+                                        )
+                                        ->sum('price');
 
-                                $totalEarnMoney += $monthlyProfit;
+                                    $withdrawMonth = $carsFiltered + $employeeSum + $elbancherFiltered + $othersSum;
+                                    $totalPrice = $monthlyDeposits - $withdrawMonth;
 
-                                $annualStatement[$month] = [
-                                    'month' => $month,
-                                    'deposits' => $monthlyProfit,
-                                ];
+                                    $partnerSum =
+                                        $user->is_active == 1
+                                            ? (($user->partnerInfo?->sum('money') ?? 0) / $sumCompany) * 100
+                                            : 0;
+                                    $monthlyProfit = $user->is_active == 1 ? ($totalPrice * $partnerSum) / 100 : 0;
+
+                                    $totalEarnMoney += $monthlyProfit;
+
+                                    $annualStatement[$month] = [
+                                        'month' => $month,
+                                        'deposits' => number_format($monthlyProfit, 2), // Format numbers
+                                    ];
+                                } else {
+                                    $annualStatement[$month] = [
+                                        'month' => $month,
+                                        'deposits' => '0.00',
+                                    ];
+                                }
                             }
                         @endphp
 
@@ -80,6 +90,7 @@
                             </tr>
                         @endforeach
                     </tbody>
+
                 </table>
             </div>
 
@@ -93,12 +104,12 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $partnerSumWithdraw = $user->partnerdaily->where('type', 'partner_withdraw')->sum('price');
+                        @endphp
                         @foreach ($user->partnerdaily as $item)
-                            @php
-                                $partnerSumWithdraw = $item->where('type', 'partner_withdraw')->sum('price');
-                            @endphp
                             <tr>
-                                <td>{{ $item->price }}</td>
+                                <td>{{ number_format($item->price, 2) }}</td>
                                 <td>{{ $item->description }}</td>
                                 <td>{{ $item->created_at }}</td>
                             </tr>
@@ -111,7 +122,7 @@
 
     <div class="col-md-12">
         <h1 class="text-primary">اجمالي الارباح</h1>
-        <h3 class="text-dark">{{ $totalEarnMoney - $partnerSumWithdraw }}</h3>
+        <h3 class="text-dark">{{ number_format($totalEarnMoney - $partnerSumWithdraw, 2) }}</h3>
     </div>
 
 @stop
