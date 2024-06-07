@@ -62,16 +62,19 @@ class UsersController extends Controller
 
         return view('FinancialManagement.Expenses.users.employeeDaily', compact('user', 'employee'));
     }
-    public function employeeTips($id)
+    public function employeeTips(Request $request, $id)
     {
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+        $user = User::findOrFail($id);
 
-        $user = User::find($id);
+        $query = $request->input('query');
+
+        $date = $query ? Carbon::createFromFormat('Y-m', $query) : Carbon::now();
+        $currentMonth = $date->month;
+        $currentYear = $date->year;
 
         $currentMonthContainers = $user->driverContainer()
-            ->whereMonth('transfer_date', Carbon::now()->month)
-            ->whereYear('transfer_date', Carbon::now()->year)
+            ->whereMonth('transfer_date', $currentMonth)
+            ->whereYear('transfer_date', $currentYear)
             ->with('customs')
             ->get();
 
@@ -79,6 +82,7 @@ class UsersController extends Controller
 
         return view('FinancialManagement.Expenses.users.employeeTips', compact('user', 'currentMonthContainers', 'allTrips'));
     }
+
 
     public function others()
     {

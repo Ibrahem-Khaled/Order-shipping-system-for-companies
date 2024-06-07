@@ -27,24 +27,35 @@
                             for ($month = 1; $month <= 12; $month++) {
                                 $priceTransfer = 0;
 
-                                $monthTransactions = $user->role == 'rent' 
-                                    ? $user->rentCont->filter(fn($transaction) => $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month)
-                                    : $user->container->filter(fn($transaction) => $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month);
+                                $monthTransactions =
+                                    $user->role == 'rent'
+                                        ? $user->rentCont->filter(
+                                            fn($transaction) => $transaction->created_at->year == $currentYear &&
+                                                $transaction->created_at->month == $month,
+                                        )
+                                        : $user->container->filter(
+                                            fn($transaction) => $transaction->created_at->year == $currentYear &&
+                                                $transaction->created_at->month == $month,
+                                        );
 
                                 if ($user->role != 'rent') {
-                                    $monthDeposit = $user->clientdaily->filter(fn($transaction) => $transaction->created_at->year == $currentYear && $transaction->created_at->month == $month);
-                                    
+                                    $monthDeposit = $user->clientdaily->filter(
+                                        fn($transaction) => $transaction->created_at->year == $currentYear &&
+                                            $transaction->created_at->month == $month,
+                                    );
+
                                     foreach ($monthTransactions as $transaction) {
                                         $priceTransfer += $transaction->daily
-                                            ->filter(fn($item) => $item->created_at->month == $month)
-                                            ->where('type', 'withdraw')
+                                            ->filter(fn($item) => $item->type == 'withdraw')
                                             ->sum('price');
                                     }
                                 }
 
                                 $monthlyTotalFromContainer = $monthTransactions->sum('price') + $priceTransfer;
-                                $monthlyDeposit = isset($monthDeposit) ? $monthDeposit->where('type', 'deposit')->sum('price') : 0;
-                                
+                                $monthlyDeposit = isset($monthDeposit)
+                                    ? $monthDeposit->where('type', 'deposit')->sum('price')
+                                    : 0;
+
                                 $residual = $monthlyTotalFromContainer - $monthlyDeposit;
                                 $cumulativeResidual += $residual;
 
@@ -84,7 +95,7 @@
                             <tr>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->description }}</td>
-                                <td>{{ $item->created_at }}</td>
+                                <td>{{ $item->created_at->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -102,8 +113,10 @@
                 $priceTransferTotal = 0;
                 foreach ($user->container as $value) {
                     $priceTransferTotal += $value->daily
-                        ->filter(fn($item) => $item->created_at->month == $value->created_at->month)
-                        ->where('type', 'withdraw')
+                        ->filter(
+                            fn($item) => $item->created_at->month == $value->created_at->month &&
+                                $item->type == 'withdraw',
+                        )
                         ->sum('price');
                 }
                 $sumPrice = $user->container->sum('price') + $priceTransferTotal;
@@ -114,4 +127,5 @@
             {{ $sumPrice - $sumDaily }}
         </h3>
     </div>
+
 @stop

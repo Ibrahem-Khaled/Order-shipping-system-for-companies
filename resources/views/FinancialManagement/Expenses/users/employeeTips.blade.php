@@ -3,8 +3,17 @@
 @section('content')
 
     <div class="container mt-5">
+
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
+                <form class="form-inline" action="{{ route('expensesEmployeeTips', Route::current()->parameter('id')) }}">
+                    <div class="input-group">
+                        <input type="month" name="query" class="form-control" data-td-target="#datetimepicker">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </div>
+                    </div>
+                </form>
                 <h2>{{ $user->name }}</h2>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
@@ -50,6 +59,5 @@
                 @endif
             </div>
         </div>
-    </div>
 
-@stop
+    @stop
