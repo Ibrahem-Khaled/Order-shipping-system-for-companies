@@ -72,8 +72,17 @@ class CompanyController extends Controller
         foreach ($clients as $client) {
             $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
-        $containerTransport = Container::whereIn('status', ['transport', 'done'])->sum('price');
-        $clintPriceMinesContainer = $containerTransport - $depositCash;
+
+        $containerTransport = Container::whereIn('status', ['transport', 'done'])->get();
+        $containerTransferPrice = 0;
+
+        foreach ($containerTransport as $container) {
+            $containerTransferPrice += $container->daily()->whereNotNull('container_id')->sum('price');
+        }
+
+        $clintPriceMinesContainer = $containerTransport->sum('price') + $containerTransferPrice - $depositCash;
+
+
 
         $dailyData = Daily::whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->latest()
@@ -273,7 +282,7 @@ class CompanyController extends Controller
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
-            
+
         return view(
             'Company.companyRevExp',
             compact(
