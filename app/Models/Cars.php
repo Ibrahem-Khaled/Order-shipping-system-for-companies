@@ -24,4 +24,9 @@ class Cars extends Model
     {
         return $this->hasMany(Daily::class, 'car_id');
     }
+
+    public function tips()
+    {
+        return $this->hasOne(Tips::class, 'car_id');
+    }
 }

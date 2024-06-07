@@ -110,7 +110,40 @@
                         </td>
                     </tr>
                 @endforeach
-                <!-- Add more rows as needed -->
+            </tbody>
+            <tbody>
+                @foreach ($usersDeleted as $item)
+                    <tr>
+                        <th scope="row">{{ $item->id }}</th>
+                        <td><a href="{{ route('getOfficeContainerData', $item->id) }}">{{ $item->name }}</a></td>
+                        <td>{{ $item->container->whereIn('status', ['wait', 'rent'])->count() }}</td>
+                        <td>
+                            @php
+                                $containerCount = 0;
+                                foreach ($item->customs as $custom) {
+                                    $customing = \App\Models\CustomsDeclaration::find($custom->id);
+                                    if ($customing->container->whereIn('status', ['wait', 'rent'])->count() > 0) {
+                                        $containerCount++;
+                                    }
+                                }
+                                echo $containerCount;
+                            @endphp
+                        </td>
+                        <td>
+                            <!-- Button to trigger the modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#myModal{{ $item->id }}">
+                                اضافة بيان جمركي
+                            </button>
+                            <form action="{{ route('deleteOffices', $item->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success">
+                                    استرجاع المكتب
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

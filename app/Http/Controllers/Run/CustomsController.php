@@ -14,13 +14,14 @@ class CustomsController extends Controller
     {
         $query = $request->input('query');
         if (is_null($query)) {
-            $users = User::where('role', 'client')->get();
+            $users = User::where('role', 'client')->where('is_active', 1)->get();
+            $usersDeleted = User::where('role', 'client')->where('is_active', 0)->get();
         } else {
             $users = User::where('created_at', 'like', '%' . $query . '%')
                 ->orWhere('name', 'like', '%' . $query . '%')
                 ->get();
         }
-        return view('run.Customs', compact('users'));
+        return view('run.Customs', compact('users', 'usersDeleted'));
     }
     public function getOfficeContainerData($clientId)
     {
@@ -72,7 +73,7 @@ class CustomsController extends Controller
             return redirect()->back()->with('error', 'User not found.');
         }
         if ($user->role === 'client') {
-            $user->delete();
+            $user->update(['is_active' => $user->is_active ? 0 : 1]);
             return redirect()->back()->with('success', 'User deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'You do not have permission to delete this user.');

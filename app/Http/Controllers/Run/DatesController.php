@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cars;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
+use App\Models\Tips;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class DatesController extends Controller
     {
         $query = $request->input('query');
         if (is_null($query)) {
-            $container = Container::whereIn('status', ['wait', 'rent'])->orderBy('created_at','desc')->get();
+            $container = Container::whereIn('status', ['wait', 'rent'])->orderBy('created_at', 'desc')->get();
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
         } else {
             $container = Container::whereIn('status', ['wait', 'rent'])
@@ -104,6 +105,23 @@ class DatesController extends Controller
     public function updateEmpty(Request $request, $id)
     {
         $container = Container::find($id);
+
+        if ($request->status == 'done') {
+            if ($container->tips()->exists()) {
+                $container->tips()->update([
+                    'user_id' => $request->user_id,
+                    'car_id' => $request->car_id,
+                    'price' => $request->price,
+                ]);
+            } else {
+                Tips::create([
+                    'container_id' => $id,
+                    'user_id' => $request->user_id,
+                    'car_id' => $request->car_id,
+                    'price' => $request->price,
+                ]);
+            }
+        }
         $container->update([
             'status' => $request->status,
         ]);

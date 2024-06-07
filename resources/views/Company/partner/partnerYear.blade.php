@@ -62,11 +62,24 @@
                                     $withdrawMonth = $carsFiltered + $employeeSum + $elbancherFiltered + $othersSum;
                                     $totalPrice = $monthlyDeposits - $withdrawMonth;
 
-                                    $partnerSum =
-                                        $user->is_active == 1
-                                            ? (($user->partnerInfo?->sum('money') ?? 0) / $sumCompany) * 100
-                                            : 0;
-                                    $monthlyProfit = $user->is_active == 1 ? ($totalPrice * $partnerSum) / 100 : 0;
+                                    // الشركاء النشطين في هذا الشهر
+                                    $activePartners = $partners->filter(
+                                        fn($partner) => $partner->is_active == 1 &&
+                                            Carbon::parse($partner->created_at)->month <= $month,
+                                    );
+
+                                    // جمع إجمالي أموال الشركاء النشطين
+                                    $totalActivePartnerSum = $activePartners->sum(
+                                        fn($partner) => $partner->partnerInfo->sum('money'),
+                                    );
+
+                                    $monthlyProfit = 0;
+
+                                    if ($totalActivePartnerSum > 0) {
+                                        $userShare = $user->partnerInfo?->sum('money') ?? 0;
+                                        $partnerSum = ($userShare / $totalActivePartnerSum) * 100;
+                                        $monthlyProfit = ($totalPrice * $partnerSum) / 100;
+                                    }
 
                                     $totalEarnMoney += $monthlyProfit;
 

@@ -80,4 +80,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PartnerInfo::class, 'partner_id');
     }
+
+    public function tips()
+    {
+        return $this->hasOne(Tips::class, 'user_id');
+    }
 }

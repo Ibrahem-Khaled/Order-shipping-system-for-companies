@@ -84,7 +84,7 @@ class PartnerController extends Controller
         $clients = User::all();
 
         $depositCash = 0;
-        $withdrawCash = Daily::where('type', 'withdraw')->whereNull('container_id')->sum('price');
+        $withdrawCash = Daily::where('type', 'withdraw')->sum('price');
 
         foreach ($clients as $client) {
             $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
@@ -183,8 +183,7 @@ class PartnerController extends Controller
     public function partnerYearStatement($id)
     {
         $user = User::find($id);
-
-        $partner = User::whereIn('role', ['partner', 'company'])
+        $partners = User::whereIn('role', ['partner', 'company'])
             ->get();
 
         $container = Container::get();
@@ -220,7 +219,7 @@ class PartnerController extends Controller
         $cars = Cars::with('daily')->get();
 
         $sumCompany = 0;
-        foreach ($partner as $value) {
+        foreach ($partners as $value) {
             if ($value->is_active == 1) {
                 $sumCompany += $value->partnerInfo?->sum('money');
             }
@@ -246,7 +245,7 @@ class PartnerController extends Controller
             'Company.partner.partnerYear',
             compact(
                 'user',
-                'partner',
+                'partners',
                 'sumCompany',
                 'container',
                 'employees',

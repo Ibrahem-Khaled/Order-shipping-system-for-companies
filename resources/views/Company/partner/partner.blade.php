@@ -135,7 +135,7 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody> 
 
                         @foreach ($partner as $item)
                             @php
