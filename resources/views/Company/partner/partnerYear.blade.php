@@ -94,6 +94,9 @@
                     </thead>
                     <tbody>
                         @foreach ($user->partnerdaily as $item)
+                            @php
+                                $partnerSumWithdraw = $item->where('type', 'withdraw')->sum('price');
+                            @endphp
                             <tr>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->description }}</td>
@@ -108,7 +111,7 @@
 
     <div class="col-md-12">
         <h1 class="text-primary">اجمالي الارباح</h1>
-        <h3 class="text-dark">{{ $totalEarnMoney }}</h3>
+        <h3 class="text-dark">{{ $totalEarnMoney - $partnerSumWithdraw }}</h3>
     </div>
 
 @stop
