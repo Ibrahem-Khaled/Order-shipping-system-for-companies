@@ -22,13 +22,23 @@
                     @php
                         $userContainerCount = $containersCount[$user->id] ?? 0;
                         $totalContainers += $userContainerCount;
+                        $userContainers = $user->container;
+                        $totalContainerPriceTransfer = 0;
+
+                        foreach ($userContainers as $key => $value) {
+                            $totalContainerPriceTransfer += $value->daily()->whereNotNull('container_id')->sum('price');
+                        }
+
                         $userRemainingRevenue =
-                            $user->container
+                            $userContainers
                                 ->whereIn('status', ['transport', 'done'])
                                 ->where('is_rent', 0)
-                                ->sum('price') - $user->clientdaily->sum('price');
+                                ->sum('price') +
+                            $totalContainerPriceTransfer -
+                            $user->clientdaily->where('type', 'deposit')->sum('price');
                         $totalRemainingRevenue += $userRemainingRevenue;
                     @endphp
+
                     <tr>
                         <th scope="row">{{ $user->id }}</th>
                         <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>

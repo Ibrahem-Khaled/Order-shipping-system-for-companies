@@ -162,7 +162,7 @@ class Daily extends Controller
             }
 
             if ($container->status == 'wait') {
-                return redirect()->back()->with('success', $message . ' لكن هي انتظار');
+                return redirect()->back()->with('warning', $message . ' لكن هي انتظار');
             }
 
             return redirect()->back()->with('success', $message);
