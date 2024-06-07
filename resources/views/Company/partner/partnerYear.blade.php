@@ -95,7 +95,7 @@
                     <tbody>
                         @foreach ($user->partnerdaily as $item)
                             @php
-                                $partnerSumWithdraw = $item->where('type', 'withdraw')->sum('price');
+                                $partnerSumWithdraw = $item->where('type', 'partner_withdraw')->sum('price');
                             @endphp
                             <tr>
                                 <td>{{ $item->price }}</td>
