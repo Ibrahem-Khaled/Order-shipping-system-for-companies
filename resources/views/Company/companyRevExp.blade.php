@@ -9,40 +9,48 @@
         $currentYear = Carbon::now()->year;
         $totalPriceForYear = 0;
 
-        $employeeSum = 0;
-        foreach ($employees as $employee) {
-            $employeeSum += $employee->employeedaily
+        $employeeSum = $employees->sum(function ($employee) use ($currentMonth) {
+            return $employee->employeedaily
                 ->where('type', 'withdraw')
                 ->filter(function ($daily) use ($currentMonth) {
                     return Carbon::parse($daily->created_at)->month === $currentMonth;
                 })
                 ->sum('price');
-        }
+        });
 
         $containerFilteredCurrentMonth = $container->filter(function ($item) use ($currentMonth) {
             return Carbon::parse($item->created_at)->month == $currentMonth;
         });
 
-        $totals = [];
-        foreach ($containerFilteredCurrentMonth as $items) {
-            $filteredDaily = $items->daily->filter(function ($item) use ($currentMonth) {
-                return Carbon::parse($item->created_at)->month;
-            });
-            $totalPrice = $filteredDaily->sum('price');
-            $totals[$items->id] = $totalPrice;
-        }
-        $sumContainer = $containerFilteredCurrentMonth->sum('price') + array_sum($totals);
+        $totals = $containerFilteredCurrentMonth->mapWithKeys(function ($items) use ($currentMonth) {
+            $totalPrice = $items->daily
+                ->filter(function ($daily) use ($currentMonth) {
+                    return Carbon::parse($daily->created_at)->month == $currentMonth;
+                })
+                ->sum('price');
+            return [$items->id => $totalPrice];
+        });
 
-        $totalTransferPriceCurrentMonth = [];
-        foreach ($container as $items) {
-            $filteredDaily = $items->daily->filter(function ($item) use ($currentMonth) {
-                return Carbon::parse($item->created_at)->month == $currentMonth;
-            });
-            $totalPrice = $filteredDaily->sum('price');
-            $totalTransferPriceCurrentMonth[$items->id] = $totalPrice;
-        }
+        $sumContainer = $containerFilteredCurrentMonth->sum('price') + $totals->sum();
 
-        $rent_price = $containerFilteredCurrentMonth->sum('rent_price');
+        $totalTransferPriceCurrentMonth = $container->mapWithKeys(function ($items) use ($currentMonth) {
+            $totalPrice = $items->daily
+                ->filter(function ($daily) use ($currentMonth) {
+                    return Carbon::parse($daily->created_at)->month == $currentMonth;
+                })
+                ->sum('price');
+            return [$items->id => $totalPrice];
+        });
+
+        $rent_price = $rentOffices->map(function ($items) use ($currentMonth) {
+            return $items->employeedaily
+                ->filter(function ($daily) use ($currentMonth) {
+                    return Carbon::parse($daily->created_at)->month == $currentMonth;
+                })
+                ->where('type', 'withdraw')
+                ->sum('price');
+        });
+        $totalRentPriceFromCurrentMonth = $rent_price->sum();
 
         $carsFiltered = $cars->filter(function ($item) use ($currentMonth) {
             return Carbon::parse($item->created_at)->month == $currentMonth;
@@ -50,39 +58,39 @@
 
         $carSum = $carsFiltered->sum('price');
 
-        $totalYear = [];
-        foreach ($container as $items) {
-            $filteredDaily = $items->daily->sum('price');
-            $totalYear[$items->id] = $filteredDaily;
-        }
+        $totalYear = $container->mapWithKeys(function ($items) {
+            $totalPrice = $items->daily->sum('price');
+            return [$items->id => $totalPrice];
+        });
 
-        $sumYearContainer = $container->sum('price') + array_sum($totalYear);
+        $sumYearContainer = $container->sum('price') + $totalYear->sum();
 
-        $othersSum = 0;
-        foreach ($others as $other) {
-            $othersSum += $other->employeedaily
+        $othersSum = $others->sum(function ($other) use ($currentMonth) {
+            return $other->employeedaily
                 ->where('type', 'withdraw')
                 ->filter(function ($daily) use ($currentMonth) {
                     return Carbon::parse($daily->created_at)->month === $currentMonth;
                 })
                 ->sum('price');
-        }
+        });
 
         $companyPriceWithdrawCurrentMonth = $companyPriceWithdraw
             ->employeedaily()
             ->where('type', 'withdraw')
-            ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
+            ->get()
+            ->filter(function ($daily) use ($currentMonth) {
+                return Carbon::parse($daily->created_at)->month == $currentMonth;
+            })
             ->sum('price');
 
-        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $rent_price;
+        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $totalRentPriceFromCurrentMonth;
 
     @endphp
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
                 <table class="table">
-
                     <thead>
                         <tr>
                             <th scope="col">كشوف حسابات الواردة</th>
@@ -140,7 +148,7 @@
                                     اجمالي اوامر النقل
                                 </a>
                             </td>
-                            <td>{{ array_sum($totalTransferPriceCurrentMonth) }}</td>
+                            <td>{{ $totalTransferPriceCurrentMonth->sum() }}</td>
                         </tr>
                         <tr>
                             <td>
@@ -164,7 +172,7 @@
                                     اجمالي كشوف حسابات الايجارات
                                 </a>
                             </td>
-                            <td>{{ $rent_price }}</td>
+                            <td>{{ $totalRentPriceFromCurrentMonth }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -182,21 +190,30 @@
             <tbody class="fw-bold">
                 @for ($month = 1; $month <= 12; $month++)
                     @php
-
                         $containerFiltered = $container->filter(function ($item) use ($month) {
                             return \Carbon\Carbon::parse($item->created_at)->month == $month;
                         });
 
-                        $totals = [];
-                        foreach ($containerFiltered as $items) {
-                            $filteredDaily = $items->daily->filter(function ($item) use ($month) {
-                                return Carbon::parse($item->created_at)->month;
-                            });
-                            $totalPrice = $filteredDaily->sum('price');
-                            $totals[$items->id] = $totalPrice;
-                        }
+                        $rent_price = $rentOffices->map(function ($items) use ($month) {
+                            return $items->employeedaily
+                                ->filter(function ($daily) use ($month) {
+                                    return Carbon::parse($daily->created_at)->month == $month;
+                                })
+                                ->where('type', 'withdraw')
+                                ->sum('price');
+                        });
+                        $totalRentPriceFromCurrentMonth = $rent_price->sum();
 
-                        $sumContainer = $containerFiltered->sum('price') + array_sum($totals);
+                        $totals = $containerFiltered->mapWithKeys(function ($items) use ($month) {
+                            $totalPrice = $items->daily
+                                ->filter(function ($daily) use ($month) {
+                                    return Carbon::parse($daily->created_at)->month == $month;
+                                })
+                                ->sum('price');
+                            return [$items->id => $totalPrice];
+                        });
+
+                        $sumContainer = $containerFiltered->sum('price') + $totals->sum();
 
                         $customSum = $customs->sum(function ($item) use ($month) {
                             return $item->clientdaily
@@ -245,14 +262,11 @@
                                     ->sum('price');
                             });
 
-                        $totalPriceForMonthCompanyWithdraw = 0;
-                        if ($companyPriceWithdraw) {
-                            foreach ($companyPriceWithdraw->employeedaily as $daily) {
-                                if ($daily->type == 'withdraw' && Carbon::parse($daily->created_at)->month == $month) {
-                                    $totalPriceForMonthCompanyWithdraw += $daily->price;
-                                }
-                            }
-                        }
+                        $totalPriceForMonthCompanyWithdraw = $companyPriceWithdraw->employeedaily
+                            ->filter(function ($daily) use ($month) {
+                                return $daily->type == 'withdraw' && Carbon::parse($daily->created_at)->month == $month;
+                            })
+                            ->sum('price');
 
                         $transferPriceFromMonth = Daily::whereNotNull('container_id')
                             ->whereMonth('created_at', $month)
@@ -269,12 +283,12 @@
 
                         $withdrawMonth =
                             $carSumfromMonth +
-                            $rent_priceSumfromMonth +
                             $employeeSumfromMonth +
                             $elbancherFiltered +
                             $totalPriceForMonthCompanyWithdraw +
                             $transferPriceFromMonth +
                             $partnerWithdraw +
+                            $totalRentPriceFromCurrentMonth +
                             $otherSumfromMonth;
 
                         $totalPriceForYear += $withdrawMonth;
@@ -287,7 +301,6 @@
                     </tr>
                 @endfor
             </tbody>
-
         </table>
 
         <table class="table table-striped table-bordered" style="margin-top: 5%">
@@ -300,15 +313,11 @@
             </thead>
             <tbody class="fw-bold">
                 <tr>
-                    <td>{{ strval($sumYearContainer) - strval($totalPriceForYear) }}</td>
-                    <td>{{ strval($totalPriceForYear) }}</td>
-                    <td>{{ strval($sumYearContainer) }}</td>
+                    <td>{{ $sumYearContainer - $totalPriceForYear }}</td>
+                    <td>{{ $totalPriceForYear }}</td>
+                    <td>{{ $sumYearContainer }}</td>
                 </tr>
             </tbody>
         </table>
-
     </div>
-
-
-
 @stop

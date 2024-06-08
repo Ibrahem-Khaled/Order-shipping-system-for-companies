@@ -9,6 +9,7 @@
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-gray" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
+                            <th scope="col" class="text-center">مسحوبات الارباح</th>
                             <th scope="col" class="text-center">منصرف راس المال</th>
                             <th scope="col" class="text-center">وارد راس المال</th>
                             <th scope="col" class="text-center">الوصف</th>
@@ -23,6 +24,7 @@
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->type == 'partner_withdraw' ? $item->price : null }}
                                 </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;"></td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->type == 'deposit' ? $item->price : null }}
                                 </td>
@@ -41,7 +43,10 @@
                             <tr>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;"></td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->money }}
+                                    {{ $item->money < 0 ? $item->money : null }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->money > 0 ? $item->money : null }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;"></td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
@@ -56,6 +61,7 @@
                 </table>
             </div>
         </div>
+        <h4>اجمالي راس المال : {{ $user->partnerInfo->sum('money') }}</h4>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">

@@ -32,9 +32,9 @@ class Daily extends Controller
         }
 
         $cars = Cars::all();
-        $client = User::whereIn('role', ['client', 'rent'])->get();
+        $client = User::whereIn('role', ['client'])->get();
         $partner = User::whereIn('role', ['partner', 'company'])->get();
-        $employee = User::whereIn('role', ['driver', 'administrative', 'company'])->get();
+        $employee = User::whereIn('role', ['driver', 'administrative', 'company', 'rent'])->get();
 
         return view('FinancialManagement.Daily.index', compact('daily', 'cars', 'client', 'partner', 'employee'));
     }

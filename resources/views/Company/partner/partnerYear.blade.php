@@ -32,6 +32,16 @@
                                         ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
                                         ->sum('price');
 
+                                    $rent_price = $rentOffices->map(function ($items) use ($month) {
+                                        return $items->employeedaily
+                                            ->filter(function ($daily) use ($month) {
+                                                return Carbon::parse($daily->created_at)->month == $month;
+                                            })
+                                            ->where('type', 'withdraw')
+                                            ->sum('price');
+                                    });
+                                    $totalRentPriceFromCurrentMonth = $rent_price->sum();
+
                                     $employeeSum = $employees->sum(
                                         fn($employee) => $employee->employeedaily
                                             ->where('type', 'withdraw')
@@ -59,7 +69,13 @@
                                         )
                                         ->sum('price');
 
-                                    $withdrawMonth = $carsFiltered + $employeeSum + $elbancherFiltered + $othersSum;
+                                    $withdrawMonth =
+                                        $carsFiltered +
+                                        $employeeSum +
+                                        $elbancherFiltered +
+                                        $totalRentPriceFromCurrentMonth +
+                                        $othersSum;
+                                        
                                     $totalPrice = $monthlyDeposits - $withdrawMonth;
 
                                     // الشركاء النشطين في هذا الشهر

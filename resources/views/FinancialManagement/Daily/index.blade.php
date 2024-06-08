@@ -470,7 +470,7 @@
                     partnerField.style.display = 'none';
                 }
             }
-
+ 
             // Initialize the fields visibility based on the current selected type
             toggleFields();
 

@@ -193,6 +193,8 @@ class PartnerController extends Controller
             ->with('employeedaily')
             ->get();
 
+        $rentOffices = User::where('role', 'rent')->with('employeedaily')->get();
+
 
         $uniqueEmployeeIds = Daily::select('employee_id')
             ->whereNotNull('employee_id')
@@ -252,6 +254,7 @@ class PartnerController extends Controller
                 'cars',
                 'elbancherSum',
                 'others',
+                'rentOffices',
                 'mergedArrayAlbancher',
             )
         );

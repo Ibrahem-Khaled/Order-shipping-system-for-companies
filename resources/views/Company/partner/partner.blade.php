@@ -196,12 +196,6 @@
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <input type="number"
-                                                                    value="{{ $item->partnerInfo->sum('money') }}"
-                                                                    name="money" class="form-control"
-                                                                    placeholder="راس مال الشريك" />
-                                                            </div>
-                                                            <div class="mb-3 col-md-6">
-                                                                <input type="number"
                                                                     value="{{ $item->userinfo->number_residence }}"
                                                                     name="number_residence" class="form-control"
                                                                     placeholder="رقم الاقامة" />
@@ -260,7 +254,7 @@
                                     {{ $calculatedValue <= 0 ? 0 : $calculatedValue }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ round($item->is_active == 1 ? ($totalPrice * $partnerPriceRate) / 100 : 0, 2) }}
+                                    {{ round($item->is_active == 1 ? ($totalPrice * $partnerPriceRate) / 100 : 0, 2)-$partnerWithdraw }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->is_active == 1 ? $partnerPriceRate : 0 }}%</td>

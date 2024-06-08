@@ -30,6 +30,13 @@ class CompanyController extends Controller
         $employeeTips = Container::whereNotNull('driver_id')
             ->get();
 
+
+        $rentOffecis = User::where('role', 'rent')->get();
+        $totalPriceFromRent = 0;
+        foreach ($rentOffecis as $key => $value) {
+            $totalPriceFromRent += $value->employeedaily->where('type', 'withdraw')->sum('price');
+        }
+
         $uniqueEmployeeIds = Daily::select('employee_id')
             ->whereNotNull('employee_id')
             ->distinct()
@@ -142,7 +149,7 @@ class CompanyController extends Controller
 
         $deposits = $container->sum('price') + $transferPrice;
 
-        $withdraws = $cars + $employeeSum + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
+        $withdraws = $cars + $employeeSum + $totalPriceFromRent + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
 
         return view(
             'Company.index',
@@ -168,6 +175,13 @@ class CompanyController extends Controller
         foreach ($employee as $key => $employe) {
             $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
         }
+
+        $rentOffecis = User::where('role', 'rent')->get();
+        $totalPriceFromRent = 0;
+        foreach ($rentOffecis as $key => $value) {
+            $totalPriceFromRent += $value->employeedaily->where('type', 'withdraw')->sum('price');
+        }
+
 
         $uniqueEmployeeIds = Daily::select('employee_id')
             ->whereNotNull('employee_id')
@@ -207,7 +221,13 @@ class CompanyController extends Controller
 
         $deposit = $container->sum('price') + $transferPrice;
 
-        $withdraw = $cars->sum('price') + $employeeSum + $elbancherSum + $othersSum + $transferPrice + $partnerWithdraw->sum('price');
+        $withdraw = $cars->sum('price') +
+            $totalPriceFromRent +
+            $employeeSum +
+            $elbancherSum +
+            $othersSum +
+            $transferPrice +
+            $partnerWithdraw->sum('price');
 
         return view(
             'Company.companyDetailes',
@@ -228,7 +248,10 @@ class CompanyController extends Controller
         $companyPriceWithdraw = User::where('role', 'company')->with('employeedaily')
             ->first();
 
-        //return response()->json($companyPriceWithdraw);
+
+        $rentOffices = User::where('role', 'rent')->with('employeedaily')->get();
+
+        //return response()->json($rentOfices);
 
         $transferPrice = Daily::whereNotNull('container_id')->where('type', 'withdraw');
 
@@ -292,6 +315,7 @@ class CompanyController extends Controller
                 'daily',
                 'cars',
                 'elbancherSum',
+                'rentOffices',
                 'others',
                 'customs',
                 'companyPriceWithdraw',
