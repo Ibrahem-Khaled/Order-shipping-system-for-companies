@@ -68,11 +68,35 @@ class RevenuesController extends Controller
 
         return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs', ));
     }
-    public function rentMonth($clientId)
+    public function rentMonth(Request $request, $clientId)
     {
         $user = User::find($clientId);
-        return view('FinancialManagement.rent.rentMonth', compact('user'));
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+
+        $query = $request->input('query');
+        $date = $query ? Carbon::createFromFormat('Y-m', $query) : Carbon::now();
+
+        $currentMonth = $date->month;
+        $currentYear = $date->year;
+
+        $rentData = $user->rentCont()
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->whereIn('status', ['transport', 'done'])
+            ->get();
+
+        if ($rentData->isEmpty()) {
+            $rentData = collect();
+        }
+
+        return view('FinancialManagement.rent.rentMonth', compact('user', 'rentData'));
     }
+
+
+
 
     public function accountYears($clientId)
     {

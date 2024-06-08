@@ -32,10 +32,11 @@
                         $userRemainingRevenue =
                             $userContainers
                                 ->whereIn('status', ['transport', 'done'])
-                                ->where('is_rent', 0)
+                                // ->where('is_rent', 0)
                                 ->sum('price') +
                             $totalContainerPriceTransfer -
                             $user->clientdaily->where('type', 'deposit')->sum('price');
+
                         $totalRemainingRevenue += $userRemainingRevenue;
                     @endphp
 
