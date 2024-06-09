@@ -5,10 +5,10 @@
         $total = 0;
     @endphp
     <div class="container mt-5">
+        <a class="btn btn-primary mb-3" href="{{ route('addOffice', 'rent') }}">
+            <i class="fas fa-plus"></i> اضافة مكتب
+        </a>
         <table class="table">
-            <a class="btn btn-primary" href="{{ route('addOffice', 'rent') }}">
-                <i class="fas fa-plus"></i> اضافة مكتب
-            </a>
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -20,22 +20,21 @@
             </thead>
             <tbody>
                 @foreach ($users as $user)
+                    @php
+                        $userTotal = $user->rentCont->where('is_rent', 1)->sum('rent_price') -
+                                     $user->employeedaily->where('type', 'withdraw')->sum('price');
+                        $total += $userTotal;
+                    @endphp
                     <tr>
                         <th scope="row">{{ $user->id }}</th>
                         <td><a href="{{ route('getrentMonth', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->rentCont->where('is_rent', 1)->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $total +=
-                            $user->rentCont->where('is_rent', 1)->sum('rent_price') -
-                            $user->employeedaily->where('type', 'withdraw')->sum('price') }}
-                        </td>
+                        <td>{{ number_format($userTotal, 2) }}</td>
                     </tr>
                 @endforeach
-                <!-- Add more rows as needed -->
             </tbody>
         </table>
-        <h3 class="text-center">الاجمالي المستحق لشركات الايجار : {{ $total }}</h3>
+        <h3 class="text-center">الاجمالي المستحق لشركات الايجار : {{ number_format($total, 2) }}</h3>
     </div>
-
-
-@stop
+@endsection

@@ -66,7 +66,7 @@
                 'monthlyTotalFromContainer' => $monthlyTotalFromContainer + $cumulativeResidual,
                 'monthlyTotalFromContainerCurrent' => $monthlyTotalFromContainer,
                 'monthlyDeposit' => $monthlyDeposit,
-                'residual' => $cumulativeResidual,
+                'residual' => $monthlyTotalFromContainer || $monthlyDeposit ? $cumulativeResidual : 0,
             ];
         }
     @endphp
