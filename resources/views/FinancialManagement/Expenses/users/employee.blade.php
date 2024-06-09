@@ -38,11 +38,13 @@
                                     : 0;
 
                             $totalTips = $item->driverContainer->sum('tips');
+                            $totalTipEmpty = $item->tipsEmpty?->sum('price');
+
                             $withdrawFromDaily = $item->employeedaily->where('type', 'withdraw')->sum('price');
                             for ($month; $month <= $currentMonth; $month++) {
                                 $salary += $item->sallary;
                             }
-                            $totalSalary = $salary + $totalTips - $withdrawFromDaily;
+                            $totalSalary = $salary + $totalTips + $totalTipEmpty - $withdrawFromDaily;
 
                         @endphp
                         <tr>

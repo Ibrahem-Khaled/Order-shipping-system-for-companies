@@ -81,8 +81,8 @@ class User extends Authenticatable
         return $this->hasMany(PartnerInfo::class, 'partner_id');
     }
 
-    public function tips()
+    public function tipsEmpty()
     {
-        return $this->hasOne(Tips::class, 'user_id');
+        return $this->hasMany(Tips::class, 'user_id');
     }
 }

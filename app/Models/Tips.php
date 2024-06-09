@@ -13,7 +13,7 @@ class Tips extends Model
 
     public function container()
     {
-        return $this->belongsTo(Container::class);
+        return $this->belongsTo(Container::class, 'container_id');
     }
 
     public function user()

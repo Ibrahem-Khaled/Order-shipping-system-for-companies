@@ -27,14 +27,24 @@ class PartnerController extends Controller
 
         $deposit = $containers->sum('price') + $treansferPrice;
 
-
-        $employee = User::whereIn('role', ['driver', 'administrative'])
+        $employees = User::whereIn('role', ['driver', 'administrative'])
             ->whereNotNull('sallary')
             ->with('employeedaily')
             ->get();
+
         $employeeSum = 0;
-        foreach ($employee as $key => $employe) {
+        foreach ($employees as $key => $employe) {
             $employeeSum += $employe->employeedaily()
+                ->where('type', 'withdraw')
+                ->sum('price');
+        }
+
+
+        $rentOffices = User::where('role', 'rent')->with('employeedaily')->get();
+
+        $rentOfficesSum = 0;
+        foreach ($rentOffices as $key => $rentOffice) {
+            $rentOfficesSum += $rentOffice->employeedaily()
                 ->where('type', 'withdraw')
                 ->sum('price');
         }
@@ -53,6 +63,22 @@ class PartnerController extends Controller
                     ->sum('price');
                 $elbancherSum += $sum;
             }
+        }
+
+        $elbancher = [];
+        foreach ($uniqueEmployeeIds as $value) {
+            $userElbancher = User::find($value);
+            if ($userElbancher && Str::contains($userElbancher->name, 'بنشر')) {
+                $sum = $userElbancher->employeedaily()
+                    ->where('type', 'withdraw')
+                    ->sum('price');
+                $elbancher[] = $userElbancher->employeedaily;
+                $elbancher = [...$elbancher];
+            }
+        }
+        $mergedArrayAlbancher = [];
+        foreach ($elbancher as $collection) {
+            $mergedArrayAlbancher = array_merge($mergedArrayAlbancher, $collection->toArray());
         }
 
         $others = User::whereIn('role', ['driver', 'company'])
@@ -81,34 +107,47 @@ class PartnerController extends Controller
                 $sumCompany += $value->partnerInfo?->sum('money');
             }
         }
-        $clients = User::all();
 
-        $depositCash = 0;
-        $withdrawCash = Daily::where('type', 'withdraw')->sum('price');
+        $dailyWithdraw = Daily::where('type', 'withdraw')->get();
+        $clients = User::where('role', 'client')->with('clientdaily')->get();
 
+        $dipositCash = 0;
         foreach ($clients as $client) {
-            $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
+            $dipositCash += $client->clientdaily
+                ->where('type', 'deposit')
+                ->sum('price');
         }
+        $withdrawCash = $dailyWithdraw->sum('price');
+
 
         $buyCash = SellAndBuy::where('type', 'buy')->get();
         $sellCash = SellAndBuy::where('type', 'sell')->get();
 
         $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
 
-        $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $treansferPrice;
+        $withdraw = $carSum + $employeeSum + $rentOfficesSum + $elbancherSum + $othersSum + $treansferPrice;
 
         return view(
             'Company.partner.partner',
             compact(
                 'partner',
                 'sumCompany',
-                'depositCash',
-                'withdrawCash',
+                'clients',
+                'dailyWithdraw',
                 'buyCash',
                 'sellCash',
                 'sellFromHeadMony',
                 'withdraw',
-                'deposit'
+                'deposit',
+                'rentOfficesSum',
+                'rentOffices',
+                'containers',
+                'employees',
+                'cars',
+                'others',
+                'mergedArrayAlbancher',
+                'dipositCash',
+                'withdrawCash',
             )
         );
     }

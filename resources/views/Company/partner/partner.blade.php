@@ -1,6 +1,9 @@
 @extends('layouts.default')
 
 @section('content')
+    @php
+        use Carbon\Carbon;
+    @endphp
 
     <div class="container mt-5">
         <div class="container mt-5">
@@ -16,14 +19,12 @@
                         aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <!-- Modal Content Goes Here -->
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="addEmployeeModalLabel">اضافة شريك</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <!-- Form to Add Employee Data -->
                                     <form action="{{ route('partnerStore') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
@@ -63,11 +64,9 @@
                                             <button type="submit" class="btn btn-primary">حفظ</button>
                                         </div>
                                     </form>
-                                    <!-- Include your form elements for adding employee data here -->
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <!-- Include your "Add" button here to submit the form -->
                                 </div>
                             </div>
                         </div>
@@ -81,19 +80,16 @@
                         aria-labelledby="addHeadMoneylLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <!-- Modal Content Goes Here -->
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="addHeadMoneylLabel">اضافة رأس مال</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <!-- Form to Add Employee Data -->
                                     <form action="{{ route('updateHeadMoney') }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
-
                                             <div class="mb-3 col-md-6">
                                                 <input type="number" name="money" class="form-control"
                                                     placeholder="راس مال" />
@@ -108,12 +104,10 @@
                                             <button type="submit" class="btn btn-primary">حفظ</button>
                                         </div>
                                     </form>
-                                    <!-- Include your form elements for adding employee data here -->
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
-                                    <!-- Include your "Add" button here to submit the form -->
                                 </div>
                             </div>
                         </div>
@@ -135,37 +129,168 @@
                         </tr>
                     </thead>
 
-                    <tbody> 
-
+                    <tbody>
                         @foreach ($partner as $item)
                             @php
-                                $totalPrice = $deposit - $withdraw;
+                                $userCreationMonth = Carbon::parse($item->created_at)->month;
+                                $totalEarnMoney = 0;
+                                $companyCanCashWithdraw = 0;
+                                $userShare = $item->partnerInfo?->sum('money') ?? 0;
 
-                                $prtnerPriceSum = $item->partnerInfo?->sum('money');
-                                if ($item->is_active == 1) {
-                                    $partnerPriceRate = ($prtnerPriceSum / $sumCompany) * 100;
+                                for ($month = 1; $month <= 12; $month++) {
+                                    if ($month >= $userCreationMonth) {
+                                        $monthlyDeposits = $containers
+                                            ->filter(
+                                                fn($container) => Carbon::parse($container->created_at)->month ==
+                                                    $month,
+                                            )
+                                            ->sum('price');
+
+                                        $rent_price = $rentOffices->map(function ($office) use ($month) {
+                                            return $office->employeedaily
+                                                ->filter(
+                                                    fn($daily) => Carbon::parse($daily->created_at)->month == $month,
+                                                )
+                                                ->where('type', 'withdraw')
+                                                ->sum('price');
+                                        });
+                                        $totalRentPriceFromCurrentMonth = $rent_price->sum();
+
+                                        $employeeSum = $employees->sum(
+                                            fn($employee) => $employee->employeedaily
+                                                ->where('type', 'withdraw')
+                                                ->filter(
+                                                    fn($daily) => Carbon::parse($daily->created_at)->month == $month,
+                                                )
+                                                ->sum('price'),
+                                        );
+
+                                        $carsFiltered = $cars->sum(
+                                            fn($car) => $car->daily
+                                                ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
+                                                ->sum('price'),
+                                        );
+
+                                        $othersSum = $others->sum(
+                                            fn($other) => $other->employeedaily
+                                                ->where('type', 'withdraw')
+                                                ->filter(
+                                                    fn($daily) => Carbon::parse($daily->created_at)->month == $month,
+                                                )
+                                                ->sum('price'),
+                                        );
+
+                                        $elbancherFiltered = collect($mergedArrayAlbancher)
+                                            ->filter(
+                                                fn($item) => Carbon::parse($item['created_at'])->month == $month &&
+                                                    $item['type'] == 'withdraw',
+                                            )
+                                            ->sum('price');
+
+                                        $withdrawMonth =
+                                            $carsFiltered +
+                                            $employeeSum +
+                                            $elbancherFiltered +
+                                            $totalRentPriceFromCurrentMonth +
+                                            $othersSum;
+
+                                        $totalPrice = $monthlyDeposits - $withdrawMonth;
+
+                                        $activePartners = $partner->filter(
+                                            fn($partner) => $partner->is_active == 1 &&
+                                                $partner->role == 'partner' &&
+                                                Carbon::parse($partner->created_at)->month <= $month,
+                                        );
+
+                                        $activeCompany = $partner->filter(
+                                            fn($partner) => $partner->is_active == 1 &&
+                                                $partner->role == 'company' &&
+                                                Carbon::parse($partner->created_at)->month <= $month,
+                                        );
+
+                                        $totalActivePartnerSum = $activePartners->sum(
+                                            fn($partner) => $partner->partnerInfo->sum('money'),
+                                        );
+                                        $totalActiveCompanySum = $activeCompany->sum(
+                                            fn($partner) => $partner->partnerInfo->sum('money'),
+                                        );
+
+                                        $monthlyProfit = 0;
+
+                                        if ($totalActivePartnerSum + $totalActiveCompanySum > 0) {
+                                            $partnerSum =
+                                                ($userShare / ($totalActivePartnerSum + $totalActiveCompanySum)) * 100;
+                                            $monthlyProfit = ($totalPrice * $partnerSum) / 100;
+                                        } else {
+                                            $partnerSum = 100;
+                                            $monthlyProfit = $totalPrice;
+                                        }
+
+                                        // حساب الأرباح والنفقات منذ انضمام الشريك
+                                        $withdrawCashSum = $dailyWithdraw
+                                            ->filter(
+                                                fn($transaction) => Carbon::parse($transaction->created_at) >=
+                                                    Carbon::parse($item->created_at),
+                                            )
+                                            ->sum('price');
+
+                                        $depositCash = collect();
+                                        foreach ($clients as $client) {
+                                            if ($client->clientdaily) {
+                                                $depositCash = $depositCash->merge(
+                                                    $client->clientdaily->where('type', 'deposit'),
+                                                );
+                                            }
+                                        }
+
+                                        $totalDepositSinceJoined = $depositCash
+                                            ->filter(
+                                                fn($transaction) => Carbon::parse($transaction->created_at) >=
+                                                    Carbon::parse($item->created_at),
+                                            )
+                                            ->sum('price');
+
+                                        if ($activePartners->count() > 0) {
+                                            $partnerCashCanWithdraw =
+                                                (($totalDepositSinceJoined - $withdrawCashSum) * $partnerSum) / 100;
+                                        } else {
+                                            $partnerCashCanWithdraw = $totalDepositSinceJoined - $withdrawCashSum;
+                                        }
+
+                                        $partnerWithdraw = $item->partnerdaily
+                                            ->where('type', 'partner_withdraw')
+                                            ->sum('price');
+
+                                        $rateBuy = ($buyCash->sum('price') * $partnerSum) / 100;
+                                        $rateSellFromHeadMony = ($sellFromHeadMony->sum('price') * $partnerSum) / 100;
+                                        $rateSell = ($sellCash->sum('price') * $partnerSum) / 100;
+
+                                        $Profits_from_buying_and_selling = $rateSell - $rateBuy;
+
+                                        $calculatedValue =
+                                            $partnerCashCanWithdraw -
+                                            $partnerWithdraw +
+                                            $rateSellFromHeadMony +
+                                            $Profits_from_buying_and_selling;
+
+                                        $companyHeadMoney =
+                                            $userShare - $rateSellFromHeadMony - $Profits_from_buying_and_selling;
+
+                                        $totalEarnMoney += $monthlyProfit;
+
+                                        $annualStatement[$month] = [
+                                            'month' => $month,
+                                            'deposits' => number_format($monthlyProfit, 2),
+                                        ];
+                                    } else {
+                                        $annualStatement[$month] = [
+                                            'month' => $month,
+                                            'deposits' => '0.00',
+                                        ];
+                                    }
                                 }
-
-                                $partnerWithdraw = $item->partnerdaily->where('type', 'partner_withdraw')->sum('price');
-
-                                $partnerCashCanWithdraw = (($depositCash - $withdrawCash) * $partnerPriceRate) / 100;
-
-                                $rateBuy = ($buyCash->sum('price') * $partnerPriceRate) / 100;
-                                $rateSellFromHeadMony = ($sellFromHeadMony->sum('price') * $partnerPriceRate) / 100;
-                                $rateSell = ($sellCash->sum('price') * $partnerPriceRate) / 100;
-
-                                $Profits_from_buying_and_selling = $rateSell - $rateBuy;
-
-                                $calculatedValue =
-                                    $partnerCashCanWithdraw -
-                                    $partnerWithdraw +
-                                    $rateSellFromHeadMony +
-                                    $Profits_from_buying_and_selling;
-
-                                $companyHeadMoney =
-                                    $prtnerPriceSum - $rateSellFromHeadMony - $Profits_from_buying_and_selling;
-
                             @endphp
+
                             <tr>
                                 <td class="text-center">
                                     <button class="btn btn-secondary" data-bs-toggle="modal"
@@ -176,7 +301,6 @@
                                         role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <!-- Modal Content Goes Here -->
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="addEmployeeModalLabel">تعديل بيانات الشريك
                                                     </h5>
@@ -184,7 +308,6 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <!-- Form to Add Employee Data -->
                                                     <form action="{{ route('partnerUpdate', $item->id) }}" method="POST"
                                                         enctype="multipart/form-data">
                                                         @csrf
@@ -225,12 +348,10 @@
                                                             <button type="submit" class="btn btn-primary">حفظ</button>
                                                         </div>
                                                     </form>
-                                                    <!-- Include your form elements for adding employee data here -->
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-                                                    <!-- Include your "Add" button here to submit the form -->
                                                 </div>
                                             </div>
                                         </div>
@@ -251,13 +372,13 @@
                                         style="max-width: 100px; max-height: 100px;">
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $calculatedValue <= 0 ? 0 : $calculatedValue }}
+                                    {{ $calculatedValue }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ round($item->is_active == 1 ? ($totalPrice * $partnerPriceRate) / 100 : 0, 2)-$partnerWithdraw }}
+                                    {{ $item->is_active == 1 ? number_format($totalEarnMoney, 2) : 0 }}
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->is_active == 1 ? $partnerPriceRate : 0 }}%</td>
+                                    {{ $item->is_active == 1 ? $partnerSum : 0 }}%</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     ر.س{{ $companyHeadMoney }}
                                 </td>

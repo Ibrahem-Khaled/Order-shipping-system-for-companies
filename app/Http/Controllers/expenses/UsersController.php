@@ -72,16 +72,29 @@ class UsersController extends Controller
         $currentMonth = $date->month;
         $currentYear = $date->year;
 
+        // جلب الحاويات المحملة
         $currentMonthContainers = $user->driverContainer()
             ->whereMonth('transfer_date', $currentMonth)
             ->whereYear('transfer_date', $currentYear)
             ->with('customs')
             ->get();
 
-        $allTrips = $currentMonthContainers->sum('tips');
+        // جلب الحاويات الفارغة
+        $tipsEmpty = $user->tipsEmpty()
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->with('container')
+            ->get();
 
-        return view('FinancialManagement.Expenses.users.employeeTips', compact('user', 'currentMonthContainers', 'allTrips'));
+        //return response()->json($allContainers);
+        // حساب إجمالي الإكراميات
+        $tips = $currentMonthContainers->sum('tips');
+        $allTrips = $tips + $tipsEmpty->sum('price');
+
+        return view('FinancialManagement.Expenses.users.employeeTips', compact('user', 'currentMonthContainers', 'tipsEmpty', 'allTrips'));
     }
+
+
 
 
     public function others()

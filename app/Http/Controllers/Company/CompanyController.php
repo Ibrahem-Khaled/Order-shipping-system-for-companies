@@ -136,6 +136,17 @@ class CompanyController extends Controller
         $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
 
+        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
+        $sellTransactionSum = $sellTransaction
+            ->filter(function ($item) {
+                return $item->parent()->exists();
+            })
+            ->map(function ($item) {
+                $buyPrice = $item->parent->price; // Corrected to directly access the parent price
+                return $item->price - $buyPrice;
+            })
+            ->sum();
+
         $Profits_from_buying_and_selling = $buyTransactions->sum('price') - $sellTransactions->sum('price');
 
         $canCashWithdraw =
@@ -147,7 +158,7 @@ class CompanyController extends Controller
 
         $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
 
-        $deposits = $container->sum('price') + $transferPrice;
+        $deposits = $container->sum('price') + $transferPrice + $sellTransactionSum;
 
         $withdraws = $cars + $employeeSum + $totalPriceFromRent + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
 
@@ -306,6 +317,7 @@ class CompanyController extends Controller
             ->where('type', 'deposit')
             ->get();
 
+        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
         return view(
             'Company.companyRevExp',
             compact(
@@ -320,6 +332,7 @@ class CompanyController extends Controller
                 'customs',
                 'companyPriceWithdraw',
                 'transferPrice',
+                'sellTransaction',
             )
         );
     }

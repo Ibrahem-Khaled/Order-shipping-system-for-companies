@@ -55,8 +55,10 @@ class DatesController extends Controller
         if (is_null($query)) {
             $done = Container::whereYear('created_at', $year)
                 ->whereMonth('created_at', $month)
-                ->whereIn('status', ['done'])
+                ->where('status', 'done')
+                ->with('tipsEmpty')
                 ->get();
+           // return response()->json($done);
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
 
         } else {

@@ -1,9 +1,12 @@
 @extends('layouts.default')
 
 @section('content')
+    @php
+        $total = 0;
+    @endphp
     <div class="container mt-5">
         <table class="table">
-            <a class="nav-link" href="{{ route('addOffice', 'rent') }}">
+            <a class="btn btn-primary" href="{{ route('addOffice', 'rent') }}">
                 <i class="fas fa-plus"></i> اضافة مكتب
             </a>
             <thead>
@@ -22,13 +25,16 @@
                         <td><a href="{{ route('getrentMonth', $user->id) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->rentCont->where('is_rent', 1)->count() }}</td>
                         <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $user->rentCont->where('is_rent', 1)->sum('price') - $user->clientdaily->where('type','deposit')->sum('price') }}
+                        <td>{{ $total +=
+                            $user->rentCont->where('is_rent', 1)->sum('rent_price') -
+                            $user->employeedaily->where('type', 'withdraw')->sum('price') }}
                         </td>
                     </tr>
                 @endforeach
                 <!-- Add more rows as needed -->
             </tbody>
         </table>
+        <h3 class="text-center">الاجمالي المستحق لشركات الايجار : {{ $total }}</h3>
     </div>
 
 

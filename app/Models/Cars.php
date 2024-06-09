@@ -25,8 +25,8 @@ class Cars extends Model
         return $this->hasMany(Daily::class, 'car_id');
     }
 
-    public function tips()
+    public function tipsEmpty()
     {
-        return $this->hasOne(Tips::class, 'car_id');
+        return $this->hasMany(Tips::class, 'car_id');
     }
 }

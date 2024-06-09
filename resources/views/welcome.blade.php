@@ -39,7 +39,13 @@
             <div class="collapse navbar-collapse" id="ftco-nav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item active"><a href="#section-home" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">login</a></li>
+                    <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">
+                            @if (Auth::check())
+                                {{ Auth::user()->name }}
+                            @else
+                                login
+                            @endif
+                        </a></li>
                     <li class="nav-item"><a href="#section-features" class="nav-link">Features</a></li>
                     <li class="nav-item"><a href="#section-services" class="nav-link">Services</a></li>
                     <li class="nav-item"><a href="#section-pricing" class="nav-link">Pricing</a></li>

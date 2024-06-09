@@ -122,8 +122,8 @@
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
-                            <th scope="col" class="text-center">السيارة</th>
-                            <th scope="col" class="text-center">السائق</th>
+                            <th scope="col" class="text-center">سيارة المحملة</th>
+                            <th scope="col" class="text-center">سائق المحملة</th>
                             <th scope="col" class="text-center">سيارة الفارغ</th>
                             <th scope="col" class="text-center">سائق الفارغ</th>
                             <th scope="col" class="text-center">حجم الحاوية</th>
@@ -141,8 +141,8 @@
                                 @if ($item->rent_id == null)
                                     <td class="text-center">{{ $item->car->number ?? 'N/A' }}</td>
                                     <td class="text-center">{{ $item->driver->name ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $item?->tips?->car?->number ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $item->tips->user->name ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $item->tipsEmpty->car->number ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $item->tipsEmpty->user->name ?? 'N/A' }}</td>
                                 @else
                                     <td class="text-center">{{ $item->rent->name }}</td>
                                     <td class="text-center">اسم شركة الايجار</td>

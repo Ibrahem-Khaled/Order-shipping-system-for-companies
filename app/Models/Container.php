@@ -39,7 +39,7 @@ class Container extends Model
         return $this->hasMany(Daily::class, 'container_id');
     }
 
-    public function tips()
+    public function tipsEmpty()
     {
         return $this->hasOne(Tips::class, 'container_id');
     }
