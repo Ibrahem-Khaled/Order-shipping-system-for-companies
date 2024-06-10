@@ -116,48 +116,52 @@
                         <td>{{ $transaction->title }}</td>
                         <td>{{ $transaction->created_at }}</td>
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#editTransactionModal{{ $transaction->id }}">تعديل</button>
+                            @if (!auth()->user()->userinfo->job_title == 'administrative')
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#editTransactionModal{{ $transaction->id }}">تعديل</button>
 
-                            <div class="modal fade" id="editTransactionModal{{ $transaction->id }}" tabindex="-1"
-                                aria-labelledby="editTransactionModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editTransactionModalLabel">تعديل حركة البيع والشراء
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="{{ route('transactions.update', $transaction->id) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <div class="mb-3">
-                                                    <input type="text" name="title" class="form-control"
-                                                        value="{{ $transaction->title }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <input type="number" name="price" class="form-control"
-                                                        value="{{ $transaction->price }}" required>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">الغاء</button>
-                                                    <button type="submit" class="btn btn-success">حفظ التعديلات</button>
-                                                </div>
-                                            </form>
+                                <div class="modal fade" id="editTransactionModal{{ $transaction->id }}" tabindex="-1"
+                                    aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editTransactionModalLabel">تعديل حركة البيع
+                                                    والشراء
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ route('transactions.update', $transaction->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="mb-3">
+                                                        <input type="text" name="title" class="form-control"
+                                                            value="{{ $transaction->title }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <input type="number" name="price" class="form-control"
+                                                            value="{{ $transaction->price }}" required>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">الغاء</button>
+                                                        <button type="submit" class="btn btn-success">حفظ
+                                                            التعديلات</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST"
-                                style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">حذف</button>
-                            </form>
+                                <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

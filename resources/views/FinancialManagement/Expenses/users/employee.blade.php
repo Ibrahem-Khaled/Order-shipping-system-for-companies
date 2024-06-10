@@ -22,94 +22,97 @@
 
                 <tbody>
                     @foreach ($employee as $item)
-                        @php
-                            $currentMonth = Carbon\Carbon::now()->month;
-                            $date_runer = \Carbon\Carbon::parse($item->userInfo->date_runer);
-                            $month = $date_runer->month;
-                            $salary = 0;
+                        @if (auth()->user()->role != 'driver' || auth()->user()->id == $item->id)
+                            @php
+                                $currentMonth = Carbon\Carbon::now()->month;
+                                $date_runer = \Carbon\Carbon::parse($item->userInfo->date_runer);
+                                $month = $date_runer->month;
+                                $salary = 0;
 
-                            $currentMonthTips =
-                                $item->role == 'driver'
-                                    ? $item->driverContainer
-                                        ->filter(function ($transaction) use ($currentMonth) {
-                                            return $transaction->created_at->month == $currentMonth;
-                                        })
-                                        ->sum('tips')
-                                    : 0;
+                                $currentMonthTips =
+                                    $item->role == 'driver'
+                                        ? $item->driverContainer
+                                            ->filter(function ($transaction) use ($currentMonth) {
+                                                return $transaction->created_at->month == $currentMonth;
+                                            })
+                                            ->sum('tips')
+                                        : 0;
 
-                            $totalTips = $item->driverContainer->sum('tips');
-                            $totalTipEmpty = $item->tipsEmpty?->sum('price');
+                                $totalTips = $item->driverContainer->sum('tips');
+                                $totalTipEmpty = $item->tipsEmpty?->sum('price');
 
-                            $withdrawFromDaily = $item->employeedaily->where('type', 'withdraw')->sum('price');
-                            for ($month; $month <= $currentMonth; $month++) {
-                                $salary += $item->sallary;
-                            }
-                            $totalSalary = $salary + $totalTips + $totalTipEmpty - $withdrawFromDaily;
-
-                        @endphp
-                        <tr>
-                            @if (auth()->user()->role == 'superAdmin')
+                                $withdrawFromDaily = $item->employeedaily->where('type', 'withdraw')->sum('price');
+                                for ($month; $month <= $currentMonth; $month++) {
+                                    $salary += $item->sallary;
+                                }
+                                $totalSalary = $salary + $totalTips + $totalTipEmpty - $withdrawFromDaily;
+                            @endphp
+                            <tr>
+                                @if (auth()->user()->role == 'superAdmin')
+                                    <td class="text-center">
+                                        {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
+                                    </td>
+                                @endif
                                 <td class="text-center">
-                                    {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
+                                    <img src="{{ $item?->userinfo?->image ?? 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg' }}"
+                                        alt="{{ $item->name }}" class="img-thumbnail"
+                                        style="max-width: 100px; max-height: 100px;">
                                 </td>
-                            @endif
-                            <td class="text-center">
-                                <img src="{{ $item?->userinfo?->image ?? 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg' }}"
-                                    alt="{{ $item->name }}" class="img-thumbnail"
-                                    style="max-width: 100px; max-height: 100px;">
-                            </td>
-                            <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                {{ $item->role == 'driver' ? 'سائق' : 'اداري' }}
-                            </td>
-                            <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                {{ $currentMonthTips }}
-                            </td>
-                            <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                ر.س{{ $totalSalary }}
-                            </td>
-                            <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                @if ($item->role == 'driver')
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#expenses{{ $item->id }}">
-                                        {{ $item->name }}
-                                    </button>
-                                    <div class="modal fade" id="expenses{{ $item->id }}" tabindex="-1" role="dialog"
-                                        aria-labelledby="expensesLabel{{ $item->id }}" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="expensesLabel{{ $item->id }}">اختر نوع
-                                                        الطلب:</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="list-group">
-                                                        <a href="{{ route('expensesEmployeeTips', $item->id) }}"
-                                                            class="list-group-item list-group-item-action">كشف حساب
-                                                            الترب</a>
-                                                        <a href="{{ route('expensesEmployeeDaily', $item->id) }}"
-                                                            class="list-group-item list-group-item-action">كشف حساب
-                                                            السائق</a>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->role == 'driver' ? 'سائق' : 'اداري' }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $currentMonthTips }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    ر.س{{ $totalSalary }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    @if ($item->role == 'driver')
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#expenses{{ $item->id }}">
+                                            {{ $item->name }}
+                                        </button>
+                                        <div class="modal fade" id="expenses{{ $item->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="expensesLabel{{ $item->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="expensesLabel{{ $item->id }}">اختر
+                                                            نوع
+                                                            الطلب:</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                                    <div class="modal-body">
+                                                        <div class="list-group">
+                                                            <a href="{{ route('expensesEmployeeTips', $item->id) }}"
+                                                                class="list-group-item list-group-item-action">كشف حساب
+                                                                الترب</a>
+                                                            <a href="{{ route('expensesEmployeeDaily', $item->id) }}"
+                                                                class="list-group-item list-group-item-action">كشف حساب
+                                                                السائق</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @else
-                                    <a class="btn btn-primary" href="{{ route('expensesEmployeeDaily', $item->id) }}">
-                                        {{ $item->name }}
-                                    </a>
-                                @endif
-                            </td>
-                            <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                {{ $item->id }}
-                            </td>
-                        </tr>
+                                    @else
+                                        <a class="btn btn-primary" href="{{ route('expensesEmployeeDaily', $item->id) }}">
+                                            {{ $item->name }}
+                                        </a>
+                                    @endif
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->id }}
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
 

@@ -119,13 +119,23 @@ class PartnerController extends Controller
         }
         $withdrawCash = $dailyWithdraw->sum('price');
 
+        $allSellAndBuy = SellAndBuy::all();
+        $sellTransactions = $allSellAndBuy->where('type', 'sell')->load('parent');
 
-        $buyCash = SellAndBuy::where('type', 'buy')->get();
-        $sellCash = SellAndBuy::where('type', 'sell')->get();
-
-        $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
+        if ($sellTransactions->isNotEmpty() && $sellTransactions->first()->parent) {
+            $sumAllSellTransaction = $sellTransactions
+                ->map(function ($item) {
+                    $buyPrice = $item->parent->price;
+                    return $item->price - $buyPrice;
+                })
+                ->sum();
+        } else {
+            $sumAllSellTransaction = 0;
+        }
 
         $withdraw = $carSum + $employeeSum + $rentOfficesSum + $elbancherSum + $othersSum + $treansferPrice;
+
+        $TotalCashMoney = $dipositCash - $withdrawCash;
 
         return view(
             'Company.partner.partner',
@@ -134,9 +144,6 @@ class PartnerController extends Controller
                 'sumCompany',
                 'clients',
                 'dailyWithdraw',
-                'buyCash',
-                'sellCash',
-                'sellFromHeadMony',
                 'withdraw',
                 'deposit',
                 'rentOfficesSum',
@@ -146,8 +153,9 @@ class PartnerController extends Controller
                 'cars',
                 'others',
                 'mergedArrayAlbancher',
-                'dipositCash',
-                'withdrawCash',
+                'TotalCashMoney',
+                'allSellAndBuy',
+                'sumAllSellTransaction',
             )
         );
     }

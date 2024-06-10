@@ -267,40 +267,43 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <button type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#confirmationModal{{ $item->id }}"
-                                                    class="btn btn-danger">مسح</button>
-                                                <div class="modal fade" id="confirmationModal{{ $item->id }}"
-                                                    tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">تأكيد
-                                                                    العملية</h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body text-center"
-                                                                style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: bold;">
-                                                                <p>
-                                                                    هل تريد الغاء ذلك البيان
-                                                                </p>
-                                                            </div>
-                                                            <form method="POST"
-                                                                action="{{ route('deleteDailyData', $item->id) }}">
-                                                                @csrf
-
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">إلغاء</button>
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary">تأكيد</button>
+                                                @if (!auth()->user()->userinfo->job_title == 'administrative')
+                                                    <button type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#confirmationModal{{ $item->id }}"
+                                                        class="btn btn-danger">مسح</button>
+                                                    <div class="modal fade" id="confirmationModal{{ $item->id }}"
+                                                        tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">تأكيد
+                                                                        العملية</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
                                                                 </div>
-                                                            </form>
+                                                                <div class="modal-body text-center"
+                                                                    style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: bold;">
+                                                                    <p>
+                                                                        هل تريد الغاء ذلك البيان
+                                                                    </p>
+                                                                </div>
+                                                                <form method="POST"
+                                                                    action="{{ route('deleteDailyData', $item->id) }}">
+                                                                    @csrf
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">إلغاء</button>
+                                                                        <button type="submit"
+                                                                            class="btn btn-primary">تأكيد</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                @endif
                                                 @if ($item->container_id == null)
                                                     <button type="button" data-bs-toggle="modal"
                                                         data-bs-target="#editModal{{ $item->id }}"
@@ -470,7 +473,7 @@
                     partnerField.style.display = 'none';
                 }
             }
- 
+
             // Initialize the fields visibility based on the current selected type
             toggleFields();
 

@@ -45,12 +45,14 @@
                                             @endif
                                         </button>
                                     </form>
-                                    <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger d-inline-block">
-                                            حذف
-                                        </button>
-                                    </form>
+                                    @if (!auth()->user()->userinfo->job_title == 'operator')
+                                        <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger d-inline-block">
+                                                حذف
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                                 <form action="{{ route('updateContainer', $item->id) }}" method="POST">
                                     @csrf

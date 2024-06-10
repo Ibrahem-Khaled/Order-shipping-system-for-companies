@@ -4,7 +4,7 @@
     <a class="navbar-brand m-0" href="" target="_blank">
         <span class="ms-1 font-weight-bold">Al Amjad Multi</span>
     </a>
-</div>
+</div> 
 <hr class="horizontal dark mt-0">
 <div class="collapse navbar-collapse w-auto" style="height: 100vh" id="sidenav-collapse-main">
     <ul class="navbar-nav">

@@ -18,16 +18,31 @@
     <form action="{{ route('updateContainerOnly') }}" class="row align-items-center" method="POST">
         @csrf
         <div class="col">
-            <input type="text" name="number" value="{{ $container?->number }}" class="form-control"
-                placeholder="رقم الحاوية">
+            @if (auth()->user()->userinfo->job_title == 'administrative')
+                <input type="text" value="{{ $container?->number }}" class="form-control" placeholder="رقم الحاوية"
+                    disabled>
+            @else
+                <input type="text" name="number" value="{{ $container?->number }}" class="form-control"
+                    placeholder="رقم الحاوية">
+            @endif
         </div>
         <div class="col">
-            <input type="text" name="price" value="{{ $container?->price }}" class="form-control"
-                placeholder="سعر الحاوية">
+            @if (auth()->user()->userinfo->job_title == 'administrative')
+                <input type="text" value="{{ $container?->price }}" class="form-control" placeholder="سعر الحاوية"
+                    disabled>
+            @else
+                <input type="text" name="price" value="{{ $container?->price }}" class="form-control"
+                    placeholder="سعر الحاوية">
+            @endif
         </div>
         <div class="col">
-            <input type="text" value="{{ $container?->customs->subclient_id }}" class="form-control"
-                placeholder="اسم العميل">
+            @if (auth()->user()->userinfo->job_title == 'administrative')
+                <input type="text" value="{{ $container?->customs->subclient_id }}" class="form-control"
+                    placeholder="اسم العميل" disabled>
+            @else
+                <input type="text" name="customs_subclient_id" value="{{ $container?->customs->subclient_id }}"
+                    class="form-control" placeholder="اسم العميل">
+            @endif
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-success">تحديث</button>
@@ -56,8 +71,7 @@
                     @endphp
                     @foreach ($customs as $custom)
                         @php
-                            $transportContainers = $custom->container
-                                ->whereIn('status', ['transport', 'done', 'rent']);
+                            $transportContainers = $custom->container->whereIn('status', ['transport', 'done', 'rent']);
                         @endphp
                         @if ($transportContainers->isNotEmpty())
                             <input type="hidden" value="{{ $custom->id }}" name="id[]" />
@@ -73,32 +87,26 @@
                                     $totalPrice += $containerPrice;
                                     $totalWithdrawPrice += $withdrawPrice;
                                 @endphp
+
                                 <td>{{ $containerPrice }}</td>
                                 <td>
-                                    @if ($containerPrice == 0)
-                                        <div class="input-group mb-3">
-                                            <input type="text" name="price[]" value="{{ $custom->container
-                                                ->whereIn('status', ['transport', 'done', 'rent'])
-                                                ->isNotEmpty() ? $containerPrice / $custom->container
-                                                ->whereIn('status', ['transport', 'done', 'rent'])->count() : 0 }}" class="custom-form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية" aria-describedby="basic-addon2">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text" id="basic-addon2">ريال</span>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="input-group mb-3">
-                                            <input type="text" name="price[]" value="{{ $custom->container
-                                                ->whereIn('status', ['transport', 'done', 'rent'])
-                                                ->isNotEmpty() ? $containerPrice / $custom->container
-                                                ->whereIn('status', ['transport', 'done'])->count() : 0 }}" class="custom-form-control" placeholder="سعر الحاوية" aria-label="سعر الحاوية" aria-describedby="basic-addon2">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text" id="basic-addon2">ريال</span>
-                                            </div>
-                                        </div>
-                                    @endif
+                                    <div class="input-group mb-3">
+                                        @if (auth()->user()->userinfo->job_title == 'administrative')
+                                            <input type="text"
+                                                value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}"
+                                                class="custom-form-control" placeholder="سعر الحاوية"
+                                                aria-label="سعر الحاوية" aria-describedby="basic-addon2" disabled>
+                                        @else
+                                            <input type="text" name="price[]"
+                                                value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}"
+                                                class="custom-form-control" placeholder="سعر الحاوية"
+                                                aria-label="سعر الحاوية" aria-describedby="basic-addon2">
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>{{ $withdrawPrice }}</td>
-                                <td>{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}</td>
+                                <td>{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}
+                                </td>
                                 <td scope="row">{{ $custom->subclient_id }}</td>
                                 <td scope="row">{{ $custom->statement_number }}</td>
                                 <th scope="row">{{ $custom->id }}</th>
@@ -164,8 +172,6 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
 
 @stop
-

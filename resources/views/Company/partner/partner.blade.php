@@ -3,6 +3,7 @@
 @section('content')
     @php
         use Carbon\Carbon;
+        $totalSumcalculatedValue = 0;
     @endphp
 
     <div class="container mt-5">
@@ -115,16 +116,16 @@
 
                     <thead class="bg-gray" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
-                            <th scope="col" class="text-center">action</th>
-                            <th scope="col" class="text-center">الصورة الشخصية</th>
-                            <th scope="col" class="text-center">ما يمكن سحبه</th>
-                            <th scope="col" class="text-center">نسبة الارباح</th>
+                            <th scope="col" class="text-center">المتبقي الي الشركاء</th>
+                            <th scope="col" class="text-center">نسبة الارباح و البيع والشراء</th>
                             <th scope="col" class="text-center">نسبة الشريك</th>
                             <th scope="col" class="text-center">راس المال</th>
                             <th scope="col" class="text-center">الدور</th>
                             <th scope="col" class="text-center">الاسم</th>
                             <th scope="col" class="text-center">كشف حساب سنوي</th>
                             <th scope="col" class="text-center">كشف حساب شهري</th>
+                            <th scope="col" class="text-center">الصورة الشخصية</th>
+                            <th scope="col" class="text-center">action</th>
                             <th scope="col" class="text-center">#</th>
                         </tr>
                     </thead>
@@ -198,28 +199,17 @@
 
                                         $activePartners = $partner->filter(
                                             fn($partner) => $partner->is_active == 1 &&
-                                                $partner->role == 'partner' &&
-                                                Carbon::parse($partner->created_at)->month <= $month,
-                                        );
-
-                                        $activeCompany = $partner->filter(
-                                            fn($partner) => $partner->is_active == 1 &&
-                                                $partner->role == 'company' &&
                                                 Carbon::parse($partner->created_at)->month <= $month,
                                         );
 
                                         $totalActivePartnerSum = $activePartners->sum(
                                             fn($partner) => $partner->partnerInfo->sum('money'),
                                         );
-                                        $totalActiveCompanySum = $activeCompany->sum(
-                                            fn($partner) => $partner->partnerInfo->sum('money'),
-                                        );
 
                                         $monthlyProfit = 0;
 
-                                        if ($totalActivePartnerSum + $totalActiveCompanySum > 0) {
-                                            $partnerSum =
-                                                ($userShare / ($totalActivePartnerSum + $totalActiveCompanySum)) * 100;
+                                        if ($totalActivePartnerSum > 0) {
+                                            $partnerSum = ($userShare / $totalActivePartnerSum) * 100;
                                             $monthlyProfit = ($totalPrice * $partnerSum) / 100;
                                         } else {
                                             $partnerSum = 100;
@@ -250,48 +240,72 @@
                                             )
                                             ->sum('price');
 
-                                        if ($activePartners->count() > 0) {
-                                            $partnerCashCanWithdraw =
-                                                (($totalDepositSinceJoined - $withdrawCashSum) * $partnerSum) / 100;
-                                        } else {
-                                            $partnerCashCanWithdraw = $totalDepositSinceJoined - $withdrawCashSum;
-                                        }
+                                        $partnerCashCanWithdraw =
+                                            (($totalDepositSinceJoined - $withdrawCashSum) * $partnerSum) / 100;
+
+                                        ////////////////////////
 
                                         $partnerWithdraw = $item->partnerdaily
                                             ->where('type', 'partner_withdraw')
                                             ->sum('price');
 
-                                        $rateBuy = ($buyCash->sum('price') * $partnerSum) / 100;
-                                        $rateSellFromHeadMony = ($sellFromHeadMony->sum('price') * $partnerSum) / 100;
-                                        $rateSell = ($sellCash->sum('price') * $partnerSum) / 100;
+                                        $rateBuy =
+                                            ($allSellAndBuy->where('type', 'buy')->sum('price') * $partnerSum) / 100;
+                                        $rateSellFromHeadMony =
+                                            ($allSellAndBuy->where('type', 'sell_from_head_mony')->sum('price') *
+                                                $partnerSum) /
+                                            100;
+                                        $rateSell =
+                                            ($allSellAndBuy->where('type', 'sell')->sum('price') * $partnerSum) / 100;
 
                                         $Profits_from_buying_and_selling = $rateSell - $rateBuy;
 
-                                        $calculatedValue =
-                                            $partnerCashCanWithdraw -
-                                            $partnerWithdraw +
-                                            $rateSellFromHeadMony +
-                                            $Profits_from_buying_and_selling;
-
                                         $companyHeadMoney =
-                                            $userShare - $rateSellFromHeadMony - $Profits_from_buying_and_selling;
+                                            $userShare -
+                                            $rateSellFromHeadMony -
+                                            $Profits_from_buying_and_selling +
+                                            ($sumAllSellTransaction * $partnerSum) / 100;
 
                                         $totalEarnMoney += $monthlyProfit;
-
-                                        $annualStatement[$month] = [
-                                            'month' => $month,
-                                            'deposits' => number_format($monthlyProfit, 2),
-                                        ];
-                                    } else {
-                                        $annualStatement[$month] = [
-                                            'month' => $month,
-                                            'deposits' => '0.00',
-                                        ];
                                     }
                                 }
                             @endphp
 
                             <tr>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->is_active == 1 ? number_format($totalEarnMoney - $partnerWithdraw, 2) : 0 }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->is_active == 1 ? number_format($totalEarnMoney, 2) : 0 }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->is_active == 1 ? $partnerSum : 0 }}%</td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    ر.س{{ number_format($companyHeadMoney, 2) }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->role == 'company' ? 'الشركة' : 'شريك' }}
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('profileSettings', $item->id) }}">
+                                        {{ $item->name }}
+                                    </a>
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('partnerYearStatement', $item->id) }}">
+                                        كشف سنوي
+                                    </a>
+                                </td>
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    <a href="{{ route('partnerStatement', $item->id) }}">
+                                        كشف شهري
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <img src="{{ $item?->userinfo?->image == null ? 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg' : asset('storage/' . $item->userinfo->image) }}"
+                                        alt="{{ $item->name }}" class="img-thumbnail"
+                                        style="max-width: 100px; max-height: 100px;">
+                                </td>
                                 <td class="text-center">
                                     <button class="btn btn-secondary" data-bs-toggle="modal"
                                         data-bs-target="#editModal{{ $item->id }}">
@@ -366,41 +380,6 @@
                                         </form>
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    <img src="{{ $item?->userinfo?->image == null ? 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg' : asset('storage/' . $item->userinfo->image) }}"
-                                        alt="{{ $item->name }}" class="img-thumbnail"
-                                        style="max-width: 100px; max-height: 100px;">
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $calculatedValue }}
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->is_active == 1 ? number_format($totalEarnMoney, 2) : 0 }}
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->is_active == 1 ? $partnerSum : 0 }}%</td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    ر.س{{ $companyHeadMoney }}
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    {{ $item->role == 'company' ? 'الشركة' : 'شريك' }}
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    <a href="{{ route('profileSettings', $item->id) }}">
-                                        {{ $item->name }}
-                                    </a>
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    <a href="{{ route('partnerYearStatement', $item->id) }}">
-                                        كشف سنوي
-                                    </a>
-                                </td>
-                                <td class="text-center font-weight-bold" style="font-size: 18px;">
-                                    <a href="{{ route('partnerStatement', $item->id) }}">
-                                        كشف شهري
-                                    </a>
-                                </td>
-
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->id }}
                                 </td>

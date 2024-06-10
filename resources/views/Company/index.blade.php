@@ -1,99 +1,102 @@
 @extends('layouts.default')
 
 @section('content')
-    
+
     <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">باقي حساب العملاء</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        ${{ $clintPriceMinesContainer }}
-                                        <span class="text-success text-sm font-weight-bolder">+55%</span>
-                                    </h5>
+        @if (auth()->user()->role == 'superAdmin')
+            <div class="row">
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">باقي حساب العملاء</p>
+                                        <h5 class="font-weight-bolder mb-0">
+                                            ${{ $clintPriceMinesContainer }}
+                                            <span class="text-success text-sm font-weight-bolder">+55%</span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                        <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">النقدية بنك او كاش</p>
+                                        <h5 class="font-weight-bolder mb-0">
+                                            {{ number_format($canCashWithdraw, 2) }}
+                                            <span class="text-success text-sm font-weight-bolder">+3%</span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                        <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">حاويات الانتظار </p>
+                                        <h5 class="font-weight-bolder mb-0">
+                                            +{{ $container->whereIn('status', ['wait', 'rent'])->count() }}
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ intval(($container?->whereIn('status', ['wait', 'rent'])->count() == 0 ? 1 : $container?->whereIn('status', ['wait', 'rent'])->count() / $container?->count()) * 100) }}%</span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                        <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">اجمالي الايرادات</p>
+                                        <h5 class="font-weight-bolder mb-0">
+                                            {{ strval($deposits) - strval($withdraws) }}
+                                            <span class="text-success text-sm font-weight-bolder">+5%</span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                        <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">النقدية بنك او كاش</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{ number_format($canCashWithdraw, 2) }}
-                                        <span class="text-success text-sm font-weight-bolder">+3%</span>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">حاويات الانتظار </p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        +{{ $container->whereIn('status', ['wait', 'rent'])->count() }}
-                                        <span
-                                            class="text-danger text-sm font-weight-bolder">{{ intval(($container?->whereIn('status', ['wait', 'rent'])->count() == 0 ? 1 : $container?->whereIn('status', ['wait', 'rent'])->count() / $container?->count()) * 100) }}%</span>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">اجمالي الايرادات</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{ strval($deposits) - strval($withdraws) }}
-                                        <span class="text-success text-sm font-weight-bolder">+5%</span>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endif
+
         <div class="row mt-4">
             <div class="col-lg-7 mb-lg-0 mb-4">
                 <div class="card">
