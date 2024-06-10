@@ -80,7 +80,7 @@ class DatesController extends Controller
         }
 
 
-        $driver = User::where('role', 'driver')->get();
+        $driver = User::where('role', 'driver')->whereNotNull('sallary')->get();
         $rents = User::where('role', 'rent')->get();
         $cars = Cars::where('type', 'transfer')->get();
         return view('run.dates.empty', compact('done', 'driver', 'containerPort', 'cars', 'rents'));
@@ -109,8 +109,8 @@ class DatesController extends Controller
         $container = Container::find($id);
 
         if ($request->status == 'done') {
-            if ($container->tips()->exists()) {
-                $container->tips()->update([
+            if ($container->tipsEmpty()->exists()) {
+                $container->tipsEmpty()->update([
                     'user_id' => $request->user_id,
                     'car_id' => $request->car_id,
                     'price' => $request->price,

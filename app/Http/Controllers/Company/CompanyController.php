@@ -142,7 +142,7 @@ class CompanyController extends Controller
                 return $item->parent()->exists();
             })
             ->map(function ($item) {
-                $buyPrice = $item->parent->price; // Corrected to directly access the parent price
+                $buyPrice = $item->parent->price;
                 return $item->price - $buyPrice;
             })
             ->sum();
@@ -227,10 +227,20 @@ class CompanyController extends Controller
             ->get();
 
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
+        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
+        $sellTransactionSum = $sellTransaction
+            ->filter(function ($item) {
+                return $item->parent()->exists();
+            })
+            ->map(function ($item) {
+                $buyPrice = $item->parent->price;
+                return $item->price - $buyPrice;
+            })
+            ->sum();
 
         $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
 
-        $deposit = $container->sum('price') + $transferPrice;
+        $deposit = $container->sum('price') + $transferPrice+$sellTransactionSum;
 
         $withdraw = $cars->sum('price') +
             $totalPriceFromRent +
