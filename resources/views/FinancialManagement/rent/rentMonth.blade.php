@@ -48,7 +48,7 @@
                             <td>
                                 @if ($item->is_rent == 1)
                                     <div class="input-group input-group-sm mb-3">
-                                        @if (auth()->user()->userinfo->job_title == 'administrative')
+                                        @if (auth()->user()?->userinfo?->job_title == 'administrative')
                                             <input type="text" value="{{ $item->rent_price }}" class="form-control form-control-sm" placeholder="سعر الحاوية" aria-label="سعر الحاوية" aria-describedby="basic-addon2" disabled>
                                         @else
                                             <input type="text" name="rent_price[]" value="{{ $item->rent_price }}" class="form-control form-control-sm" placeholder="سعر الحاوية" aria-label="سعر الحاوية" aria-describedby="basic-addon2">

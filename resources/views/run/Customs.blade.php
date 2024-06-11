@@ -49,7 +49,7 @@
                                 data-bs-target="#myModal{{ $item->id }}">
                                 اضافة بيان جمركي
                             </button>
-                            @if (!Auth()->user()->userinfo->job_title == 'operator')
+                            @if (!Auth()->user()?->userinfo?->job_title == 'operator')
                                 <form action="{{ route('deleteOffices', $item->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-danger">

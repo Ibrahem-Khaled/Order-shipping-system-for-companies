@@ -18,7 +18,7 @@
     <form action="{{ route('updateContainerOnly') }}" class="row align-items-center" method="POST">
         @csrf
         <div class="col">
-            @if (auth()->user()->userinfo->job_title == 'administrative')
+            @if (auth()->user()?->userinfo?->job_title == 'administrative')
                 <input type="text" value="{{ $container?->number }}" class="form-control" placeholder="رقم الحاوية"
                     disabled>
             @else
@@ -27,7 +27,7 @@
             @endif
         </div>
         <div class="col">
-            @if (auth()->user()->userinfo->job_title == 'administrative')
+            @if (auth()->user()?->userinfo?->job_title == 'administrative')
                 <input type="text" value="{{ $container?->price }}" class="form-control" placeholder="سعر الحاوية"
                     disabled>
             @else
@@ -36,7 +36,7 @@
             @endif
         </div>
         <div class="col">
-            @if (auth()->user()->userinfo->job_title == 'administrative')
+            @if (auth()->user()?->userinfo?->job_title == 'administrative')
                 <input type="text" value="{{ $container?->customs->subclient_id }}" class="form-control"
                     placeholder="اسم العميل" disabled>
             @else
@@ -91,7 +91,7 @@
                                 <td>{{ $containerPrice }}</td>
                                 <td>
                                     <div class="input-group mb-3">
-                                        @if (auth()->user()->userinfo->job_title == 'administrative')
+                                        @if (auth()->user()?->userinfo?->job_title == 'administrative')
                                             <input type="text"
                                                 value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}"
                                                 class="custom-form-control" placeholder="سعر الحاوية"

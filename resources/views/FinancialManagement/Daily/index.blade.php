@@ -267,7 +267,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if (!auth()->user()->userinfo->job_title == 'administrative')
+                                                @if (!auth()->user()?->userinfo?->job_title == 'administrative')
                                                     <button type="button" data-bs-toggle="modal"
                                                         data-bs-target="#confirmationModal{{ $item->id }}"
                                                         class="btn btn-danger">مسح</button>

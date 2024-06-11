@@ -45,7 +45,7 @@
                                             @endif
                                         </button>
                                     </form>
-                                    @if (!auth()->user()->userinfo->job_title == 'operator')
+                                    @if (!auth()->user()?->userinfo?->job_title == 'operator')
                                         <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-danger d-inline-block">

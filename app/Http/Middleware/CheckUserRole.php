@@ -18,6 +18,7 @@ class CheckUserRole
         if (auth()->check() && auth()->user()->role == 'superAdmin') {
             return $next($request);
         }
+        
         if (auth()->check() && auth()->user()->role == 'driver') {
             $allowedRoutes = [
                 'expensesSallaryeEmployee',
@@ -29,6 +30,7 @@ class CheckUserRole
             }
             return $next($request);
         }
+
         if (auth()->check() && auth()->user()?->userinfo?->job_title == 'operator') {
             $allowedRoutes = [
                 'addOffice',

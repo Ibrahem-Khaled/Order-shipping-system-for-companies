@@ -116,7 +116,7 @@
                         <td>{{ $transaction->title }}</td>
                         <td>{{ $transaction->created_at }}</td>
                         <td>
-                            @if (!auth()->user()->userinfo->job_title == 'administrative')
+                            @if (!auth()->user()?->userinfo?->job_title == 'administrative')
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#editTransactionModal{{ $transaction->id }}">تعديل</button>
 
