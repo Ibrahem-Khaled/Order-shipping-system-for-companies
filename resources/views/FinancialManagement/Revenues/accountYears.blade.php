@@ -17,33 +17,20 @@
 
     @php
         $year = request('year', now()->year);
-        $previousYearsTotal = 0;
 
-        // محاولة جلب الرصيد من السنوات السابقة للسنة المحددة
-        $previousYearsTransactions = $user->role !== 'rent'
-            ? $user->clientdaily->where('type', 'deposit')->filter(fn($transaction) => $transaction->created_at->year < $year)
-            : $user->employeedaily->where('type', 'withdraw')->filter(fn($transaction) => $transaction->created_at->year < $year);
-
-        if ($previousYearsTransactions->isEmpty()) {
-            // إذا كانت المعاملات السابقة فارغة، حاول جلب المعاملات من السنة السابقة للسنة الحالية
-            $previousYear = now()->year - 1;
-            $previousYearsTransactions = $user->role !== 'rent'
-                ? $user->clientdaily->where('type', 'deposit')->filter(fn($transaction) => $transaction->created_at->year < $previousYear)
-                : $user->employeedaily->where('type', 'withdraw')->filter(fn($transaction) => $transaction->created_at->year < $previousYear);
-        }
-
-        $previousYearsTotal = $user->role !== 'rent'
-            ? $previousYearsTransactions->where('type', 'deposit')->sum('price') - $previousYearsTransactions->where('type', 'withdraw')->sum('price')
-            : $previousYearsTransactions->where('type', 'withdraw')->sum('price') - $previousYearsTransactions->where('type', 'deposit')->sum('price');
-
-        // جلب المعاملات اليومية للسنة المحددة
         $userDailyTransactions =
             $user->role !== 'rent'
-                ? $user->clientdaily->where('type', 'deposit')->filter(fn($transaction) => $transaction->created_at->year == $year)->sortBy('created_at')
-                : $user->employeedaily->where('type', 'withdraw')->filter(fn($transaction) => $transaction->created_at->year == $year)->sortBy('created_at');
+                ? $user->clientdaily
+                    ->where('type', 'deposit')
+                    ->filter(fn($transaction) => $transaction->created_at->year == $year)
+                    ->sortBy('created_at')
+                : $user->employeedaily
+                    ->where('type', 'withdraw')
+                    ->filter(fn($transaction) => $transaction->created_at->year == $year)
+                    ->sortBy('created_at');
 
         $annualStatement = [];
-        $cumulativeResidual = $previousYearsTotal;
+        $cumulativeResidual = 0;
 
         for ($month = 1; $month <= 12; $month++) {
             $priceTransfer = 0;
@@ -89,12 +76,6 @@
 
             $residual = $monthlyTotalFromContainer - $monthlyDeposit;
             $cumulativeResidual += $residual;
-
-            // إذا كان الشهر هو يناير، أضف الرصيد النهائي من السنوات السابقة
-            if ($month == 1) {
-                $residual += $previousYearsTotal;
-                $cumulativeResidual += $previousYearsTotal;
-            }
 
             $annualStatement[] = [
                 'month' => $month,
