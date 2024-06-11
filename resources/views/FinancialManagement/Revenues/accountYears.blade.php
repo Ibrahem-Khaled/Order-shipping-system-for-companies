@@ -95,6 +95,12 @@
             $residual = $monthlyTotalFromContainer - $monthlyDeposit;
             $cumulativeResidual += $residual;
 
+            // إذا كان الشهر هو يناير، أضف الرصيد النهائي من السنوات السابقة
+            if ($month == 1) {
+                $residual += $previousYearsTotal;
+                $cumulativeResidual += $previousYearsTotal;
+            }
+
             $annualStatement[] = [
                 'month' => $month,
                 'monthlyTotalFromContainer' => $monthlyTotalFromContainer + $cumulativeResidual,
