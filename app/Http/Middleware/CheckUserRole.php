@@ -29,7 +29,7 @@ class CheckUserRole
             }
             return $next($request);
         }
-        if (auth()->check() && auth()->user()->userinfo->job_title == 'operator') {
+        if (auth()->check() && auth()->user()?->userinfo?->job_title == 'operator') {
             $allowedRoutes = [
                 'addOffice',
                 'postOffice',
@@ -49,7 +49,7 @@ class CheckUserRole
             }
             return $next($request);
         }
-        if (auth()->check() && auth()->user()->userinfo->job_title == 'administrative') {
+        if (auth()->check() && auth()->user()?->userinfo?->job_title == 'administrative') {
             $allowedRoutes = [
                 'dailyManagement',
                 'editContanierTips',

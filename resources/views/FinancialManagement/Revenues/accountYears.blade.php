@@ -6,14 +6,30 @@
         <h1 class="text-success text-right">كشف حساب سنوي ل {{ $user->name }}</h1>
     </div>
 
+    <!-- Form to search for a specific year -->
+    <form method="GET" action="">
+        <div class="form-group">
+            <label for="year">اختر السنة</label>
+            <input type="number" name="year" id="year" class="form-control" value="{{ request('year', now()->year) }}">
+        </div>
+        <button type="submit" class="btn btn-primary">بحث</button>
+    </form>
+
     @php
+        $year = request('year', now()->year);
+
         $userDailyTransactions =
             $user->role !== 'rent'
-                ? $user->clientdaily->where('type', 'deposit')->sortBy('created_at')
-                : $user->employeedaily->where('type', 'withdraw')->sortBy('created_at');
+                ? $user->clientdaily
+                    ->where('type', 'deposit')
+                    ->filter(fn($transaction) => $transaction->created_at->year == $year)
+                    ->sortBy('created_at')
+                : $user->employeedaily
+                    ->where('type', 'withdraw')
+                    ->filter(fn($transaction) => $transaction->created_at->year == $year)
+                    ->sortBy('created_at');
 
         $annualStatement = [];
-        $currentYear = now()->year;
         $cumulativeResidual = 0;
 
         for ($month = 1; $month <= 12; $month++) {
@@ -22,11 +38,11 @@
             $monthTransactions =
                 $user->role == 'rent'
                     ? $user->rentCont->filter(
-                        fn($transaction) => $transaction->created_at->year == $currentYear &&
+                        fn($transaction) => $transaction->created_at->year == $year &&
                             $transaction->created_at->month == $month,
                     )
                     : $user->container->filter(
-                        fn($transaction) => $transaction->created_at->year == $currentYear &&
+                        fn($transaction) => $transaction->created_at->year == $year &&
                             $transaction->created_at->month == $month,
                     );
 
@@ -34,7 +50,7 @@
 
             if ($user->role != 'rent') {
                 $monthDeposit = $user->clientdaily->filter(
-                    fn($transaction) => $transaction->created_at->year == $currentYear &&
+                    fn($transaction) => $transaction->created_at->year == $year &&
                         $transaction->created_at->month == $month,
                 );
 
@@ -43,7 +59,7 @@
                 }
             } else {
                 $monthDeposit = $userDailyTransactions->filter(
-                    fn($transaction) => $transaction->created_at->year == $currentYear &&
+                    fn($transaction) => $transaction->created_at->year == $year &&
                         $transaction->created_at->month == $month,
                 );
             }
@@ -79,7 +95,7 @@
                         <tr>
                             <th scope="col">المتبقي</th>
                             <th scope="col">{{ $user->role == 'rent' ? 'المدفوع للناقل' : 'اجمالي الوارد' }}</th>
-                            <th scope="col">{{$user->role == 'rent' ? 'المستحق للناقل' : 'الرصيد الكلي'}}</th>
+                            <th scope="col">{{ $user->role == 'rent' ? 'المستحق للناقل' : 'الرصيد الكلي' }}</th>
                             <th scope="col">الشهر</th>
                         </tr>
                     </thead>
