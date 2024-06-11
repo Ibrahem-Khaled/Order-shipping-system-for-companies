@@ -32,6 +32,29 @@
         $annualStatement = [];
         $cumulativeResidual = 0;
 
+        // Calculate the cumulative residual for previous years
+        for ($pastYear = $year - 1; $pastYear >= now()->year - 5; $pastYear--) {
+            $yearlyTransactions =
+                $user->role == 'rent'
+                    ? $user->rentCont->filter(fn($transaction) => $transaction->created_at->year == $pastYear)
+                    : $user->container->filter(fn($transaction) => $transaction->created_at->year == $pastYear);
+
+            $yearlyTotalFromContainer = $yearlyTransactions->sum('price');
+            $yearlyDeposit =
+                $user->role == 'rent'
+                    ? $user->employeedaily
+                        ->where('type', 'withdraw')
+                        ->filter(fn($transaction) => $transaction->created_at->year == $pastYear)
+                        ->sum('price')
+                    : $user->clientdaily
+                        ->where('type', 'deposit')
+                        ->filter(fn($transaction) => $transaction->created_at->year == $pastYear)
+                        ->sum('price');
+
+            $yearlyResidual = $yearlyTotalFromContainer - $yearlyDeposit;
+            $cumulativeResidual += $yearlyResidual;
+        }
+
         for ($month = 1; $month <= 12; $month++) {
             $priceTransfer = 0;
 
