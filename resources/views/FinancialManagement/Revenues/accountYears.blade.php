@@ -18,6 +18,24 @@
     @php
         $year = request('year', now()->year);
 
+        // حساب الرصيد النهائي من السنوات السابقة
+        $previousYearsTransactions =
+            $user->role !== 'rent'
+                ? $user->clientdaily
+                    ->where('type', 'deposit')
+                    ->filter(fn($transaction) => $transaction->created_at->year < $year)
+                : $user->employeedaily
+                    ->where('type', 'withdraw')
+                    ->filter(fn($transaction) => $transaction->created_at->year < $year);
+
+        $previousYearsTotal =
+            $user->role !== 'rent'
+                ? $previousYearsTransactions->where('type', 'deposit')->sum('price') -
+                    $previousYearsTransactions->where('type', 'withdraw')->sum('price')
+                : $previousYearsTransactions->where('type', 'withdraw')->sum('price') -
+                    $previousYearsTransactions->where('type', 'deposit')->sum('price');
+
+        // جلب المعاملات اليومية للسنة المحددة
         $userDailyTransactions =
             $user->role !== 'rent'
                 ? $user->clientdaily
@@ -30,7 +48,7 @@
                     ->sortBy('created_at');
 
         $annualStatement = [];
-        $cumulativeResidual = 0;
+        $cumulativeResidual = $previousYearsTotal;
 
         for ($month = 1; $month <= 12; $month++) {
             $priceTransfer = 0;

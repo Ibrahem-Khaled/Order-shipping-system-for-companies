@@ -20,6 +20,12 @@ class OfficeController extends Controller
             'name' => $name,
             'role' => $role,
         ]);
-        return redirect()->route('getOfices')->with('success', 'تم الانشاء بنجاح');
+
+        if ($role == 'rent') {
+            return redirect()->route('getOfficesRent')->with('success', 'تم الانشاء بنجاح');
+        }
+
+        return redirect()->route('getOffices')->with('success', 'تم الانشاء بنجاح');
     }
+
 }
