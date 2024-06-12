@@ -162,6 +162,8 @@ class CompanyController extends Controller
 
         $withdraws = $cars + $employeeSum + $totalPriceFromRent + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
 
+        $allCustoms = User::where('role', 'client')->with('container')->get();
+
         return view(
             'Company.index',
             compact(
@@ -173,6 +175,7 @@ class CompanyController extends Controller
                 'canCashWithdraw',
                 'withdraws',
                 'deposits',
+                'allCustoms'
             )
         );
     }
@@ -240,7 +243,7 @@ class CompanyController extends Controller
 
         $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
 
-        $deposit = $container->sum('price') + $transferPrice+$sellTransactionSum;
+        $deposit = $container->sum('price') + $transferPrice + $sellTransactionSum;
 
         $withdraw = $cars->sum('price') +
             $totalPriceFromRent +

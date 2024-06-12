@@ -307,20 +307,49 @@
             </div>
             <div class="col-lg-7">
                 <div class="card z-index-2">
-                    <div class="card-header pb-0">
-                        <h6>Sales overview</h6>
-                        <p class="text-sm">
-                            <i class="fa fa-arrow-up text-success"></i>
-                            <span class="font-weight-bold">4% more</span> in 2021
-                        </p>
+                    <div class="card-header pb-0"
+                        style="display: flex; justify-content: space-around; align-items: center;">
+                        @php
+                            $sumContainerInvaildPrice = 0;
+                            foreach ($allCustoms as $key => $value) {
+                                $sumContainerInvaildPrice += $value->container->where('price', '<=', 0)->count();
+                            }
+                        @endphp
+                        <h6></h6>   
+                        <h6></h6>   
+                        <h6></h6>   
+                        <h6></h6>   
+                        <p><strong>{{ $sumContainerInvaildPrice }}</strong></p>
+                        <h6>عدد الحاويات الغير مسعرة</h6>
                     </div>
+
                     <div class="card-body p-3">
-                        <div class="chart">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>اسم المكتب</th>
+                                        <th>عدد الحاويات غير مسعرة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($allCustoms as $item)
+                                        <tr>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ $item->container->where('price', '<=', 0)->count() }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Keeping the chart below the table -->
+                        <div class="chart mt-4">
                             <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="row my-4">
             <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
