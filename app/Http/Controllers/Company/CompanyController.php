@@ -291,18 +291,11 @@ class CompanyController extends Controller
             ->distinct()
             ->pluck('employee_id');
 
-        $elbancherSum = 0;
         $elbancher = [];
 
         foreach ($uniqueEmployeeIds as $value) {
             $user = User::find($value);
             if ($user && Str::contains($user->name, 'بنشر')) {
-                $sum = $user->employeedaily()
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->where('type', 'withdraw')
-                    ->sum('price');
-                $elbancherSum += $sum;
                 $elbancher[] = $user->employeedaily;
                 $elbancher = [...$elbancher];
             }
@@ -341,7 +334,6 @@ class CompanyController extends Controller
                 'employees',
                 'daily',
                 'cars',
-                'elbancherSum',
                 'rentOffices',
                 'others',
                 'customs',

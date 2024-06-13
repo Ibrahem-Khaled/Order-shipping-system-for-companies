@@ -204,6 +204,14 @@
             })
             ->sum('price');
 
+        $elbancherSum = collect($mergedArrayAlbancher)
+            ->filter(function ($item) use ($searchYear, $searchMonth) {
+                return Carbon::parse($item['created_at'])->month == $searchMonth &&
+                    Carbon::parse($item['created_at'])->year == $searchYear &&
+                    $item['type'] == 'withdraw';
+            })
+            ->sum('price');
+
         // Calculate total withdrawals for the search year and month
         $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $totalRentPriceFromYear;
 
