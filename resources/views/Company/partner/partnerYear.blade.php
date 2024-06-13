@@ -159,7 +159,7 @@
                             <tr>
                                 <td>{{ number_format($item->price, 2) }}</td>
                                 <td>{{ $item->description }}</td>
-                                <td>{{ $item->created_at }}</td>
+                                <td>{{ Carbon\Carbon::parse($item->created_at)->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
