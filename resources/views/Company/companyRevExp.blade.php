@@ -197,6 +197,11 @@
             })
             ->sum();
 
+        $partnerWithdrawFromCurrentMonth = $partnerWithdraw->filter(function ($item) use ($searchYear, $searchMonth) {
+            return Carbon::parse($item->created_at)->year == $searchYear &&
+                Carbon::parse($item->created_at)->month == $searchMonth;
+        })->sum('price');
+
         // Calculate total withdrawals for the search year and month
         $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $totalRentPriceFromYear;
 
@@ -248,14 +253,6 @@
                                 </a>
                             </td>
                             <td>{{ $sellTransactionYear }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a href="#">
-                                    اجمالي الوارد الشهر الحالي
-                                </a>
-                            </td>
-                            <td>{{ $sumContainerCurrentMonth + $sellTransactionCurrentMonth }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -328,10 +325,10 @@
                         <tr>
                             <td>
                                 <a href="#">
-                                    اجمالي المنصرف الشهر الحالي
+                                    اجمالي مسحوبات الشركاء
                                 </a>
                             </td>
-                            <td>{{ $withdrawCurrentMonth }}</td>
+                            <td>{{ $partnerWithdrawFromCurrentMonth }}</td>
                         </tr>
                     </tbody>
                 </table>

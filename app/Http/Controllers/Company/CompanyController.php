@@ -330,6 +330,8 @@ class CompanyController extends Controller
             ->where('type', 'deposit')
             ->get();
 
+        $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
+
         $sellTransaction = SellAndBuy::where('type', 'sell')->get();
         return view(
             'Company.companyRevExp',
@@ -346,6 +348,7 @@ class CompanyController extends Controller
                 'companyPriceWithdraw',
                 'transferPrice',
                 'sellTransaction',
+                'partnerWithdraw'
             )
         );
     }
