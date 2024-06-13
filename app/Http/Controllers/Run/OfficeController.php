@@ -25,7 +25,7 @@ class OfficeController extends Controller
             return redirect()->route('getOfficesRent')->with('success', 'تم الانشاء بنجاح');
         }
 
-        return redirect()->route('getOffices')->with('success', 'تم الانشاء بنجاح');
+        return redirect()->route('getOfices')->with('success', 'تم الانشاء بنجاح');
     }
 
 }
