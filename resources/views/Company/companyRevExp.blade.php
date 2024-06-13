@@ -197,10 +197,12 @@
             })
             ->sum();
 
-        $partnerWithdrawFromCurrentMonth = $partnerWithdraw->filter(function ($item) use ($searchYear, $searchMonth) {
-            return Carbon::parse($item->created_at)->year == $searchYear &&
-                Carbon::parse($item->created_at)->month == $searchMonth;
-        })->sum('price');
+        $partnerWithdrawFromCurrentMonth = $partnerWithdraw
+            ->filter(function ($item) use ($searchYear, $searchMonth) {
+                return Carbon::parse($item->created_at)->year == $searchYear &&
+                    Carbon::parse($item->created_at)->month == $searchMonth;
+            })
+            ->sum('price');
 
         // Calculate total withdrawals for the search year and month
         $withdraw = $carSum + $employeeSum + $elbancherSum + $othersSum + $totalRentPriceFromYear;
