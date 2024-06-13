@@ -2,12 +2,22 @@
 
 @section('content')
 
-
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <h2>{{ $user->name }}</h2>
                 <h2> الراتب {{ $user->sallary }}</h2>
+
+                <!-- إضافة نموذج البحث بالسنة -->
+                <form method="GET" action="{{ url()->current() }}" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="year" class="form-control" placeholder="أدخل السنة"
+                            value="{{ request('year') }}">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">بحث</button>
+                        </div>
+                    </div>
+                </form>
 
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
@@ -27,48 +37,62 @@
                             $annualStatement = [];
                             $currentYear = now()->year;
                             $currentMonth = now()->month;
-                            $sallary = $employee->sallary;
-                            $total = 0;
-                            $saving = 0;
-                            $date_runer = \Carbon\Carbon::parse($user->userInfo->date_runer);
-                            $month = $date_runer->month;
-                            // Loop through each month of the current year
-                            for ($month; $month <= $currentMonth; $month++) {
-                                // Filter daily records for the current month
-                                $monthTransactions = $employee->employeedaily->filter(function ($transaction) use (
-                                    $currentYear,
-                                    $month,
-                                ) {
-                                    return $transaction->created_at->year == $currentYear &&
-                                        $transaction->created_at->month == $month;
-                                });
+                            $sallary = $user->sallary;
+                            $totalSaving = 0; // To store the total saving across all years
+                            $searchYear = request('year') ?? $currentYear; // Get the search year or use current year
+                            $startYear = Carbon::parse($user->userInfo->date_runer)->year;
 
-                                $tipsMonth = $employee->driverContainer->filter(function ($transaction) use (
-                                    $currentYear,
-                                    $month,
-                                ) {
-                                    $transferDate = Carbon::parse($transaction->transfer_date);
-                                    return $transferDate->year == $currentYear && $transferDate->month == $month;
-                                });
+                            // Loop through each year from the start year to the current year
+                            for ($year = $startYear; $year <= $currentYear; $year++) {
+                                $yearlyTotal = 0; // To store the total saving for the current year
 
-                                // Calculate the total balance for the month
-                                $dailyTransaction = $monthTransactions->where('type', 'withdraw')->sum('price');
-                                $monthlyTotal = $monthTransactions->where('type', 'withdraw')->sum('price');
-                                $tips = $tipsMonth->sum('tips');
+                                $startMonth =
+                                    $year == $startYear ? Carbon::parse($user->userInfo->date_runer)->month : 1;
+                                $endMonth = $year == $currentYear ? $currentMonth : 12;
 
-                                $total = $sallary + $tips;
-                                $saving = $saving + $total - $dailyTransaction;
-                                $save = $total - $dailyTransaction;
+                                // Loop through each month of the current year
+                                for ($month = $startMonth; $month <= $endMonth; $month++) {
+                                    // Filter daily records for the current month
+                                    $monthTransactions = $user->employeedaily->filter(function ($transaction) use (
+                                        $year,
+                                        $month,
+                                    ) {
+                                        return $transaction->created_at->year == $year &&
+                                            $transaction->created_at->month == $month;
+                                    });
 
-                                // Store the month and total balance in the annual statement array
-                                $annualStatement[$month] = [
-                                    'total' => $total,
-                                    'dailyTransaction' => $dailyTransaction,
-                                    'saving' => $save,
-                                    'month' => $month,
-                                    'tips' => $tips,
-                                    'sallary' => $sallary,
-                                ];
+                                    $tipsMonth = $user->driverContainer->filter(function ($transaction) use (
+                                        $year,
+                                        $month,
+                                    ) {
+                                        $transferDate = Carbon::parse($transaction->transfer_date);
+                                        return $transferDate->year == $year && $transferDate->month == $month;
+                                    });
+
+                                    // Calculate the total balance for the month
+                                    $dailyTransaction = $monthTransactions->where('type', 'withdraw')->sum('price');
+                                    $tips = $tipsMonth->sum('tips');
+
+                                    $total = $sallary + $tips;
+                                    $saving = $total - $dailyTransaction;
+
+                                    // Store the month and total balance in the annual statement array for the search year
+                                    if ($year == $searchYear) {
+                                        $annualStatement[] = [
+                                            'total' => $total,
+                                            'dailyTransaction' => $dailyTransaction,
+                                            'saving' => $saving,
+                                            'month' => $month,
+                                            'year' => $year,
+                                            'tips' => $tips,
+                                            'sallary' => $sallary,
+                                        ];
+                                    }
+
+                                    $yearlyTotal += $saving;
+                                }
+
+                                $totalSaving += $yearlyTotal;
                             }
                         @endphp
 
@@ -79,21 +103,15 @@
                                 <td>{{ $statement['total'] }}</td>
                                 <td>{{ $statement['tips'] }}</td>
                                 <td>{{ $statement['sallary'] }}</td>
-                                <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}</td>
+                                <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}
+                                    {{ $statement['year'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>
-                    @php
-                        $withdraw = $user->employeedaily->where('type', 'withdraw')->sum('price');
-                        $sallary = $user->sallary;
-                    @endphp
                 </table>
 
-                <h3> الاجمالي {{ $saving }}</h3>
-
+                <h3> الاجمالي لكل السنوات: {{ $totalSaving }}</h3>
             </div>
         </div>
     </div>
-
-
 @stop

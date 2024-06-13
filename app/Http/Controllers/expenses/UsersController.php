@@ -49,19 +49,12 @@ class UsersController extends Controller
     }
     public function employeeDaily($id)
     {
-        // Get the current month and year 
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+        $user = User::with(['employeedaily'])->find($id);
 
-        $user = User::with([
-            'employeedaily' => function ($query) use ($currentMonth, $currentYear) {
-                $query->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear);
-            }
-        ])->find($id);
-        $employee = User::find($id);
-
-        return view('FinancialManagement.Expenses.users.employeeDaily', compact('user', 'employee'));
+        return view('FinancialManagement.Expenses.users.employeeDaily', compact('user'));
     }
+
+
     public function employeeTips(Request $request, $id)
     {
         $user = User::findOrFail($id);

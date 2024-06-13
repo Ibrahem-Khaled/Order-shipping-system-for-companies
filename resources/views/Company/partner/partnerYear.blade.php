@@ -8,34 +8,48 @@
 
     <div class="container mt-5">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">الأرباح</th>
+                            @php
+                                // Generate the year columns dynamically
+                                $userCreationYear = Carbon\Carbon::parse($user->created_at)->year;
+                                $currentYear = now()->year;
+                            @endphp
+                            @for ($year = $userCreationYear; $year <= $currentYear; $year++)
+                                <th scope="col">{{ $year }}</th>
+                            @endfor
                             <th scope="col">الشهر</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         @php
-                            use Carbon\Carbon;
-
                             $annualStatement = [];
                             $totalEarnMoney = 0;
+                            $userCreationMonth = Carbon\Carbon::parse($user->created_at)->month;
 
-                            // User creation month
-                            $userCreationMonth = Carbon::parse($user->created_at)->month;
+                            // Loop through each year from user creation year to the current year
+                            for ($year = $userCreationYear; $year <= $currentYear; $year++) {
+                                for ($month = 1; $month <= 12; $month++) {
+                                    if ($year == $userCreationYear && $month < $userCreationMonth) {
+                                        $annualStatement[$month][$year] = '0.00';
+                                        continue;
+                                    }
 
-                            for ($month = 1; $month <= 12; $month++) {
-                                if ($month >= $userCreationMonth) {
                                     $monthlyDeposits = $container
-                                        ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
+                                        ->filter(
+                                            fn($item) => Carbon\Carbon::parse($item->created_at)->year == $year &&
+                                                Carbon\Carbon::parse($item->created_at)->month == $month,
+                                        )
                                         ->sum('price');
 
-                                    $rent_price = $rentOffices->map(function ($items) use ($month) {
+                                    $rent_price = $rentOffices->map(function ($items) use ($month, $year) {
                                         return $items->employeedaily
-                                            ->filter(function ($daily) use ($month) {
-                                                return Carbon::parse($daily->created_at)->month == $month;
+                                            ->filter(function ($daily) use ($month, $year) {
+                                                return Carbon\Carbon::parse($daily->created_at)->year == $year &&
+                                                    Carbon\Carbon::parse($daily->created_at)->month == $month;
                                             })
                                             ->where('type', 'withdraw')
                                             ->sum('price');
@@ -45,26 +59,36 @@
                                     $employeeSum = $employees->sum(
                                         fn($employee) => $employee->employeedaily
                                             ->where('type', 'withdraw')
-                                            ->filter(fn($daily) => Carbon::parse($daily->created_at)->month == $month)
+                                            ->filter(
+                                                fn($daily) => Carbon\Carbon::parse($daily->created_at)->year == $year &&
+                                                    Carbon\Carbon::parse($daily->created_at)->month == $month,
+                                            )
                                             ->sum('price'),
                                     );
 
                                     $carsFiltered = $cars->sum(
                                         fn($car) => $car->daily
-                                            ->filter(fn($item) => Carbon::parse($item->created_at)->month == $month)
+                                            ->filter(
+                                                fn($item) => Carbon\Carbon::parse($item->created_at)->year == $year &&
+                                                    Carbon\Carbon::parse($item->created_at)->month == $month,
+                                            )
                                             ->sum('price'),
                                     );
 
                                     $othersSum = $others->sum(
                                         fn($other) => $other->employeedaily
                                             ->where('type', 'withdraw')
-                                            ->filter(fn($daily) => Carbon::parse($daily->created_at)->month == $month)
+                                            ->filter(
+                                                fn($daily) => Carbon\Carbon::parse($daily->created_at)->year == $year &&
+                                                    Carbon\Carbon::parse($daily->created_at)->month == $month,
+                                            )
                                             ->sum('price'),
                                     );
 
                                     $elbancherFiltered = collect($mergedArrayAlbancher)
                                         ->filter(
-                                            fn($item) => Carbon::parse($item['created_at'])->month == $month &&
+                                            fn($item) => Carbon\Carbon::parse($item['created_at'])->year == $year &&
+                                                Carbon\Carbon::parse($item['created_at'])->month == $month &&
                                                 $item['type'] == 'withdraw',
                                         )
                                         ->sum('price');
@@ -75,13 +99,14 @@
                                         $elbancherFiltered +
                                         $totalRentPriceFromCurrentMonth +
                                         $othersSum;
-                                        
+
                                     $totalPrice = $monthlyDeposits - $withdrawMonth;
 
                                     // الشركاء النشطين في هذا الشهر
                                     $activePartners = $partners->filter(
                                         fn($partner) => $partner->is_active == 1 &&
-                                            Carbon::parse($partner->created_at)->month <= $month,
+                                            Carbon\Carbon::parse($partner->created_at)->year <= $year &&
+                                            Carbon\Carbon::parse($partner->created_at)->month <= $month,
                                     );
 
                                     // جمع إجمالي أموال الشركاء النشطين
@@ -99,31 +124,25 @@
 
                                     $totalEarnMoney += $monthlyProfit;
 
-                                    $annualStatement[$month] = [
-                                        'month' => $month,
-                                        'deposits' => number_format($monthlyProfit, 2), // Format numbers
-                                    ];
-                                } else {
-                                    $annualStatement[$month] = [
-                                        'month' => $month,
-                                        'deposits' => '0.00',
-                                    ];
+                                    $annualStatement[$month][$year] = number_format($monthlyProfit, 2);
                                 }
                             }
                         @endphp
 
-                        @foreach ($annualStatement as $statement)
+                        @for ($month = 1; $month <= 12; $month++)
                             <tr>
-                                <td>{{ $statement['deposits'] }}</td>
-                                <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}</td>
+                                @for ($year = $userCreationYear; $year <= $currentYear; $year++)
+                                    <td>{{ $annualStatement[$month][$year] ?? '0.00' }}</td>
+                                @endfor
+                                <td>{{ DateTime::createFromFormat('!m', $month)->format('F') }}</td>
                             </tr>
-                        @endforeach
+                        @endfor
                     </tbody>
 
                 </table>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-12 mt-4">
                 <table class="table">
                     <thead>
                         <tr>
