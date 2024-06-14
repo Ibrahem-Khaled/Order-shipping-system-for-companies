@@ -2,7 +2,6 @@
 
 @section('content')
 
-
     <form action="{{ route('dailyManagement') }}" class="row align-items-center" method="GET">
         <div class="col">
             <input type="text" name="query" class="form-control" placeholder="Search...">
@@ -11,7 +10,6 @@
             <button type="submit" class="btn btn-success">Search</button>
         </div>
     </form>
-
 
     <div class="container">
         <div class="row justify-content-center">
@@ -29,8 +27,7 @@
                                     <div class="modal-content">
                                         <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">تعديل سعر
-                                                الترب</h5>
+                                            <h5 class="modal-title" id="addEmployeeModalLabel">تعديل سعر الترب</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -41,14 +38,12 @@
                                                 @csrf
                                                 <div class="row">
                                                     <div class="mb-3 col-md-6">
-                                                        <label for="containerNumber" class="form-label">رقم
-                                                            الحاوية:</label>
+                                                        <label for="containerNumber" class="form-label">رقم الحاوية:</label>
                                                         <input type="text" id="containerNumber" name="number" required
                                                             class="form-control" placeholder="رقم الحاوية">
                                                     </div>
                                                     <div class="mb-3 col-md-6">
-                                                        <label for="tarbPrice" class="form-label">سعر
-                                                            الترب:</label>
+                                                        <label for="tarbPrice" class="form-label">سعر الترب:</label>
                                                         <input type="text" id="tarbPrice" name="tips" required
                                                             class="form-control" placeholder="سعر الترب">
                                                     </div>
@@ -76,9 +71,7 @@
                                     <div class="modal-content">
                                         <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">
-                                                اضافة سعر امر النقل
-                                            </h5>
+                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة سعر امر النقل</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -89,16 +82,14 @@
                                                 @csrf
                                                 <div class="row">
                                                     <div class="mb-3 col-md-6">
-                                                        <label for="containerNumber" class="form-label">رقم
-                                                            الحاوية:</label>
+                                                        <label for="containerNumber" class="form-label">رقم الحاوية:</label>
                                                         <input type="text" id="containerNumber" name="number" required
                                                             class="form-control" placeholder="رقم الحاوية">
                                                     </div>
                                                     <div class="mb-3 col-md-6">
-                                                        <label for="tarbPrice" class="form-label">سعر
-                                                            السعر:</label>
+                                                        <label for="tarbPrice" class="form-label">سعر:</label>
                                                         <input type="text" id="tarbPrice" name="price" required
-                                                            class="form-control" placeholder="سعر ">
+                                                            class="form-control" placeholder="سعر">
                                                     </div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">حفظ</button>
@@ -125,8 +116,7 @@
                                     <div class="modal-content">
                                         <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة كشف
-                                                حساب</h5>
+                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة كشف حساب</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -155,8 +145,7 @@
                             </div>
 
                             <button type="button" data-bs-toggle="modal" style="margin: 5px"
-                                data-bs-target="#addDailyModal" class="btn btn-primary btn-lg">اضافة حركة
-                                مالية</button>
+                                data-bs-target="#addDailyModal" class="btn btn-primary btn-lg">اضافة حركة مالية</button>
                             <div class="modal fade" id="addDailyModal" tabindex="-1" role="dialog"
                                 aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -220,8 +209,7 @@
                                                         <select name="partner_id" class="form-control">
                                                             <option value="">اختيار حساب الشريك</option>
                                                             @foreach ($partner as $item)
-                                                                <option value="{{ $item->id }}">
-                                                                    {{ $item->name }}
+                                                                <option value="{{ $item->id }}">{{ $item->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -236,7 +224,6 @@
                                                 <div class="modal-footer">
                                                     <button type="close" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-
                                                     <button id="submitBtn" class="btn btn-primary">Submit</button>
                                                 </div>
                                             </form>
@@ -285,14 +272,11 @@
                                                                 </div>
                                                                 <div class="modal-body text-center"
                                                                     style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: bold;">
-                                                                    <p>
-                                                                        هل تريد الغاء ذلك البيان
-                                                                    </p>
+                                                                    <p>هل تريد الغاء ذلك البيان</p>
                                                                 </div>
                                                                 <form method="POST"
                                                                     action="{{ route('deleteDailyData', $item->id) }}">
                                                                     @csrf
-
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary"
                                                                             data-bs-dismiss="modal">إلغاء</button>
@@ -316,8 +300,7 @@
                                                                 <!-- Modal Content Goes Here -->
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title" id="addEmployeeModalLabel">
-                                                                        تعديل
-                                                                    </h5>
+                                                                        تعديل</h5>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal"
                                                                         aria-label="Close"></button>
@@ -343,25 +326,21 @@
                                                                             <div class="mb-3 col-md-6">
                                                                                 <select name="type" required
                                                                                     class="form-control">
-                                                                                    <option value="">نوع
-                                                                                        الحركة</option>
-                                                                                    <option value="deposit">
-                                                                                        وارد</option>
-                                                                                    <option value="withdraw">
-                                                                                        منصرف</option>
+                                                                                    <option value="">نوع الحركة
+                                                                                    </option>
+                                                                                    <option value="deposit">وارد</option>
+                                                                                    <option value="withdraw">منصرف</option>
                                                                                 </select>
                                                                             </div>
-
                                                                             <div class="mb-3 col-md-6">
                                                                                 <select name="car_id"
                                                                                     class="form-control">
-                                                                                    <option value="">
-                                                                                        اختيار السيارة</option>
+                                                                                    <option value="">اختيار السيارة
+                                                                                    </option>
                                                                                     @foreach ($cars as $items)
                                                                                         <option
                                                                                             value="{{ $items->id }}">
-                                                                                            {{ $items->number }}
-                                                                                            -
+                                                                                            {{ $items->number }} -
                                                                                             {{ $items->driver?->name }}
                                                                                         </option>
                                                                                     @endforeach
@@ -370,27 +349,24 @@
                                                                             <div class="mb-3 col-md-6">
                                                                                 <select name="client_id"
                                                                                     class="form-control">
-                                                                                    <option value="">
-                                                                                        اختيار حساب العميل
-                                                                                    </option>
+                                                                                    <option value="">اختيار حساب
+                                                                                        العميل</option>
                                                                                     @foreach ($client as $items)
                                                                                         <option
                                                                                             value="{{ $items->id }}">
-                                                                                            {{ $items->name }}
-                                                                                        </option>
+                                                                                            {{ $items->name }}</option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
                                                                             <div class="mb-3 col-md-6">
                                                                                 <select name="employee_id"
                                                                                     class="form-control">
-                                                                                    <option value="">
-                                                                                        اختيار الحساب</option>
+                                                                                    <option value="">اختيار الحساب
+                                                                                    </option>
                                                                                     @foreach ($employee as $items)
                                                                                         <option
                                                                                             value="{{ $items->id }}">
-                                                                                            {{ $items->name }}
-                                                                                        </option>
+                                                                                            {{ $items->name }}</option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
@@ -399,7 +375,6 @@
                                                                             class="btn btn-primary">عدل</button>
                                                                     </form>
                                                                 </div>
-
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary"
                                                                         data-bs-dismiss="modal">اغلاق</button>
@@ -407,10 +382,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                     </div>
                                                 @endif
-
                                             </td>
                                             <td>{{ $item->type == 'deposit' ? $item->price : null }}</td>
                                             <td>{{ $item->type == 'withdraw' ? $item->price : null }}{{ $item->type == 'partner_withdraw' ? $item->price : null }}
@@ -420,9 +393,7 @@
                                                     {{ $item->description }} - {{ $item?->car?->number }}
                                                 @elseif ($item->client_id !== null)
                                                     {{ $item->container_id !== null ? 'امر نقل -' : null }}
-                                                    {{ $item?->description }}-
-                                                    {{ $item?->client?->name }}-
-                                                    @if ($item->container_id !== null)
+                                                    {{ $item?->description }}- {{ $item?->client?->name }}- @if ($item->container_id !== null)
                                                         {{ $item?->container?->customs->statement_number }}
                                                         {{ $item?->container?->customs->subclient_id }}
                                                         {{ $item?->container?->number }}
@@ -461,16 +432,36 @@
                     employeeField.style.display = 'block';
                     partnerField.style.display = 'block';
                     clientField.style.display = 'none';
+
+                    const fields = [carField, employeeField, partnerField];
+                    fields.forEach(field => {
+                        field.querySelector('select').disabled = false;
+                        field.querySelector('select').addEventListener('change', function() {
+                            fields.forEach(otherField => {
+                                if (otherField !== field) {
+                                    otherField.querySelector('select').disabled = true;
+                                    otherField.querySelector('select').value = '';
+                                }
+                            });
+                        });
+                    });
+
                 } else if (selectedType === 'deposit') {
                     clientField.style.display = 'block';
                     carField.style.display = 'none';
                     employeeField.style.display = 'none';
                     partnerField.style.display = 'none';
+                    carField.querySelector('select').disabled = true;
+                    employeeField.querySelector('select').disabled = true;
+                    partnerField.querySelector('select').disabled = true;
                 } else {
                     carField.style.display = 'none';
                     clientField.style.display = 'none';
                     employeeField.style.display = 'none';
                     partnerField.style.display = 'none';
+                    carField.querySelector('select').disabled = true;
+                    employeeField.querySelector('select').disabled = true;
+                    partnerField.querySelector('select').disabled = true;
                 }
             }
 
@@ -481,7 +472,6 @@
             typeSelect.addEventListener('change', toggleFields);
         });
     </script>
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
