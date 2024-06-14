@@ -10,18 +10,23 @@
         SamerNomer System
     </title>
     <!-- Fonts and icons -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     <!-- Nucleo Icons -->
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets/css/soft-ui-dashboard.css?v=1.0.7') }}" rel="stylesheet" />
-    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+    <!-- Nepcha is an easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA, and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 
     <style>
+        body {
+            font-family: 'Cairo', sans-serif !important;
+        }
+
         .custom-form-control {
             display: block;
             width: 50%;
@@ -43,8 +48,7 @@
             outline: 0;
             box-shadow: 0 0 0 .2rem rgba(205, 35, 248, 0.25);
         }
-    </style>
-    <style>
+
         .dropdown {
             position: relative;
             display: inline-block;
@@ -92,7 +96,6 @@
                 width: 100%;
                 height: 100%;
                 vertical-align: middle;
-                /* Center align vertically */
                 font-size: 12px;
                 line-height: 1.5;
                 color: #495057;
@@ -104,53 +107,239 @@
                 transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
             }
 
-            .table tbody td,
-            .table tbody th {
+            .table {
+                width: 100%;
                 font-size: 12px;
-                padding: 2px;
-                font-weight: bold;
-                text-align: center;
-                vertical-align: middle;
-                /* Center align vertically */
+                border-collapse: collapse;
+                margin-bottom: 1rem;
+                color: #212529;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.5rem;
+                vertical-align: top;
+                border-top: 1px solid #dee2e6;
             }
 
             .table thead th {
-                font-size: 13px;
-                padding: 5px;
-                font-weight: bold;
+                vertical-align: bottom;
+                border-bottom: 2px solid #dee2e6;
             }
 
-            .col-md-12,
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                text-align: center;
-                align-self: center;
+            .table tbody+tbody {
+                border-top: 2px solid #dee2e6;
             }
 
-            .table {
-                width: 100%;
-                font-size: 16px;
+            .table .table {
+                background-color: #fff;
             }
 
-            body,
-            p,
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                font-size: 20px;
-                text-align: center;
-                align-self: center;
+            .table-sm th,
+            .table-sm td {
+                padding: 0.3rem;
+            }
+
+            .table-bordered {
+                border: 1px solid #dee2e6;
+            }
+
+            .table-bordered th,
+            .table-bordered td {
+                border: 1px solid #dee2e6;
+            }
+
+            .table-bordered thead th,
+            .table-bordered thead td {
+                border-bottom-width: 2px;
+            }
+
+            .table-borderless th,
+            .table-borderless td,
+            .table-borderless thead th,
+            .table-borderless tbody+tbody {
+                border: 0;
+            }
+
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+
+            .table-hover tbody tr:hover {
+                background-color: rgba(0, 0, 0, 0.075);
+            }
+
+            .table-primary,
+            .table-primary>th,
+            .table-primary>td {
+                background-color: #b8daff;
+            }
+
+            .table-hover .table-primary:hover {
+                background-color: #9fcdff;
+            }
+
+            .table-hover .table-primary:hover>td,
+            .table-hover .table-primary:hover>th {
+                background-color: #9fcdff;
+            }
+
+            .table-secondary,
+            .table-secondary>th,
+            .table-secondary>td {
+                background-color: #d6d8db;
+            }
+
+            .table-hover .table-secondary:hover {
+                background-color: #c8cbcf;
+            }
+
+            .table-hover .table-secondary:hover>td,
+            .table-hover .table-secondary:hover>th {
+                background-color: #c8cbcf;
+            }
+
+            .table-success,
+            .table-success>th,
+            .table-success>td {
+                background-color: #c3e6cb;
+            }
+
+            .table-hover .table-success:hover {
+                background-color: #b1dfbb;
+            }
+
+            .table-hover .table-success:hover>td,
+            .table-hover .table-success:hover>th {
+                background-color: #b1dfbb;
+            }
+
+            .table-info,
+            .table-info>th,
+            .table-info>td {
+                background-color: #bee5eb;
+            }
+
+            .table-hover .table-info:hover {
+                background-color: #abdde5;
+            }
+
+            .table-hover .table-info:hover>td,
+            .table-hover .table-info:hover>th {
+                background-color: #abdde5;
+            }
+
+            .table-warning,
+            .table-warning>th,
+            .table-warning>td {
+                background-color: #ffeeba;
+            }
+
+            .table-hover .table-warning:hover {
+                background-color: #ffe8a1;
+            }
+
+            .table-hover .table-warning:hover>td,
+            .table-hover .table-warning:hover>th {
+                background-color: #ffe8a1;
+            }
+
+            .table-danger,
+            .table-danger>th,
+            .table-danger>td {
+                background-color: #f5c6cb;
+            }
+
+            .table-hover .table-danger:hover {
+                background-color: #f1b0b7;
+            }
+
+            .table-hover .table-danger:hover>td,
+            .table-hover .table-danger:hover>th {
+                background-color: #f1b0b7;
+            }
+
+            .table-light,
+            .table-light>th,
+            .table-light>td {
+                background-color: #fdfdfe;
+            }
+
+            .table-hover .table-light:hover {
+                background-color: #ececf6;
+            }
+
+            .table-hover .table-light:hover>td,
+            .table-hover .table-light:hover>th {
+                background-color: #ececf6;
+            }
+
+            .table-dark,
+            .table-dark>th,
+            .table-dark>td {
+                background-color: #c6c8ca;
+            }
+
+            .table-hover .table-dark:hover {
+                background-color: #b9bbbe;
+            }
+
+            .table-hover .table-dark:hover>td,
+            .table-hover .table-dark:hover>th {
+                background-color: #b9bbbe;
+            }
+
+            .table-active,
+            .table-active>th,
+            .table-active>td {
+                background-color: rgba(0, 0, 0, 0.075);
+            }
+
+            .table-hover .table-active:hover {
+                background-color: rgba(0, 0, 0, 0.075);
+            }
+
+            .table-hover .table-active:hover>td,
+            .table-hover .table-active:hover>th {
+                background-color: rgba(0, 0, 0, 0.075);
+            }
+
+            .table .thead-dark th {
+                color: #fff;
+                background-color: #343a40;
+                border-color: #454d55;
+            }
+
+            .table .thead-light th {
+                color: #495057;
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+            }
+
+            .table-dark {
+                color: #fff;
+                background-color: #343a40;
+            }
+
+            .table-dark th,
+            .table-dark td,
+            .table-dark thead th {
+                border-color: #454d55;
+            }
+
+            .table-dark.table-bordered {
+                border: 0;
+            }
+
+            .table-dark.table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .table-dark.table-hover tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.075);
             }
         }
     </style>
-
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -237,174 +426,170 @@
         var ctx = document.getElementById("chart-bars").getContext("2d");
 
         new Chart(ctx, {
-                    type: "bar",
-                    data: {
-                        labels: ["Apr", "May", Jun ", "
-                            Jul ", "
-                            Aug ", "
-                            Sep ", "
-                            Oct ", "
-                            Nov ", "
-                            Dec "],
-                            datasets: [{
-                                label: "Sales",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                borderRadius: 4,
-                                borderSkipped: false,
-                                backgroundColor: "#fff",
-                                data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
-                                maxBarThickness: 6
-                            }, ],
+            type: "bar",
+            data: {
+                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [{
+                    label: "Sales",
+                    tension: 0.4,
+                    borderWidth: 0,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    backgroundColor: "#fff",
+                    data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
+                    maxBarThickness: 6
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false,
-                                }
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 500,
+                            beginAtZero: true,
+                            padding: 15,
+                            font: {
+                                size: 14,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
                             },
-                            interaction: {
-                                intersect: false,
-                                mode: 'index',
-                            },
-                            scales: {
-                                y: {
-                                    grid: {
-                                        drawBorder: false,
-                                        display: false,
-                                        drawOnChartArea: false,
-                                        drawTicks: false,
-                                    },
-                                    ticks: {
-                                        suggestedMin: 0,
-                                        suggestedMax: 500,
-                                        beginAtZero: true,
-                                        padding: 15,
-                                        font: {
-                                            size: 14,
-                                            family: "Open Sans",
-                                            style: 'normal',
-                                            lineHeight: 2
-                                        },
-                                        color: "#fff"
-                                    },
-                                },
-                                x: {
-                                    grid: {
-                                        drawBorder: false,
-                                        display: false,
-                                        drawOnChartArea: false,
-                                        drawTicks: false
-                                    },
-                                    ticks: {
-                                        display: false
-                                    },
-                                },
-                            },
-                        },
-                    });
-
-                var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-                var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
-
-                gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)'); gradientStroke1.addColorStop(0.2,
-                    'rgba(72,72,176,0.0)'); gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
-
-                var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
-
-                gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)'); gradientStroke2.addColorStop(0.2,
-                    'rgba(72,72,176,0.0)'); gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
-
-                new Chart(ctx2, {
-                    type: "line",
-                    data: {
-                        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                        datasets: [{
-                                label: "Mobile apps",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                pointRadius: 0,
-                                borderColor: "#cb0c9f",
-                                borderWidth: 3,
-                                backgroundColor: gradientStroke1,
-                                fill: true,
-                                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                                maxBarThickness: 6
-
-                            },
-                            {
-                                label: "Websites",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                pointRadius: 0,
-                                borderColor: "#3A416F",
-                                borderWidth: 3,
-                                backgroundColor: gradientStroke2,
-                                fill: true,
-                                data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
-                                maxBarThickness: 6
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false,
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index',
-                        },
-                        scales: {
-                            y: {
-                                grid: {
-                                    drawBorder: false,
-                                    display: true,
-                                    drawOnChartArea: true,
-                                    drawTicks: false,
-                                    borderDash: [5, 5]
-                                },
-                                ticks: {
-                                    display: true,
-                                    padding: 10,
-                                    color: '#b2b9bf',
-                                    font: {
-                                        size: 11,
-                                        family: "Open Sans",
-                                        style: 'normal',
-                                        lineHeight: 2
-                                    },
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    drawBorder: false,
-                                    display: false,
-                                    drawOnChartArea: false,
-                                    drawTicks: false,
-                                    borderDash: [5, 5]
-                                },
-                                ticks: {
-                                    display: true,
-                                    color: '#b2b9bf',
-                                    padding: 20,
-                                    font: {
-                                        size: 11,
-                                        family: "Open Sans",
-                                        style: 'normal',
-                                        lineHeight: 2
-                                    },
-                                }
-                            },
+                            color: "#fff"
                         },
                     },
-                });
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            display: false
+                        },
+                    },
+                },
+            },
+        });
+
+        var ctx2 = document.getElementById("chart-line").getContext("2d");
+
+        var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
+
+        gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+        gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+        gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+
+        var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
+
+        gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
+        gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+        gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+
+        new Chart(ctx2, {
+            type: "line",
+            data: {
+                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [{
+                        label: "Mobile apps",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                        maxBarThickness: 6
+
+                    },
+                    {
+                        label: "Websites",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#3A416F",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke2,
+                        fill: true,
+                        data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+                        maxBarThickness: 6
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            padding: 10,
+                            color: '#b2b9bf',
+                            font: {
+                                size: 11,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#b2b9bf',
+                            padding: 20,
+                            font: {
+                                size: 11,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
+            },
+        });
     </script>
 
     <script>
