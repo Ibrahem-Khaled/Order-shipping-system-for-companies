@@ -53,7 +53,7 @@
     <div class="selector-container">
         <div class="dropdown">
             <form action="{{ url()->current() }}" method="GET">
-                <select id="year-select" name="year">
+                <select id="year-selector" name="year">
                 </select>
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
@@ -62,7 +62,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const yearSelect = document.getElementById("year-select");
+            const yearSelect = document.getElementById("year-selector");
             const currentYear = new Date().getFullYear();
             const selectedYear = new URLSearchParams(window.location.search).get('year');
 

@@ -129,25 +129,28 @@
             </div>
 
             <div class="col-md-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">المبلغ</th>
-                            <th scope="col">الوصف</th>
-                            <th scope="col">التاريخ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($userDailyTransactions as $item)
+                <div class="table-container" style="max-height: 800px; overflow-y: auto;">
+                    <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
                             <tr>
-                                <td>{{ $item->price }}</td>
-                                <td>{{ $item->description }}</td>
-                                <td>{{ $item->created_at->format('Y-m-d') }}</td>
+                                <th scope="col">المبلغ</th>
+                                <th scope="col">الوصف</th>
+                                <th scope="col">التاريخ</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($userDailyTransactions as $item)
+                                <tr>
+                                    <td>{{ $item->price }}</td>
+                                    <td>{{ $item->description }}</td>
+                                    <td>{{ $item->created_at->format('Y-m-d') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
         </div>
     </div>
 

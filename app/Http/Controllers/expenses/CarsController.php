@@ -16,7 +16,7 @@ class CarsController extends Controller
     }
     public function carsDaily(Request $request, $id)
     {
-        $date = $request->query('date');
+        $date = $request->query('query');
 
         $car = Cars::with([
             'daily' => function ($query) use ($date) {

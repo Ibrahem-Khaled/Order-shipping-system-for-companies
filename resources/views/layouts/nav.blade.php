@@ -10,7 +10,20 @@
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                @include('layouts.search-monthly')
+                @php
+                    $allRoutes = [
+                        'companyRevExp',
+                        'getAccountYears',
+                        'CompanyHome',
+                        'companyDetailes',
+                        'partnerHome',
+                        'FinancialManagement',
+                        'expensesEmployeeDaily',
+                    ];
+                @endphp
+                @if (!in_array(Route::currentRouteName(), $allRoutes))
+                    @include('layouts.search-monthly')
+                @endif
             </div>
             <ul class="navbar-nav  justify-content-end">
                 <li class="nav-item d-flex align-items-center">

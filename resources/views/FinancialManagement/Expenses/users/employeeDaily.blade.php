@@ -8,16 +8,7 @@
                 <h2>{{ $user->name }}</h2>
                 <h2> الراتب {{ $user->sallary }}</h2>
 
-                <!-- إضافة نموذج البحث بالسنة -->
-                <form method="GET" action="{{ url()->current() }}" class="mb-4">
-                    <div class="input-group">
-                        <input type="text" name="year" class="form-control" placeholder="أدخل السنة"
-                            value="{{ request('year') }}">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">بحث</button>
-                        </div>
-                    </div>
-                </form>
+                @include('layouts.search-box')
 
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">

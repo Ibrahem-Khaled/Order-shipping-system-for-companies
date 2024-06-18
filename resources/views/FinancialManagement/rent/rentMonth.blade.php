@@ -9,20 +9,6 @@
             </div>
         </div>
 
-        <div class="row mt-4 mb-4">
-            <div class="col-md-4 offset-md-8">
-                <form action="{{ route('getrentMonth', ['clientId' => $user->id]) }}" method="GET">
-                    <div class="input-group">
-                        <input type="month" name="query" class="form-control form-control-sm"
-                            placeholder="أدخل الشهر (YYYY-MM)">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary btn-sm" type="submit">بحث</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <table class="table table-sm table-hover table-bordered">
             <thead class="thead-light">
                 <tr>

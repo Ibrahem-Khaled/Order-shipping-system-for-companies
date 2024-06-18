@@ -4,14 +4,6 @@
 
     <div class="container mt-5">
         <h4 style="text-align: center">مصروفات السيارات</h4>
-        <form method="GET" action="{{ url()->current() }}" class="row col-md-4">
-            <div class="form-group">
-                <label for="date">البحث من خلال التاريخ :</label>
-                <input type="month" name="date" id="date" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">البحث</button>
-        </form>
-
 
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
