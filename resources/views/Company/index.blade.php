@@ -315,16 +315,16 @@
                                 $sumContainerInvaildPrice += $value->container->where('price', '<=', 0)->count();
                             }
                         @endphp
-                        <h6></h6>   
-                        <h6></h6>   
-                        <h6></h6>   
-                        <h6></h6>   
+                        <h6></h6>
+                        <h6></h6>
+                        <h6></h6>
+                        <h6></h6>
                         <p><strong>{{ $sumContainerInvaildPrice }}</strong></p>
                         <h6>عدد الحاويات الغير مسعرة</h6>
                     </div>
 
                     <div class="card-body p-3">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
