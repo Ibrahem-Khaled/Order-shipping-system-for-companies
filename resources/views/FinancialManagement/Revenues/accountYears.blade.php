@@ -6,14 +6,7 @@
         <h1 class="text-success text-right">كشف حساب سنوي ل {{ $user->name }}</h1>
     </div>
 
-    <!-- Form to search for a specific year -->
-    <form method="GET" action="">
-        <div class="form-group">
-            <label for="year">اختر السنة</label>
-            <input type="number" name="year" id="year" class="form-control" value="{{ request('year', now()->year) }}">
-        </div>
-        <button type="submit" class="btn btn-primary">بحث</button>
-    </form>
+    @include('layouts.search-box')
 
     @php
         $year = request('year', now()->year);

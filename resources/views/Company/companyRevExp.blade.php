@@ -225,18 +225,7 @@
     @endphp
 
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6">
-                <form action="{{ route('companyRevExp') }}" method="GET" class="form-inline">
-                    <div class="form-group mb-2">
-                        <label for="year" class="sr-only">السنة</label>
-                        <input type="text" name="year" class="form-control" id="year" placeholder="YYYY"
-                            value="{{ request('year', $currentYear) }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary mb-2">بحث</button>
-                </form>
-            </div>
-        </div>
+        @include('layouts.search-box')
 
         <div class="row">
             <div class="col-md-6">

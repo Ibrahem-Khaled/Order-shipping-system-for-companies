@@ -15,40 +15,6 @@
         </div>
     </form>
 
-    <form action="{{ route('updateContainerOnly') }}" class="row align-items-center" method="POST">
-        @csrf
-        <div class="col">
-            @if (auth()->user()?->userinfo?->job_title == 'administrative')
-                <input type="text" value="{{ $container?->number }}" class="form-control" placeholder="رقم الحاوية"
-                    disabled>
-            @else
-                <input type="text" name="number" value="{{ $container?->number }}" class="form-control"
-                    placeholder="رقم الحاوية">
-            @endif
-        </div>
-        <div class="col">
-            @if (auth()->user()?->userinfo?->job_title == 'administrative')
-                <input type="text" value="{{ $container?->price }}" class="form-control" placeholder="سعر الحاوية"
-                    disabled>
-            @else
-                <input type="text" name="price" value="{{ $container?->price }}" class="form-control"
-                    placeholder="سعر الحاوية">
-            @endif
-        </div>
-        <div class="col">
-            @if (auth()->user()?->userinfo?->job_title == 'administrative')
-                <input type="text" value="{{ $container?->customs->subclient_id }}" class="form-control"
-                    placeholder="اسم العميل" disabled>
-            @else
-                <input type="text" name="customs_subclient_id" value="{{ $container?->customs->subclient_id }}"
-                    class="form-control" placeholder="اسم العميل">
-            @endif
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-success">تحديث</button>
-        </div>
-    </form>
-
     <div class="container mt-5">
         <table class="table">
             <thead>
@@ -108,7 +74,11 @@
                                 <td>{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}
                                 </td>
                                 <td scope="row">{{ $custom->subclient_id }}</td>
-                                <td scope="row">{{ $custom->statement_number }}</td>
+                                <td scope="row">
+                                    <a href="{{ route('showContainer', $custom->id) }}">
+                                        {{ $custom->statement_number }}
+                                    </a>
+                                </td>
                                 <th scope="row">{{ $custom->id }}</th>
                             </tr>
                         @endif

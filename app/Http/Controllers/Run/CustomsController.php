@@ -79,4 +79,11 @@ class CustomsController extends Controller
             return redirect()->back()->with('error', 'You do not have permission to delete this user.');
         }
     }
+
+    public function showContainer($customId)
+    {
+        $custom = CustomsDeclaration::findOrFail($customId);
+        return view('FinancialManagement.Revenues.custom-with-container', compact('custom'));
+    }
+
 }
