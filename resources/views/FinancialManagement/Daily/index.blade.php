@@ -2,229 +2,211 @@
 
 @section('content')
 
-    <form action="{{ route('dailyManagement') }}" class="row align-items-center" method="GET">
-        <div class="col">
-            <input type="text" name="query" class="form-control" placeholder="Search...">
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-success">Search</button>
-        </div>
-    </form>
-
-    <div class="container">
+    <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-12">
+                <h4 class="text-center">الحركات اليومية</h4>
                 <div class="card shadow-2-strong">
                     <div class="card-body p-0">
                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true">
-                            <button type="button" style="margin: 5px" class="btn btn-success btn-lg" data-bs-toggle="modal"
-                                data-bs-target="#editTips">
-                                تعديل سعر الترب للحاوية
-                            </button>
+                            <div class="d-flex flex-wrap justify-content-around p-3">
+                                <button type="button" class="btn btn-success btn-sm m-1" data-bs-toggle="modal"
+                                    data-bs-target="#editTips">
+                                    تعديل سعر الترب للحاوية
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal"
+                                    data-bs-target="#priceTransfer">
+                                    اضافة سعر امر النقل
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm m-1" data-bs-toggle="modal"
+                                    data-bs-target="#addEmployeeModal">
+                                    إضافة كشف حساب جديد
+                                </button>
+                                <button type="button" class="btn btn-primary btn-lg m-1" data-bs-toggle="modal"
+                                    data-bs-target="#addDailyModal">
+                                    اضافة حركة مالية
+                                </button>
+                                <form action="{{ route('dailyManagement') }}" method="GET" class="d-flex m-2 ">
+                                    <input type="text" name="query" class="form-control" placeholder="Search...">
+                                    <button type="submit" class="btn btn-success btn-sm m-1">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Modal for Edit Tips -->
                             <div class="modal fade" id="editTips" tabindex="-1" role="dialog"
-                                aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                                aria-labelledby="editTipsLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">تعديل سعر الترب</h5>
+                                            <h5 class="modal-title" id="editTipsLabel">تعديل سعر الترب</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <!-- Form to Add Employee Data -->
                                             <form action="{{ route('editContanierTips') }}" method="POST"
                                                 enctype="multipart/form-data">
                                                 @csrf
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-6">
-                                                        <label for="containerNumber" class="form-label">رقم الحاوية:</label>
-                                                        <input type="text" id="containerNumber" name="number" required
-                                                            class="form-control" placeholder="رقم الحاوية">
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label for="tarbPrice" class="form-label">سعر الترب:</label>
-                                                        <input type="text" id="tarbPrice" name="tips" required
-                                                            class="form-control" placeholder="سعر الترب">
-                                                    </div>
+                                                <div class="mb-3">
+                                                    <label for="containerNumber" class="form-label">رقم الحاوية:</label>
+                                                    <input type="text" id="containerNumber" name="number" required
+                                                        class="form-control" placeholder="رقم الحاوية">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="tarbPrice" class="form-label">سعر الترب:</label>
+                                                    <input type="text" id="tarbPrice" name="tips" required
+                                                        class="form-control" placeholder="سعر الترب">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">حفظ</button>
                                             </form>
-                                            <!-- Include your form elements for adding employee data here -->
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Close</button>
-                                            <!-- Include your "Add" button here to submit the form -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="button" style="margin: 5px" class="btn btn-danger btn-lg" data-bs-toggle="modal"
-                                data-bs-target="#priceTransfer">
-                                اضافة سعر امر النقل
-                            </button>
+                            <!-- Modal for Price Transfer -->
                             <div class="modal fade" id="priceTransfer" tabindex="-1" role="dialog"
-                                aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                                aria-labelledby="priceTransferLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة سعر امر النقل</h5>
+                                            <h5 class="modal-title" id="priceTransferLabel">اضافة سعر امر النقل</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <!-- Form to Add Employee Data -->
                                             <form action="{{ route('addContanierPriceTransfer') }}" method="POST"
                                                 enctype="multipart/form-data">
                                                 @csrf
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-6">
-                                                        <label for="containerNumber" class="form-label">رقم الحاوية:</label>
-                                                        <input type="text" id="containerNumber" name="number" required
-                                                            class="form-control" placeholder="رقم الحاوية">
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label for="tarbPrice" class="form-label">سعر:</label>
-                                                        <input type="text" id="tarbPrice" name="price" required
-                                                            class="form-control" placeholder="سعر">
-                                                    </div>
+                                                <div class="mb-3">
+                                                    <label for="containerNumber" class="form-label">رقم الحاوية:</label>
+                                                    <input type="text" id="containerNumber" name="number" required
+                                                        class="form-control" placeholder="رقم الحاوية">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="tarbPrice" class="form-label">سعر:</label>
+                                                    <input type="text" id="tarbPrice" name="price" required
+                                                        class="form-control" placeholder="سعر">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">حفظ</button>
                                             </form>
-                                            <!-- Include your form elements for adding employee data here -->
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Close</button>
-                                            <!-- Include your "Add" button here to submit the form -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="button" style="margin: 5px" class="btn btn-success btn-lg"
-                                data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-                                إضافة كشف حساب جديد
-                            </button>
-                            <!-- Add Employee Modal -->
+                            <!-- Modal for Add Employee -->
                             <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog"
                                 aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="addEmployeeModalLabel">اضافة كشف حساب</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <!-- Form to Add Employee Data -->
                                             <form action="{{ route('addOtherStateMent') }}" method="POST"
                                                 enctype="multipart/form-data">
                                                 @csrf
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="name" required
-                                                            class="form-control" placeholder="الاسم" />
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">حفظ</button>
+                                                <div class="mb-3">
+                                                    <input type="text" name="name" required class="form-control"
+                                                        placeholder="الاسم">
                                                 </div>
+                                                <button type="submit" class="btn btn-primary">حفظ</button>
                                             </form>
-                                            <!-- Include your form elements for adding employee data here -->
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Close</button>
-                                            <!-- Include your "Add" button here to submit the form -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="button" data-bs-toggle="modal" style="margin: 5px"
-                                data-bs-target="#addDailyModal" class="btn btn-primary btn-lg">اضافة حركة مالية</button>
+                            <!-- Modal for Add Daily -->
                             <div class="modal fade" id="addDailyModal" tabindex="-1" role="dialog"
-                                aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+                                aria-labelledby="addDailyModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <!-- Modal Content Goes Here -->
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addEmployeeModalLabel">اضافة حركة مالية جديد</h5>
+                                            <h5 class="modal-title" id="addDailyModalLabel">اضافة حركة مالية جديد</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <!-- Form to Add Employee Data -->
                                             <form action="{{ route('postDailyData') }}" id="myForm" method="POST">
                                                 @csrf
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="description" required
-                                                            class="form-control" placeholder="الوصف" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <input type="text" name="price" required
-                                                            class="form-control" placeholder="المبلغ" />
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <select name="type" id="type" required
-                                                            class="form-control">
-                                                            <option value="">نوع الحركة</option>
-                                                            <option value="deposit">وارد</option>
-                                                            <option value="withdraw">منصرف</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6 toggle-field" id="carField">
-                                                        <select name="car_id" class="form-control">
-                                                            <option value="">اختيار السيارة</option>
-                                                            @foreach ($cars as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->number }} -
-                                                                    {{ $item->driver?->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6 toggle-field" id="clientField">
-                                                        <select name="client_id" class="form-control">
-                                                            <option value="">اختيار حساب العميل</option>
-                                                            @foreach ($client as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6 toggle-field" id="employeeField">
-                                                        <select name="employee_id" class="form-control">
-                                                            <option value="">اختيار الحساب</option>
-                                                            @foreach ($employee as $item)
-                                                                <option value="{{ $item->id }}">
-                                                                    {{ $item->role == 'company' ? 'مصاريف نثرية وادارية' : $item->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6 toggle-field" id="partnerField">
-                                                        <select name="partner_id" class="form-control">
-                                                            <option value="">اختيار حساب الشريك</option>
-                                                            @foreach ($partner as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <label for="created_at">تاريخ الإنشاء:</label>
-                                                        <input class="form-control" type="date" id="created_at"
-                                                            name="created_at">
-                                                    </div>
+                                                <div class="mb-3">
+                                                    <input type="text" name="description" required
+                                                        class="form-control" placeholder="الوصف">
                                                 </div>
-                                                <p id="error" class="error-message"></p>
+                                                <div class="mb-3">
+                                                    <input type="text" name="price" required class="form-control"
+                                                        placeholder="المبلغ">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <select name="type" id="type" required class="form-control">
+                                                        <option value="">نوع الحركة</option>
+                                                        <option value="deposit">وارد</option>
+                                                        <option value="withdraw">منصرف</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 toggle-field" id="carField">
+                                                    <select name="car_id" class="form-control">
+                                                        <option value="">اختيار السيارة</option>
+                                                        @foreach ($cars as $item)
+                                                            <option value="{{ $item->id }}">{{ $item->number }} -
+                                                                {{ $item->driver?->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 toggle-field" id="clientField">
+                                                    <select name="client_id" class="form-control">
+                                                        <option value="">اختيار حساب العميل</option>
+                                                        @foreach ($client as $item)
+                                                            <option value="{{ $item->id }}">{{ $item->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 toggle-field" id="employeeField">
+                                                    <select name="employee_id" class="form-control">
+                                                        <option value="">اختيار الحساب</option>
+                                                        @foreach ($employee as $item)
+                                                            <option value="{{ $item->id }}">
+                                                                {{ $item->role == 'company' ? 'مصاريف نثرية وادارية' : $item->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 toggle-field" id="partnerField">
+                                                    <select name="partner_id" class="form-control">
+                                                        <option value="">اختيار حساب الشريك</option>
+                                                        @foreach ($partner as $item)
+                                                            <option value="{{ $item->id }}">{{ $item->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="created_at">تاريخ الإنشاء:</label>
+                                                    <input class="form-control" type="date" id="created_at"
+                                                        name="created_at">
+                                                </div>
                                                 <div class="modal-footer">
-                                                    <button type="close" class="btn btn-secondary"
+                                                    <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-                                                    <button id="submitBtn" class="btn btn-primary">Submit</button>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -232,32 +214,30 @@
                                 </div>
                             </div>
 
-                            <table class="table table-white mb-0">
-                                <thead style="background-color: #ffffff;">
-                                    <tr class="text-uppercase text-success">
-                                        <th scope="col"></th>
+                            <table class="table">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr class=" text-white text-center">
                                         <th scope="col">العمليات</th>
                                         <th scope="col">الوارد</th>
                                         <th scope="col">المنصرف</th>
                                         <th scope="col">البيان</th>
                                         <th scope="col">التاريخ</th>
+                                        <th scope="col">#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($daily as $item)
                                         <tr>
-                                            <td>
+                                            <td class="text-center">
                                                 @if ($item->created_at != $item->updated_at)
                                                     معدل
                                                 @else
                                                     {{ null }}
                                                 @endif
-                                            </td>
-                                            <td>
                                                 @if (!auth()->user()?->userinfo?->job_title == 'administrative')
                                                     <button type="button" data-bs-toggle="modal"
                                                         data-bs-target="#confirmationModal{{ $item->id }}"
-                                                        class="btn btn-danger">مسح</button>
+                                                        class="btn btn-danger btn-sm m-1">مسح</button>
                                                     <div class="modal fade" id="confirmationModal{{ $item->id }}"
                                                         tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                                         aria-hidden="true">
@@ -291,16 +271,14 @@
                                                 @if ($item->container_id == null)
                                                     <button type="button" data-bs-toggle="modal"
                                                         data-bs-target="#editModal{{ $item->id }}"
-                                                        class="btn btn-success">تعديل</button>
+                                                        class="btn btn-success btn-sm m-1">تعديل</button>
                                                     <div class="modal fade" id="editModal{{ $item->id }}"
                                                         tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
-                                                                <!-- Modal Content Goes Here -->
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="addEmployeeModalLabel">
-                                                                        تعديل</h5>
+                                                                    <h5 class="modal-title" id="editModalLabel">تعديل</h5>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal"
                                                                         aria-label="Close"></button>
@@ -310,75 +288,66 @@
                                                                         action="{{ route('updateDailyData', $item->id) }}"
                                                                         method="POST">
                                                                         @csrf
-                                                                        <div class="row">
-                                                                            <div class="mb-3 col-md-6">
-                                                                                <input type="text" name="description"
-                                                                                    required class="form-control"
-                                                                                    value="{{ $item->description }}"
-                                                                                    placeholder="الوصف" />
-                                                                            </div>
-                                                                            <div class="mb-3 col-md-6">
-                                                                                <input type="text" name="price"
-                                                                                    required class="form-control"
-                                                                                    value="{{ $item->price }}"
-                                                                                    placeholder="المبلغ" />
-                                                                            </div>
-                                                                            <div class="mb-3 col-md-6">
-                                                                                <select name="type" required
-                                                                                    class="form-control">
-                                                                                    <option value="">نوع الحركة
-                                                                                    </option>
-                                                                                    <option value="deposit">وارد</option>
-                                                                                    <option value="withdraw">منصرف</option>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="mb-3 col-md-6">
-                                                                                <select name="car_id"
-                                                                                    class="form-control">
-                                                                                    <option value="">اختيار السيارة
-                                                                                    </option>
-                                                                                    @foreach ($cars as $items)
-                                                                                        <option
-                                                                                            value="{{ $items->id }}">
-                                                                                            {{ $items->number }} -
-                                                                                            {{ $items->driver?->name }}
-                                                                                        </option>
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="mb-3 col-md-6">
-                                                                                <select name="client_id"
-                                                                                    class="form-control">
-                                                                                    <option value="">اختيار حساب
-                                                                                        العميل</option>
-                                                                                    @foreach ($client as $items)
-                                                                                        <option
-                                                                                            value="{{ $items->id }}">
-                                                                                            {{ $items->name }}</option>
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="mb-3 col-md-6">
-                                                                                <select name="employee_id"
-                                                                                    class="form-control">
-                                                                                    <option value="">اختيار الحساب
-                                                                                    </option>
-                                                                                    @foreach ($employee as $items)
-                                                                                        <option
-                                                                                            value="{{ $items->id }}">
-                                                                                            {{ $items->name }}</option>
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
+                                                                        <div class="mb-3">
+                                                                            <input type="text" name="description"
+                                                                                required class="form-control"
+                                                                                value="{{ $item->description }}"
+                                                                                placeholder="الوصف">
                                                                         </div>
-                                                                        <button id="submitBtn" type="submit"
+                                                                        <div class="mb-3">
+                                                                            <input type="text" name="price" required
+                                                                                class="form-control"
+                                                                                value="{{ $item->price }}"
+                                                                                placeholder="المبلغ">
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <select name="type" required
+                                                                                class="form-control">
+                                                                                <option value="">نوع الحركة</option>
+                                                                                <option value="deposit">وارد</option>
+                                                                                <option value="withdraw">منصرف</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <select name="car_id" class="form-control">
+                                                                                <option value="">اختيار السيارة
+                                                                                </option>
+                                                                                @foreach ($cars as $items)
+                                                                                    <option value="{{ $items->id }}">
+                                                                                        {{ $items->number }} -
+                                                                                        {{ $items->driver?->name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <select name="client_id" class="form-control">
+                                                                                <option value="">اختيار حساب العميل
+                                                                                </option>
+                                                                                @foreach ($client as $items)
+                                                                                    <option value="{{ $items->id }}">
+                                                                                        {{ $items->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <select name="employee_id"
+                                                                                class="form-control">
+                                                                                <option value="">اختيار الحساب
+                                                                                </option>
+                                                                                @foreach ($employee as $items)
+                                                                                    <option value="{{ $items->id }}">
+                                                                                        {{ $items->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <button type="submit"
                                                                             class="btn btn-primary">عدل</button>
                                                                     </form>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary"
                                                                         data-bs-dismiss="modal">اغلاق</button>
-                                                                    <!-- Include your "Add" button here to submit the form -->
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -393,7 +362,8 @@
                                                     {{ $item->description }} - {{ $item?->car?->number }}
                                                 @elseif ($item->client_id !== null)
                                                     {{ $item->container_id !== null ? 'امر نقل -' : null }}
-                                                    {{ $item?->description }}- {{ $item?->client?->name }}- @if ($item->container_id !== null)
+                                                    {{ $item?->description }} - {{ $item?->client?->name }} -
+                                                    @if ($item->container_id !== null)
                                                         {{ $item?->container?->customs->statement_number }}
                                                         {{ $item?->container?->customs->subclient_id }}
                                                         {{ $item?->container?->number }}
@@ -405,10 +375,73 @@
                                                 @endif
                                             </td>
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d') }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const typeSelect = document.getElementById('type');
+                                    const carField = document.getElementById('carField');
+                                    const clientField = document.getElementById('clientField');
+                                    const employeeField = document.getElementById('employeeField');
+                                    const partnerField = document.getElementById('partnerField');
+
+                                    function toggleFields() {
+                                        const selectedType = typeSelect.value;
+
+                                        if (selectedType === 'withdraw') {
+                                            carField.style.display = 'block';
+                                            employeeField.style.display = 'block';
+                                            partnerField.style.display = 'block';
+                                            clientField.style.display = 'none';
+
+                                            const fields = [carField, employeeField, partnerField];
+                                            fields.forEach(field => {
+                                                field.querySelector('select').disabled = false;
+                                                field.querySelector('select').addEventListener('change', function() {
+                                                    fields.forEach(otherField => {
+                                                        if (otherField !== field) {
+                                                            otherField.querySelector('select').disabled = true;
+                                                            otherField.querySelector('select').value = '';
+                                                        }
+                                                    });
+                                                });
+                                            });
+
+                                        } else if (selectedType === 'deposit') {
+                                            clientField.style.display = 'block';
+                                            carField.style.display = 'none';
+                                            employeeField.style.display = 'none';
+                                            partnerField.style.display = 'none';
+                                            carField.querySelector('select').disabled = true;
+                                            employeeField.querySelector('select').disabled = true;
+                                            partnerField.querySelector('select').disabled = true;
+                                        } else {
+                                            carField.style.display = 'none';
+                                            clientField.style.display = 'none';
+                                            employeeField.style.display = 'none';
+                                            partnerField.style.display = 'none';
+                                            carField.querySelector('select').disabled = true;
+                                            employeeField.querySelector('select').disabled = true;
+                                            partnerField.querySelector('select').disabled = true;
+                                        }
+                                    }
+
+                                    // Initialize the fields visibility based on the current selected type
+                                    toggleFields();
+
+                                    // Add event listener to handle changes in the select element
+                                    typeSelect.addEventListener('change', toggleFields);
+                                });
+                            </script>
+
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -416,65 +449,4 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const typeSelect = document.getElementById('type');
-            const carField = document.getElementById('carField');
-            const clientField = document.getElementById('clientField');
-            const employeeField = document.getElementById('employeeField');
-            const partnerField = document.getElementById('partnerField');
-
-            function toggleFields() {
-                const selectedType = typeSelect.value;
-
-                if (selectedType === 'withdraw') {
-                    carField.style.display = 'block';
-                    employeeField.style.display = 'block';
-                    partnerField.style.display = 'block';
-                    clientField.style.display = 'none';
-
-                    const fields = [carField, employeeField, partnerField];
-                    fields.forEach(field => {
-                        field.querySelector('select').disabled = false;
-                        field.querySelector('select').addEventListener('change', function() {
-                            fields.forEach(otherField => {
-                                if (otherField !== field) {
-                                    otherField.querySelector('select').disabled = true;
-                                    otherField.querySelector('select').value = '';
-                                }
-                            });
-                        });
-                    });
-
-                } else if (selectedType === 'deposit') {
-                    clientField.style.display = 'block';
-                    carField.style.display = 'none';
-                    employeeField.style.display = 'none';
-                    partnerField.style.display = 'none';
-                    carField.querySelector('select').disabled = true;
-                    employeeField.querySelector('select').disabled = true;
-                    partnerField.querySelector('select').disabled = true;
-                } else {
-                    carField.style.display = 'none';
-                    clientField.style.display = 'none';
-                    employeeField.style.display = 'none';
-                    partnerField.style.display = 'none';
-                    carField.querySelector('select').disabled = true;
-                    employeeField.querySelector('select').disabled = true;
-                    partnerField.querySelector('select').disabled = true;
-                }
-            }
-
-            // Initialize the fields visibility based on the current selected type
-            toggleFields();
-
-            // Add event listener to handle changes in the select element
-            typeSelect.addEventListener('change', toggleFields);
-        });
-    </script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
-    </script>
 @stop

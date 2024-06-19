@@ -105,9 +105,9 @@
 
     <div class="container mt-5">
         <div class="row">
-            <div class="col-md-6">
-                <table class="table">
-                    <thead>
+            <div class="col-md-6 mb-4">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
                         <tr>
                             <th scope="col">المتبقي</th>
                             <th scope="col">{{ $user->role == 'rent' ? 'المدفوع للناقل' : 'اجمالي الوارد' }}</th>
@@ -128,7 +128,7 @@
                 </table>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mb-4">
                 <div class="table-container" style="max-height: 800px; overflow-y: auto;">
                     <table class="table table-striped table-bordered">
                         <thead class="thead-dark">
@@ -150,13 +150,12 @@
                     </table>
                 </div>
             </div>
-
         </div>
-    </div>
 
-    <div class="col-md-12">
-        <h1 class="text-primary">المتبقي</h1>
-        <h3 class="text-dark">{{ $cumulativeResidual }}</h3>
+        <div class="col-md-12">
+            <h1 class="text-primary">المتبقي</h1>
+            <h3 class="text-dark">{{ $cumulativeResidual }}</h3>
+        </div>
     </div>
 
 @stop

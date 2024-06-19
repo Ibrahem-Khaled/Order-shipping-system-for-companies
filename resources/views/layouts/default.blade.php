@@ -26,7 +26,6 @@
         body {
             font-family: 'Cairo', sans-serif !important;
         }
-
         .custom-form-control {
             display: block;
             width: 50%;
