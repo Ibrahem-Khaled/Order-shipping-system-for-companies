@@ -1,10 +1,8 @@
 <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
         aria-hidden="true" id="iconSidenav"></i>
-    <a class="navbar-brand m-0" href="" target="_blank">
-        <span class="ms-1 font-weight-bold">Al Amjad Multi</span>
-    </a>
-</div> 
+</div>
+<img src="{{ asset('logo.jpeg') }}" width="100" style="align-self: center;border-radius: 20px" alt="logo">
 <hr class="horizontal dark mt-0">
 <div class="collapse navbar-collapse w-auto" style="height: 100vh" id="sidenav-collapse-main">
     <ul class="navbar-nav">
@@ -194,7 +192,7 @@
             <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
         </li>
         <li class="nav-item">
-            <a class="nav-link  active" href="{{route('profileSettings',Auth()->user()->id)}}">
+            <a class="nav-link  active" href="{{ route('profileSettings', Auth()->user()->id) }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
@@ -223,7 +221,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link  active" href="{{route('signout')}}">
+            <a class="nav-link  active" href="{{ route('signout') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1"

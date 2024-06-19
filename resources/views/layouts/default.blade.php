@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/apple-icon.png') }}">
-    <link rel="icon" type="image/png" href="{{ asset('icons/samerNumer.jpeg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo.jpeg') }}">
     <title>
         SamerNomer System
     </title>
@@ -25,7 +25,12 @@
     <style>
         body {
             font-family: 'Cairo', sans-serif !important;
+            background-image: url('{{ asset('logo.jpeg') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
         }
+
         .custom-form-control {
             display: block;
             width: 50%;
