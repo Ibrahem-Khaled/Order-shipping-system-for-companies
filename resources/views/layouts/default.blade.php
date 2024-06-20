@@ -31,6 +31,33 @@
             background-position: center center;
         }
 
+        .btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0 0 10px #007bff, 0 0 20px #007bff, 0 0 30px #007bff;
+        }
+
+        .btn::before,
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .btn:hover::before,
+        .btn:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
         .custom-form-control {
             display: block;
             width: 50%;

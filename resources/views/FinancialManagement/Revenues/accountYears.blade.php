@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="col-md-12">
-        <h1 class="text-success text-right">كشف حساب سنوي ل {{ $user->name }}</h1>
+        <h1 class="text-white text-right">كشف حساب سنوي ل {{ $user->name }}</h1>
     </div>
 
     @include('layouts.search-box')
@@ -154,7 +154,7 @@
 
         <div class="col-md-12">
             <h1 class="text-primary">المتبقي</h1>
-            <h3 class="text-dark">{{ $cumulativeResidual }}</h3>
+            <h3 class="text-white">{{ $cumulativeResidual }}</h3>
         </div>
     </div>
 

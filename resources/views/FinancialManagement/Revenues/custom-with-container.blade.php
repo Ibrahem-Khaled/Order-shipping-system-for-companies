@@ -12,6 +12,7 @@
                 <tr>
                     <th scope="col">action</th>
                     <th scope="col">سعر الحاوية</th>
+                    <th scope="col">سعر امر النقل</th>
                     <th scope="col">حجم الحاوية</th>
                     <th scope="col">اسم العميل</th>
                     <th scope="col">اسم المكتب</th>
@@ -78,6 +79,7 @@
                             </div>
                         </td>
                         <td>{{ $item->price }}</td>
+                        <td>{{ $item->daily->sum('price') }}</td>
                         <td>{{ $item->size }}</td>
                         <td>{{ $item->client->name }}</td>
                         <td>{{ $custom->subclient_id }}</td>

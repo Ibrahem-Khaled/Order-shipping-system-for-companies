@@ -9,7 +9,7 @@
     <div class="container mt-5">
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
-                <h3 class="text-center mb-4"> {{ count($partner) }} الشركاء </h3>
+                <h3 class="text-center mb-4 text-white"> {{ count($partner) }} الشركاء </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
                         data-bs-target="#addEmployeeModal">

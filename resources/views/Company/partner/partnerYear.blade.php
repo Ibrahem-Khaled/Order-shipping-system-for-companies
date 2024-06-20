@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="col-md-12">
-        <h1 class="text-success" style="text-align: right">كشف حساب سنوي ل {{ $user->name }}</h1>
+        <h1 class="text-white" style="text-align: right">كشف حساب سنوي ل {{ $user->name }}</h1>
     </div>
 
     <div class="container mt-5">
@@ -170,7 +170,7 @@
 
     <div class="col-md-12">
         <h1 class="text-primary">اجمالي الارباح</h1>
-        <h3 class="text-dark">{{ number_format($totalEarnMoney - $partnerSumWithdraw, 2) }}</h3>
+        <h3 class="text-white">{{ number_format($totalEarnMoney - $partnerSumWithdraw, 2) }}</h3>
     </div>
 
 @stop
