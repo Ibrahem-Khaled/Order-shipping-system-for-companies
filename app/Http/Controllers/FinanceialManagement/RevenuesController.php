@@ -107,7 +107,7 @@ class RevenuesController extends Controller
         $daily = $user->clientdaily
             ->filter(function ($item) use ($currentYear) {
                 return $item->created_at?->year == $currentYear;
-            });
+            })->sortByDesc('created_at');
 
         $container = $user->container
             ->filter(function ($item) use ($currentYear) {
