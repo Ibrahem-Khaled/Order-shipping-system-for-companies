@@ -5,7 +5,7 @@
     <div class="container-fluid px-1 py-5 mx-auto">
         <div class="row d-flex justify-content-center">
             <div class="col-xl-9 col-lg-10 col-md-11 col-11 text-center">
-                <h3>اضافة حاوية جديدة الي {{ $custom->client->name }}</h3>
+                <h3 class="text-white">اضافة حاوية جديدة الي {{ $custom->client->name }}</h3>
                 <div class="card p-4">
                     <h5 class="text-center mb-4">برجاء ملئ جميع المعلومات بدقة</h5>
                     <form class="form-card" action="{{ route('addContainer', $custom->id) }}" method="POST">

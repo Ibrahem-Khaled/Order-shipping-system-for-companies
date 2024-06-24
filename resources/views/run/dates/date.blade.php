@@ -15,7 +15,7 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3"
                 style="max-height: 700px; overflow: auto; position: relative;">
-                <h3 class="text-center mb-4"> {{ count($container) }} تحميل الحاويات</h3>
+                <h3 class="text-center mb-4 text-white"> {{ count($container) }} تحميل الحاويات</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
                         <tr>
@@ -121,7 +121,7 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3"
                 style="max-height: 700px; overflow: auto; position: relative;">
-                <h3 class="text-center mb-4" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
+                <h3 class="text-center mb-4 text-white" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
                     الحاويات المحملة</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua " style="position: sticky; top: 0; z-index: 0;">
