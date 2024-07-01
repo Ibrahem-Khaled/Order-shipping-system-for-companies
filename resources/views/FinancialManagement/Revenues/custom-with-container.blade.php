@@ -14,6 +14,7 @@
                     <th scope="col">سعر الحاوية</th>
                     <th scope="col">سعر امر النقل</th>
                     <th scope="col">حجم الحاوية</th>
+                    <th scope="col">حالة الحاوية</th>
                     <th scope="col">اسم العميل</th>
                     <th scope="col">اسم المكتب</th>
                     <th scope="col">رقم الحاوية</th>
@@ -81,6 +82,17 @@
                         <td>{{ $item->price }}</td>
                         <td>{{ $item->daily->sum('price') }}</td>
                         <td>{{ $item->size }}</td>
+                        <td>
+                            @if ($item->status == 'rent')
+                                ايجار
+                            @elseif ($item->status == 'done')
+                                تم التسليم
+                            @elseif($item->status == 'transport')
+                                في النقل
+                            @elseif($item->status == 'wait')
+                                في الانتظار
+                            @endif
+                        </td>
                         <td>{{ $item->client->name }}</td>
                         <td>{{ $custom->subclient_id }}</td>
                         <td>{{ $item->number }}</td>

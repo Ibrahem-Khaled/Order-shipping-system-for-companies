@@ -28,14 +28,19 @@
                     @endphp
                     @foreach ($customs as $custom)
                         @php
-                            $transportContainers = $custom->container->whereIn('status', ['transport', 'done', 'rent']);
+                            $transportContainers = $custom->container->whereIn('status', [
+                                'transport',
+                                'done',
+                                'rent',
+                                'wait',
+                            ]);
                         @endphp
                         @if ($transportContainers->isNotEmpty())
                             <input type="hidden" value="{{ $custom->id }}" name="id[]" />
                             <tr>
                                 @php
                                     $containerPrice = $custom->container
-                                        ->whereIn('status', ['transport', 'done', 'rent'])
+                                        ->whereIn('status', ['transport', 'done', 'rent', 'wait'])
                                         ->sum('price');
                                     $withdrawPrice = $custom->container
                                         ->flatMap(fn($c) => $c->daily)
@@ -50,19 +55,19 @@
                                     <div class="input-group mb-3">
                                         @if (auth()->user()?->userinfo?->job_title == 'administrative')
                                             <input type="text"
-                                                value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}"
+                                                value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent', 'wait'])->count() }}"
                                                 class="custom-form-control" placeholder="سعر الحاوية"
                                                 aria-label="سعر الحاوية" aria-describedby="basic-addon2" disabled>
                                         @else
                                             <input type="text" name="price[]"
-                                                value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}"
+                                                value="{{ $containerPrice / $custom->container->whereIn('status', ['transport', 'done', 'rent', 'wait'])->count() }}"
                                                 class="custom-form-control" placeholder="سعر الحاوية"
                                                 aria-label="سعر الحاوية" aria-describedby="basic-addon2">
                                         @endif
                                     </div>
                                 </td>
                                 <td>{{ $withdrawPrice }}</td>
-                                <td>{{ $custom->container->whereIn('status', ['transport', 'done', 'rent'])->count() }}
+                                <td>{{ $custom->container->whereIn('status', ['transport', 'done', 'rent', 'wait'])->count() }}
                                 </td>
                                 <td scope="row">{{ $custom->subclient_id }}</td>
                                 <td scope="row">
@@ -111,12 +116,12 @@
                         <h6 class="text-dark">الاجمالي</h6>
                     </td>
                 </tr>
-                <tr>
+                <tr id="vatRow">
                     <td>
                         @php
                             $sumWith = ($totalWithdrawPrice + $totalPrice) * 0.15;
                         @endphp
-                        <h6 class="text-dark">{{ $sumWith }}</h6>
+                        <h6 class="text-dark" id="vatValue">{{ $sumWith }}</h6>
                     </td>
                     <td>
                         <h6 class="text-success">(% 15) القيمة المضافة</h6>
@@ -125,7 +130,7 @@
 
                 <tr>
                     <td>
-                        <h6 class="text-dark">{{ $totalWithdrawPrice + $totalPrice + $sumWith }}</h6>
+                        <h6 class="text-dark" id="totalWithVat">{{ $totalWithdrawPrice + $totalPrice + $sumWith }}</h6>
                     </td>
                     <td>
                         <h6 class="text-danger">الاجمالي شامل القيمة المضافة</h6>
@@ -133,6 +138,29 @@
                 </tr>
             </tbody>
         </table>
+
+        <button id="toggleVatButton" class="btn btn-secondary mt-3" onclick="toggleVat()">اخفاء القيمة المضافة</button>
     </div>
+
+    <script>
+        function toggleVat() {
+            var vatRow = document.getElementById('vatRow');
+            var vatValue = document.getElementById('vatValue');
+            var totalWithVat = document.getElementById('totalWithVat');
+            var toggleButton = document.getElementById('toggleVatButton');
+            var totalWithoutVat = {{ $totalWithdrawPrice + $totalPrice }};
+            var vatAmount = {{ $sumWith }};
+
+            if (vatRow.style.display === 'none') {
+                vatRow.style.display = 'table-row';
+                totalWithVat.textContent = totalWithoutVat + vatAmount;
+                toggleButton.textContent = 'اخفاء القيمة المضافة';
+            } else {
+                vatRow.style.display = 'none';
+                totalWithVat.textContent = totalWithoutVat;
+                toggleButton.textContent = 'اظهار القيمة المضافة';
+            }
+        }
+    </script>
 
 @stop

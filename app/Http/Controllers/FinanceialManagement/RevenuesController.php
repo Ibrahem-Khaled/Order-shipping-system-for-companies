@@ -128,7 +128,7 @@ class RevenuesController extends Controller
                 $customId = $customIds[$i];
                 $price = $prices[$i];
                 $custom = Container::where('customs_id', $customId)
-                    ->whereIn('status', ['transport', 'done', 'rent'])
+                    ->whereIn('status', ['transport', 'done', 'rent', 'wait'])
                     ->update([
                         'price' => $price,
                     ]);
