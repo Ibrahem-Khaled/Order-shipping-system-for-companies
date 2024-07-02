@@ -128,7 +128,7 @@
                     </td>
                 </tr>
 
-                <tr>
+                <tr id="vatRow">
                     <td>
                         <h6 class="text-dark" id="totalWithVat">{{ $totalWithdrawPrice + $totalPrice + $sumWith }}</h6>
                     </td>
