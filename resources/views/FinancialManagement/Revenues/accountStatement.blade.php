@@ -148,7 +148,6 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             var totalWithVatRow = document.getElementById('totalWithVatRow');
-            totalWithVatRow.style.display = 'none'; // إخفاء الإجمالي شامل القيمة المضافة عند تحميل الصفحة
         });
     </script>
 @endsection
