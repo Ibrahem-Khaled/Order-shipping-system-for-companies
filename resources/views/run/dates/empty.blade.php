@@ -1,9 +1,9 @@
 @extends('layouts.default')
-
 @section('content')
+
     <div class="container mt-5">
         <div class="d-flex justify-content-around align-items-center bg-primary " style="border-radius: 5px">
-            <h3 class="text-white">الحاويات المحملة ({{ count($containerPort) }})</h3>
+            <h3 class="text-white">الحاويات المحملة ({{ $containerPort->total() }})</h3>
             <form action="{{ route('empty') }}" class="d-flex align-items-center" method="GET">
                 <input type="text" name="query" class="form-control me-2" placeholder="Search...">
                 <button type="submit" class="btn btn-success m-2">Search</button>
@@ -99,10 +99,13 @@
                 </tbody>
             </table>
         </div>
+        <div class="d-flex justify-content-center mt-3">
+            {{ $containerPort->links() }}
+        </div>
     </div>
 
     <div class="container mt-5">
-        <h3 class="text-center mb-4">الحاويات الفارغة ({{ count($done) }})</h3>
+        <h3 class="text-center mb-4">الحاويات الفارغة ({{ $done->total() }})</h3>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead class="bg-primary text-white">
@@ -151,6 +154,9 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            {{ $done->links() }}
         </div>
     </div>
 

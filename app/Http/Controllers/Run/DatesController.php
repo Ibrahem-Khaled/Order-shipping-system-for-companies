@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Run;
 use App\Http\Controllers\Controller;
 use App\Models\Cars;
 use App\Models\Container;
-use App\Models\CustomsDeclaration;
 use App\Models\Tips;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+// use Illuminate\Pagination\Paginator;
+// use Illuminate\Support\Collection;
+// use Illuminate\Pagination\LengthAwarePaginator;
 
 class DatesController extends Controller
 {
@@ -45,6 +48,7 @@ class DatesController extends Controller
         $cars = Cars::where('type', 'transfer')->get();
         return view('run.dates.date', compact('container', 'driver', 'containerPort', 'cars', 'rents'));
     }
+
     public function empty(Request $request)
     {
         $now = Carbon::now();
@@ -57,10 +61,8 @@ class DatesController extends Controller
                 ->whereMonth('created_at', $month)
                 ->where('status', 'done')
                 ->with('tipsEmpty')
-                ->get();
-           // return response()->json($done);
-            $containerPort = Container::where('status', 'transport')->latest('updated_at')->get();
-
+                ->paginate(10);
+            $containerPort = Container::where('status', 'transport')->latest('updated_at')->paginate(10);
         } else {
             $done = Container::where('status', 'done')
                 ->where(function ($queryBuilder) use ($query) {
@@ -68,21 +70,20 @@ class DatesController extends Controller
                         ->orWhere('number', 'like', '%' . $query . '%')
                         ->orWhere('price', 'like', '%' . $query . '%');
                 })
-                ->get();
-
+                ->paginate(10);
             $containerPort = Container::where('status', 'transport')
                 ->where(function ($queryBuilder) use ($query) {
                     $queryBuilder->where('number', 'like', '%' . $query . '%')
                         ->orWhere('created_at', 'like', '%' . $query . '%')
                         ->orWhere('price', 'like', '%' . $query . '%');
                 })
-                ->get();
+                ->paginate(10);
         }
-
 
         $driver = User::where('role', 'driver')->whereNotNull('sallary')->get();
         $rents = User::where('role', 'rent')->get();
         $cars = Cars::where('type', 'transfer')->get();
+
         return view('run.dates.empty', compact('done', 'driver', 'containerPort', 'cars', 'rents'));
     }
 
