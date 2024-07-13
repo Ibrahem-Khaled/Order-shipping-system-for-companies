@@ -66,10 +66,9 @@
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <select name="driver_id" class="form-control">
-                                                <option value="">اختيار السائق</option>
+                                                <option value="">بدون سائق</option>
                                                 @foreach ($employee as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}
-                                                    </option>
+                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
