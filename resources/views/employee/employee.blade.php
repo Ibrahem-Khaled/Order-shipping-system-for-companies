@@ -336,6 +336,7 @@
                                                                 <select name="driver_id" class="form-control">
                                                                     <option value="{{ $car?->driver_id }}">
                                                                         {{ $car?->driver?->name }}</option>
+                                                                    <option value="">بدون سائق</option>
                                                                     @foreach ($employee as $cars)
                                                                         <option value="{{ $cars->id }}">
                                                                             {{ $cars->name }}
