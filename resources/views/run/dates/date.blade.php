@@ -12,119 +12,138 @@
     </form>
 
     <div class="container mt-5">
+        <div class="table-container overflow-auto mt-4 p-3" style="max-height: 700px; overflow: auto; position: relative;">
+            <h3 class="text-center mb-4 text-white"> {{ count($container) }} تحميل الحاويات</h3>
+            <table class="table table-striped table-bordered table-hover table-sm">
+                <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
+                    <tr>
+                        <th scope="col" class="text-center">حالة الحاوية</th>
+                        <th scope="col" class="text-center">العميل</th>
+                        <th scope="col" class="text-center">مكتب التخليص</th>
+                        <th scope="col" class="text-center">التاريخ</th>
+                        <th scope="col" class="text-center">السيارة</th>
+                        <th scope="col" class="text-center">السائق</th>
+                        <th scope="col" class="text-center">حجم الحاوية</th>
+                        <th scope="col" class="text-center">رقم الحاوية</th>
+                        <th scope="col" class="text-center">الحالة</th>
+                        <th scope="col" class="text-center">#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($container as $item)
+                        <tr>
+                            <td class="text-center">
+                                <form action="{{ route('ContainerRentStatus', $item->id) }}" method="GET">
+                                    <input name="status" value="{{ $item->status }}" hidden />
+                                    <button type="submit" class="btn btn-danger d-inline-block">
+                                        @if ($item->status == 'wait')
+                                            تاجير حاوية
+                                        @elseif($item->status == 'rent')
+                                            الغاء تاجير الحاوية
+                                        @endif
+                                    </button>
+                                </form>
+                                @if (!auth()->user()?->userinfo?->job_title == 'operator')
+                                    <button type="button" class="btn btn-danger d-inline-block" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ $item->id }}">
+                                        حذف
+                                    </button>
+                                    <!-- Delete Confirmation Modal -->
+                                    <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="deleteModalLabel{{ $item->id }}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">تأكيد
+                                                        الحذف</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <p>هل أنت متأكد أنك تريد حذف الحاوية رقم {{ $item->number }}؟</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                    <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">حذف</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </td>
+                            <form action="{{ route('updateContainer', $item->id) }}" method="POST">
+                                @csrf
+                                <input type="text" hidden name="status" value="transport">
+                                <td class="text-center">{{ $item->customs->subclient_id }}</td>
+                                <td class="text-center">{{ $item->client->name }}</td>
+
+                                @if ($item->status == 'rent')
+                                    <td class="text-center">
+                                        <input class="form-select" required type="date" name="created_at" />
+                                    </td>
+                                    <td class="text-center">
+                                        <select class="form-select" name="rent_id" required>
+                                            <option value="">اختر شركة الاجار</option>
+                                            @foreach ($rents as $items)
+                                                <option value="{{ $items->id }}">{{ $items->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                @else
+                                    <td class="text-center">
+                                        <input class="form-select" required type="date" name="transfer_date" />
+                                    </td>
+                                    <td class="text-center">
+                                        <select class="form-select w-100" name="car" required>
+                                            <option value="">اختر السيارة</option>
+                                            @foreach ($cars as $driverItem)
+                                                <option value="{{ $driverItem->id }}">
+                                                    {{ $driverItem->driver?->name }} - {{ $driverItem->number }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <select class="form-select w-100" name="driver" required>
+                                            <option value="">اختر السائق</option>
+                                            @foreach ($driver as $driverItem)
+                                                <option value="{{ $driverItem->id }}">{{ $driverItem->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                @endif
+                                <td class="text-center">{{ $item->size }}</td>
+                                <td class="text-center">{{ $item->number }}</td>
+                                <td class="text-center">
+                                    <button type="submit" class="btn btn-danger d-inline-block">
+                                        @if ($item->status == 'wait')
+                                            الانتظار
+                                        @elseif($item->status == 'rent')
+                                            ايجار
+                                        @endif
+                                    </button>
+                                </td>
+                                <td class="text-center">{{ $item->id }}</td>
+                            </form>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3"
                 style="max-height: 700px; overflow: auto; position: relative;">
-                <h3 class="text-center mb-4 text-white"> {{ count($container) }} تحميل الحاويات</h3>
+                <h3 class="text-center mb-4 text-white" style="position: sticky; top: 0; z-index: 0;">
+                    {{ count($containerPort) }} الحاويات المحملة</h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
-                        <tr>
-                            <th scope="col" class="text-center">حالة الحاوية</th>
-                            <th scope="col" class="text-center">العميل</th>
-                            <th scope="col" class="text-center">مكتب التخليص</th>
-                            <th scope="col" class="text-center">التاريخ</th>
-                            <th scope="col" class="text-center">السيارة</th>
-                            <th scope="col" class="text-center">السائق</th>
-                            <th scope="col" class="text-center">حجم الحاوية</th>
-                            <th scope="col" class="text-center">رقم الحاوية</th>
-                            <th scope="col" class="text-center">الحالة</th>
-                            <th scope="col" class="text-center">#</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($container as $item)
-                            <tr>
-                                <td class="text-center">
-                                    <form action="{{ route('ContainerRentStatus', $item->id) }}" method="GET">
-                                        <input name="status" value="{{ $item->status }}" hidden />
-                                        <button type="submit" class="btn btn-danger d-inline-block">
-                                            @if ($item->status == 'wait')
-                                                تاجير حاوية
-                                            @elseif($item->status == 'rent')
-                                                الغاء تاجير الحاوية
-                                            @endif
-                                        </button>
-                                    </form>
-                                    @if (!auth()->user()?->userinfo?->job_title == 'operator')
-                                        <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-danger d-inline-block">
-                                                حذف
-                                            </button>
-                                        </form>
-                                    @endif
-                                </td>
-                                <form action="{{ route('updateContainer', $item->id) }}" method="POST">
-                                    @csrf
-                                    <input type="text" hidden name="status" value="transport">
-                                    <td class="text-center">{{ $item->customs->subclient_id }}</td>
-                                    <td class="text-center">{{ $item->client->name }}</td>
-
-                                    @if ($item->status == 'rent')
-                                        <td class="text-center">
-                                            <input class="form-select" required type="date" name="created_at" />
-                                        </td>
-                                        <td class="text-center">
-                                            <select class="form-select" name="rent_id" required>
-                                                <option value="">اختر شركة الاجار</option>
-                                                @foreach ($rents as $items)
-                                                    <option value="{{ $items->id }}">{{ $items->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td></td>
-                                    @else
-                                        <td class="text-center">
-                                            <input class="form-select" required type="date" name="transfer_date" />
-                                        </td>
-                                        <td class="text-center">
-                                            <select class="form-select w-100" name="car" required>
-                                                <option value="">اختر السيارة</option>
-                                                @foreach ($cars as $driverItem)
-                                                    <option value="{{ $driverItem->id }}">
-                                                        {{ $driverItem->driver?->name }} -
-                                                        {{ $driverItem->number }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td class="text-center">
-                                            <select class="form-select w-100" name="driver" required>
-                                                <option value="">اختر السائق</option>
-                                                @foreach ($driver as $driverItem)
-                                                    <option value="{{ $driverItem->id }}">{{ $driverItem->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                    @endif
-                                    <td class="text-center">{{ $item->size }}</td>
-                                    <td class="text-center">{{ $item->number }}</td>
-                                    <td class="text-center">
-                                        <button type="submit" class="btn btn-danger d-inline-block">
-                                            @if ($item->status == 'wait')
-                                                الانتظار
-                                            @elseif($item->status == 'rent')
-                                                ايجار
-                                            @endif
-                                        </button>
-                                    </td>
-                                    <td class="text-center">{{ $item->id }}</td>
-                                </form>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="container mt-5">
-            <div class="table-container overflow-auto mt-4 p-3"
-                style="max-height: 700px; overflow: auto; position: relative;">
-                <h3 class="text-center mb-4 text-white" style="position: sticky; top: 0; z-index: 0;"> {{ count($containerPort) }}
-                    الحاويات المحملة</h3>
-                <table class="table table-striped table-bordered table-hover table-sm">
-                    <thead class="bg-aqua " style="position: sticky; top: 0; z-index: 0;">
                         <tr>
                             <th scope="col" class="text-center">العميل</th>
                             <th scope="col" class="text-center">مكتب التخليص</th>
@@ -161,6 +180,7 @@
                                 <td class="text-center">{{ $item->id }}</td>
                             </tr>
 
+                            <!-- Status Confirmation Modal -->
                             <div class="modal fade" id="confirmationModal{{ $item->id }}" tabindex="-1"
                                 role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
