@@ -12,6 +12,7 @@
                             @if (Auth()->user()->role == 'superAdmin')
                                 <th scope="col" class="text-center"></th>
                             @endif
+                            <th scope="col" class="text-center">مصروفات السيارة خلال  الشهر</th>
                             <th scope="col" class="text-center">نوع السيارة</th>
                             <th scope="col" class="text-center">رقم السيارة</th>
                             <th scope="col" class="text-center">#</th>
@@ -26,6 +27,8 @@
                                         {{ $item->created_at != $item->updated_at ? 'معدلة' : '' }}
                                     </td>
                                 @endif
+                                <td class="text-center font-weight-bold" style="font-size: 18px;">
+                                    {{ $item->daily()->where('created_at', 'like', '%' . date('Y-m') . '%')->where('type', 'withdraw')->sum('price') }}</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     {{ $item->type_car }}</td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
