@@ -12,11 +12,14 @@
         </div>
         <div class="input-group input-group-sm mb-3 justify-content-center">
             <input type="number" id="expense" class="form-control" placeholder="أدخل المنصرف"
-                style="height: 35px; width: 150px;">
+                style="height: 35px; width: 150px; margin-right: 10px;">
+            <input type="text" id="description" class="form-control" placeholder="أدخل الوصف"
+                style="height: 35px; width: 150px; margin-right: 10px;">
             <div class="input-group-append">
                 <button class="btn btn-primary btn-sm" type="button" onclick="storeExpense()">تخزين المنصرف</button>
             </div>
         </div>
+
         <div class="mt-5">
             <h3 class="text-center text-primary">عدد الحاويات لكل شهر عبر جميع السنين</h3>
             @php
@@ -60,6 +63,7 @@
                     <tr>
                         <th scope="col">التاريخ</th>
                         <th scope="col">المنصرف</th>
+                        <th scope="col">الوصف</th>
                         <th scope="col">الإجراءات</th>
                     </tr>
                 </thead>
@@ -68,6 +72,7 @@
                 </tbody>
             </table>
         </div>
+
         <div class="mt-5">
             <h3 class="text-center text-primary">إجمالي السعر وعدد الحاويات لكل السنوات</h3>
             @php
@@ -109,18 +114,20 @@
 
         function storeExpense() {
             const expense = document.getElementById('expense').value;
-            if (expense) {
+            const description = document.getElementById('description').value;
+            if (expense && description) {
                 const expenses = getExpenses();
-                const date = new Date().toLocaleString();
+                const date = new Date().toLocaleDateString();
                 expenses.push({
                     date,
-                    amount: parseFloat(expense)
+                    amount: parseFloat(expense),
+                    description: description
                 });
                 localStorage.setItem('expenses', JSON.stringify(expenses));
                 updateMultipliedValues();
                 updateExpenseHistory();
             } else {
-                alert('يرجى إدخال رقم صحيح');
+                alert('يرجى إدخال رقم صحيح ووصف');
             }
         }
 
@@ -128,8 +135,10 @@
             const expenses = getExpenses();
             const expense = expenses[index];
             const newAmount = prompt("أدخل القيمة الجديدة للمنصرف:", expense.amount);
-            if (newAmount !== null) {
+            const newDescription = prompt("أدخل الوصف الجديد للمنصرف:", expense.description);
+            if (newAmount !== null && newDescription !== null) {
                 expenses[index].amount = parseFloat(newAmount);
+                expenses[index].description = newDescription;
                 localStorage.setItem('expenses', JSON.stringify(expenses));
                 updateMultipliedValues();
                 updateExpenseHistory();
@@ -165,15 +174,15 @@
 
             document.querySelectorAll('.multiplied-value').forEach(function(element) {
                 const count = element.getAttribute('data-count');
-                element.textContent = count > 0 ? `(${(count * multiplier).toFixed(2)}$)` : '';
+                element.textContent = count > 0 ? `(${(count * multiplier).toFixed(0)}$)` : '';
             });
 
             document.querySelectorAll('.total-multiplied-value').forEach(function(element) {
                 const count = element.getAttribute('data-count');
-                const totalValue = (count * multiplier).toFixed(2);
+                const totalValue = (count * multiplier).toFixed(0);
                 element.textContent = totalValue + '$';
                 const remainingValue = (totalValue - expenseTotal).toFixed(2);
-                document.getElementById('expense-value').textContent = expenseTotal.toFixed(2) + '$';
+                document.getElementById('expense-value').textContent = expenseTotal.toFixed(0) + '$';
                 document.getElementById('remaining-value').textContent = remainingValue + '$';
             });
         }
@@ -187,7 +196,9 @@
                 const dateCell = document.createElement('td');
                 dateCell.textContent = expense.date;
                 const amountCell = document.createElement('td');
-                amountCell.textContent = expense.amount.toFixed(2) + '$';
+                amountCell.textContent = expense.amount.toFixed(0) + '$';
+                const descriptionCell = document.createElement('td');
+                descriptionCell.textContent = expense.description;
                 const actionCell = document.createElement('td');
                 const editButton = document.createElement('button');
                 editButton.textContent = "تعديل";
@@ -201,6 +212,7 @@
                 actionCell.appendChild(deleteButton);
                 row.appendChild(dateCell);
                 row.appendChild(amountCell);
+                row.appendChild(descriptionCell);
                 row.appendChild(actionCell);
                 tbody.appendChild(row);
             });
@@ -216,7 +228,6 @@
     <style>
         .header-title {
             font-size: 0.85em;
-            font-weight: bold;
         }
 
         .input-group {
