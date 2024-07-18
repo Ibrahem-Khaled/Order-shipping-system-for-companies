@@ -10,32 +10,48 @@
             </div>
         </div>
         <div class="mt-5">
-            <h3>عدد الحاويات لكل شهر</h3>
+            <h3 class="text-center text-primary" >عدد الحاويات لكل شهر وكل سنة</h3>
             @php
-                $containersPerMonth = [];
+                $containersPerYearMonth = [];
+                $years = [];
+
                 foreach ($containers as $item) {
+                    $year = $item->created_at->format('Y');
                     $month = $item->created_at->format('F');
-                    if (!isset($containersPerMonth[$month])) {
-                        $containersPerMonth[$month] = 0;
+                    if (!isset($containersPerYearMonth[$year])) {
+                        $containersPerYearMonth[$year] = [];
                     }
-                    $containersPerMonth[$month]++;
+                    if (!isset($containersPerYearMonth[$year][$month])) {
+                        $containersPerYearMonth[$year][$month] = 0;
+                    }
+                    $containersPerYearMonth[$year][$month]++;
+                    $years[$year] = true;
                 }
+                ksort($years); // ترتيب السنوات
             @endphp
 
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">الشهر</th>
-                        <th scope="col">عدد الحاويات</th>
-                        <th scope="col">العدد بعد الضرب في الرقم</th>
+                        @foreach ($years as $year => $value)
+                            <th scope="col">{{ $year }}</th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($containersPerMonth as $month => $count)
+                    @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
                         <tr>
                             <td>{{ $month }}</td>
-                            <td>{{ $count }}</td>
-                            <td class="multiplied-value" data-count="{{ $count }}"></td>
+                            @foreach ($years as $year => $value)
+                                <td>
+                                    @php
+                                        $count = $containersPerYearMonth[$year][$month] ?? 0;
+                                    @endphp
+                                    {{ $count }}
+                                    <span class="multiplied-value" data-count="{{ $count }}"></span>
+                                </td>
+                            @endforeach
                         </tr>
                     @endforeach
                 </tbody>
@@ -63,7 +79,7 @@
             const multiplier = getMultiplier();
             document.querySelectorAll('.multiplied-value').forEach(function(element) {
                 const count = element.getAttribute('data-count');
-                element.textContent = (count * multiplier).toFixed(2);
+                element.textContent = count > 0 ? `(${(count * multiplier).toFixed(2)})` : '';
             });
         }
 
