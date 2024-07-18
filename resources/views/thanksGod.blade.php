@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="mt-5">
-            <h3 class="text-center text-primary" >عدد الحاويات لكل شهر وكل سنة</h3>
+            <h3 class="text-center text-primary">عدد الحاويات لكل شهر وكل سنة</h3>
             @php
                 $containersPerYearMonth = [];
                 $years = [];
@@ -30,26 +30,37 @@
                 ksort($years); // ترتيب السنوات
             @endphp
 
-            <table class="table">
-                <thead>
+            <table class="table table-bordered">
+                <thead class="thead-light">
                     <tr>
                         <th scope="col">الشهر</th>
                         @foreach ($years as $year => $value)
-                            <th scope="col">{{ $year }}</th>
+                            <th scope="col">
+                                <div class="d-flex flex-column align-items-center">
+                                    <span>{{ $year }}</span>
+                                    <div class="d-flex justify-content-between w-100">
+                                        <span class="header-title text-success">عدد الحاويات</span>
+                                        <span class="header-title text-info">السعر</span>
+                                    </div>
+                                </div>
+                            </th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
                         <tr>
-                            <td>{{ $month }}</td>
+                            <td><strong>{{ $month }}</strong></td>
                             @foreach ($years as $year => $value)
                                 <td>
                                     @php
                                         $count = $containersPerYearMonth[$year][$month] ?? 0;
                                     @endphp
-                                    {{ $count }}
-                                    <span class="multiplied-value" data-count="{{ $count }}"></span>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span
+                                            class="container-count text-success font-weight-bold">{{ $count }}</span>
+                                        <span class="multiplied-value text-info" data-count="{{ $count }}"></span>
+                                    </div>
                                 </td>
                             @endforeach
                         </tr>
@@ -88,5 +99,12 @@
             document.getElementById('priceMultiplier').value = getMultiplier();
         });
     </script>
+
+    <style>
+        .header-title {
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+    </style>
 
 @stop
