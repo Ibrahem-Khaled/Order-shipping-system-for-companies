@@ -60,6 +60,7 @@
                     <tr>
                         <th scope="col">التاريخ</th>
                         <th scope="col">المنصرف</th>
+                        <th scope="col">الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody id="expense-history-body">
@@ -123,6 +124,26 @@
             }
         }
 
+        function editExpense(index) {
+            const expenses = getExpenses();
+            const expense = expenses[index];
+            const newAmount = prompt("أدخل القيمة الجديدة للمنصرف:", expense.amount);
+            if (newAmount !== null) {
+                expenses[index].amount = parseFloat(newAmount);
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+                updateMultipliedValues();
+                updateExpenseHistory();
+            }
+        }
+
+        function deleteExpense(index) {
+            const expenses = getExpenses();
+            expenses.splice(index, 1);
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            updateMultipliedValues();
+            updateExpenseHistory();
+        }
+
         function getMultiplier() {
             const multiplier = localStorage.getItem('priceMultiplier');
             return multiplier ? parseFloat(multiplier) : 1;
@@ -161,14 +182,26 @@
             const expenses = getExpenses();
             const tbody = document.getElementById('expense-history-body');
             tbody.innerHTML = '';
-            expenses.forEach(expense => {
+            expenses.forEach((expense, index) => {
                 const row = document.createElement('tr');
                 const dateCell = document.createElement('td');
                 dateCell.textContent = expense.date;
                 const amountCell = document.createElement('td');
                 amountCell.textContent = expense.amount.toFixed(2) + '$';
+                const actionCell = document.createElement('td');
+                const editButton = document.createElement('button');
+                editButton.textContent = "تعديل";
+                editButton.className = "btn btn-sm btn-warning";
+                editButton.onclick = () => editExpense(index);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = "مسح";
+                deleteButton.className = "btn btn-sm btn-danger";
+                deleteButton.onclick = () => deleteExpense(index);
+                actionCell.appendChild(editButton);
+                actionCell.appendChild(deleteButton);
                 row.appendChild(dateCell);
                 row.appendChild(amountCell);
+                row.appendChild(actionCell);
                 tbody.appendChild(row);
             });
         }
