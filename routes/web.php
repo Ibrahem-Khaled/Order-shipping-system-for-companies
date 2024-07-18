@@ -127,6 +127,9 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::post('sell/buy/store', [SellAndBuyController::class, 'store'])->name('transactions.store');
     Route::put('sellAndBuy/update/{transactionId}', [SellAndBuyController::class, 'update'])->name('transactions.update');
     Route::delete('sellAndBuy/update/{transactionId}', [SellAndBuyController::class, 'destroy'])->name('transactions.destroy');
+
+    //thanks God
+    Route::get('thanks/god', [ContanierController::class, 'thanksGod'])->name('thanks.god');
 });
 
 

@@ -79,7 +79,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('getEmployee') }}" onclick="return checkPassword(event);">
+            <a class="nav-link active" href="{{ route('thanks.god') }}" onclick="return checkPassword(event);">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1"
@@ -110,7 +110,7 @@
                 event.preventDefault(); 
                 var password = prompt("ادخل كلمة المرور");
 
-                if (password === '010056789950') {
+                if (password === '1234') {
                     window.location.href = event.currentTarget.href; 
                 } else {
                     alert("خطأ في كلمة المرور"); 

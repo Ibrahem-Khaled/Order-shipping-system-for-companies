@@ -55,4 +55,18 @@ class ContanierController extends Controller
     }
 
 
+    public function thanksGod(Request $request)
+    {
+        $year = $request->input('query');
+
+        if ($year) {
+            $containers = Container::with('daily')->whereYear('created_at', $year)->get();
+        } else {
+            $containers = Container::with('daily')->get();
+        }
+
+        return view('thanksGod', compact('containers'));
+    }
+
+
 }
