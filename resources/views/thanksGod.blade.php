@@ -43,9 +43,6 @@
         </div>
     </div>
 
-@stop
-
-@section('scripts')
     <script>
         function storeMultiplier() {
             const multiplier = document.getElementById('priceMultiplier').value;
@@ -75,4 +72,5 @@
             document.getElementById('priceMultiplier').value = getMultiplier();
         });
     </script>
+
 @stop
