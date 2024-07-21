@@ -49,7 +49,7 @@ class UsersController extends Controller
     }
     public function employeeDaily($id)
     {
-        $user = User::with(['employeedaily'])->find($id);
+        $user = User::with(['employeedaily','tipsEmpty'])->find($id);
 
         return view('FinancialManagement.Expenses.users.employeeDaily', compact('user'));
     }
