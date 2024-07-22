@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('tips', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('container_id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('car_id');
-            $table->integer('price');
+            $table->unsignedBigInteger('container_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('car_id')->nullable();
+            $table->integer('price')->nullable();
             $table->foreign('container_id')->references('id')->on('containers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');

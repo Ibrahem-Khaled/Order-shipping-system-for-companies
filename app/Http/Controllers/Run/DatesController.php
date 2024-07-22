@@ -107,31 +107,41 @@ class DatesController extends Controller
     }
     public function updateEmpty(Request $request, $id)
     {
-        $container = Container::find($id);
-
-        if ($request->status == 'done') {
-            if ($container->tipsEmpty()->exists()) {
-                $container->tipsEmpty()->update([
-                    'user_id' => $request->user_id,
-                    'car_id' => $request->car_id,
-                    'price' => $request->price,
-                ]);
-            } else {
-                Tips::create([
-                    'container_id' => $id,
-                    'user_id' => $request->user_id,
-                    'car_id' => $request->car_id,
-                    'price' => $request->price,
-                ]);
+        $container = Container::findOrFail($id);
+        if ($container->is_rent == 0) {
+            if ($request->status == 'done') {
+                // التحقق مما إذا كانت الحاوية لديها حوافز فارغة
+                if ($container->tipsEmpty()->exists()) {
+                    // تحديث الحوافز الفارغة
+                    $container->tipsEmpty()->update([
+                        'user_id' => $request->user_id,
+                        'car_id' => $request->car_id,
+                        'price' => $request->price,
+                    ]);
+                } else {
+                    // إنشاء حوافز جديدة
+                    Tips::create([
+                        'container_id' => $id,
+                        'user_id' => $request->user_id,
+                        'car_id' => $request->car_id,
+                        'price' => $request->price,
+                    ]);
+                }
             }
+            $container->update([
+                'status' => $request->status,
+            ]);
+        } else {
+            $container->update([
+                'status' => $request->status,
+            ]);
         }
-        $container->update([
-            'status' => $request->status,
-        ]);
 
+        // إعادة التوجيه مع رسالة نجاح
         return redirect()->back()->with('success', 'تم التحميل بنجاح');
-
     }
+
+
 
     public function ContainerRentStatus($id, Request $request)
     {
