@@ -62,8 +62,7 @@ class DatesController extends Controller
                 ->where('status', 'done')
                 ->with('tipsEmpty')
                 ->paginate(10);
-            $containerPort = Container::where('status', 'transport')
-                ->latest('updated_at')->paginate(10);
+            $containerPort = Container::where('status', 'transport')->latest('updated_at')->paginate(10);
         } else {
             $done = Container::where('status', 'done')
                 ->where(function ($queryBuilder) use ($query) {
@@ -92,6 +91,12 @@ class DatesController extends Controller
     {
         $container = Container::find($id);
         $driver = User::find($request->driver);
+
+        // تغيير الحالة إلى "done" إذا كان حجم الحاوية "box"
+        if ($container->size == 'box') {
+            $request->merge(['status' => 'done']);
+        }
+
         $container->update([
             'status' => $request->status,
             'transfer_date' => $request->transfer_date,
@@ -100,6 +105,7 @@ class DatesController extends Controller
             'car_id' => $request->car,
             'rent_id' => $request->rent_id ?? null,
         ]);
+
         if ($request->status == 'wait') {
             return redirect()->back()->with('success', 'تم الغاء التحميل ');
         } else {
@@ -107,24 +113,21 @@ class DatesController extends Controller
         }
     }
 
-
     public function updateEmpty(Request $request, $id)
     {
         $container = Container::findOrFail($id);
-
-        if ($container->size == 'box') {
-            $request->merge(['status' => 'done']);
-        }
-
         if ($container->is_rent == 0) {
             if ($request->status == 'done') {
+                // التحقق مما إذا كانت الحاوية لديها حوافز فارغة
                 if ($container->tipsEmpty()->exists()) {
+                    // تحديث الحوافز الفارغة
                     $container->tipsEmpty()->update([
                         'user_id' => $request->user_id,
                         'car_id' => $request->car_id,
                         'price' => $request->price,
                     ]);
                 } else {
+                    // إنشاء حوافز جديدة
                     Tips::create([
                         'container_id' => $id,
                         'user_id' => $request->user_id,
@@ -142,9 +145,9 @@ class DatesController extends Controller
             ]);
         }
 
+        // إعادة التوجيه مع رسالة نجاح
         return redirect()->back()->with('success', 'تم التحميل بنجاح');
     }
-
 
 
 
