@@ -59,12 +59,10 @@ class DatesController extends Controller
         if (is_null($query)) {
             $done = Container::whereYear('created_at', $year)
                 ->whereMonth('created_at', $month)
-                ->whereIn('size', [20, 40])
                 ->where('status', 'done')
                 ->with('tipsEmpty')
                 ->paginate(10);
             $containerPort = Container::where('status', 'transport')
-                ->whereIn('size', [20, 40])
                 ->latest('updated_at')->paginate(10);
         } else {
             $done = Container::where('status', 'done')

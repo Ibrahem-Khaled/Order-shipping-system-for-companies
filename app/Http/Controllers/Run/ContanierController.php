@@ -17,7 +17,7 @@ class ContanierController extends Controller
         $validator = Validator::make($request->all(), [
             'number.*' => 'required|min:7|max:7',
         ]);
-        // Check if validation fails
+
         if ($validator->fails()) {
             return redirect()->back()->with('error', 'يجب أن يحتوي رقم الحاوية على 7 أرقام');
         }
@@ -26,30 +26,29 @@ class ContanierController extends Controller
         $numbers = $request->input('number');
         $rents = $request->input('rent');
 
-        // Check if all arrays are not null and have the same count
         if (count($sizes)) {
             $count = count($sizes);
-            // Loop through arrays to process the data
             for ($i = 0; $i < $count; $i++) {
                 $size = $sizes[$i];
                 $number = $numbers[$i];
                 $rent = $rents[$i];
 
-                // Create a new record in the database for each set of values
+                $status = ($size == 'box') ? 'done' : ($rent == 'rent' ? 'rent' : 'wait');
+                $is_rent = $rent == 'rent' ? 1 : 0;
+
                 Container::create([
                     'number' => $number,
                     'size' => $size,
                     'customs_id' => $customs_id,
                     'client_id' => $custom->client_id,
-                    'status' => $rent == 'rent' ? 'rent' : 'wait',
-                    'is_rent' => $rent == 'rent' ? 1 : 0,
+                    'status' => $status,
+                    'is_rent' => $is_rent,
                     'created_at' => $custom->created_at,
                 ]);
             }
 
-            return redirect()->route('getOfices')->with('success', 'تم الانشاء الحاويات بنجاح');
+            return redirect()->route('getOfices')->with('success', 'تم إنشاء الحاويات بنجاح');
         } else {
-            // Handle the case where arrays are null or have different counts
             return redirect()->back()->with('error', 'هناك خطأ في البيانات المدخلة');
         }
     }
