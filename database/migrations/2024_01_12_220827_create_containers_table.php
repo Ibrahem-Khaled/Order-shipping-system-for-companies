@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->bigInteger('customs_id');
             $table->bigInteger('client_id');
             $table->string('number');
-            $table->enum('size', [20, 40]);
+            $table->enum('size', [20, 40,'box']);
             $table->bigInteger('price')->nullable()->default(0);
             $table->bigInteger('rent_price')->nullable()->default(0);
             $table->enum('status', ['wait', 'transport', 'done', 'rent'])->default('wait');

@@ -30,6 +30,7 @@
                                         <option value="">اختر</option>
                                         <option value="20">20</option>
                                         <option value="40">40</option>
+                                        <option value="box">طرد</option>
                                     </select>
                                 </div>
                                 <div class="mb-3 col-md-3">
