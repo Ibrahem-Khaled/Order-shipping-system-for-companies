@@ -32,10 +32,11 @@
                                 $currentMonthTips =
                                     $item->role == 'driver'
                                         ? $item->driverContainer
-                                            ->filter(function ($transaction) use ($currentMonth) {
-                                                return $transaction->created_at->month == $currentMonth;
-                                            })
-                                            ->sum('tips')
+                                                ->filter(function ($transaction) use ($currentMonth) {
+                                                    return $transaction->created_at->month == $currentMonth;
+                                                })
+                                                ->sum('tips') +
+                                            $item->tipsEmpty()->whereMonth('created_at', $currentMonth)->sum('price')
                                         : 0;
 
                                 $totalTips = $item->driverContainer->sum('tips');

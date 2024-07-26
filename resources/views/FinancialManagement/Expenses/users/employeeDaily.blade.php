@@ -67,7 +67,7 @@
                                         ->whereYear('created_at', $year)
                                         ->sum('price');
 
-                                    $total = $sallary + $tips;
+                                    $total = $sallary + $tips + $tipsEmptyMonth;
                                     $saving = $total - $dailyTransaction;
 
                                     if ($year == $searchYear) {

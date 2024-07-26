@@ -2492,8 +2492,6 @@ progress {
 .table> :not(caption)>*>* {
   padding: 0.5rem 0.5rem;
   background-color: var(--bs-table-bg);
-  border-bottom-width: 1px;
-  box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
 }
 
 .table>tbody {
@@ -24575,22 +24573,17 @@ html {
 
 .table {
   border-collapse: collapse;
-  box-shadow: 0 5px 10px #e1e5ee;
   background-color: #fff;
   text-align: left;
-  overflow: hidden;
   border-radius: 10px;
-
 }
 
 .table thead {
-  box-shadow: 0 5px 10px #e1e5ee;
   background: linear-gradient(#cb0c9f, #cb0c9f);
   color: white;
 }
 
 .table tbody tr {
-  box-shadow: 0 5px 10px #e1e5ee;
   margin: 5px;
   border-radius: 5px;
   border-width: 3px;
