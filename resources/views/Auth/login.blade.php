@@ -7,10 +7,13 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <title>
-        login
+        تسجيل الدخول
     </title>
     <!--     Fonts and icons     -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
     <!-- Nucleo Icons -->
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
@@ -23,6 +26,18 @@
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
+
+    <style>
+        body {
+            font-family: "Cairo", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: <weight>;
+            font-style: normal;
+            font-variation-settings:
+                "slnt" 0;
+        }
+    </style>
 </head>
 
 <body class="">
@@ -48,15 +63,9 @@
                         <div class="collapse navbar-collapse" id="navigation">
                             <ul class="navbar-nav mx-auto ms-xl-auto me-xl-7">
                                 <li class="nav-item">
-                                    <a class="nav-link me-2" href="../pages/sign-up.html">
-                                        <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
-                                        Sign Up
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link me-2" href="../pages/sign-in.html">
                                         <i class="fas fa-key opacity-6 text-dark me-1"></i>
-                                        Sign In
+                                        تسجيل الدخول
                                     </a>
                                 </li>
                             </ul>
@@ -76,40 +85,35 @@
                         <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
                             <div class="card card-plain mt-8">
                                 <div class="card-header pb-0 text-left bg-transparent">
-                                    <h3 class="font-weight-bolder text-info text-gradient">Welcome back</h3>
-                                    <p class="mb-0">Enter your phone and password to sign in</p>
+                                    <h3 class="font-weight-bolder text-info text-gradient">مرحبا بعودتك</h3>
+                                    <p class="mb-0">أدخل رقم هاتفك وكلمة المرور لتسجيل الدخول</p>
                                 </div>
                                 <div class="card-body">
                                     <form action="{{ route('login.custom') }}" method="POST">
                                         @csrf
-                                        <label>Phone</label>
+                                        <label>رقم الهاتف</label>
                                         <div class="mb-3">
                                             <input type="tel" class="form-control" name="phone"
-                                                placeholder="phone" aria-label="Email" aria-describedby="email-addon">
+                                                placeholder="رقم الهاتف" aria-label="Email"
+                                                aria-describedby="email-addon">
                                         </div>
-                                        <label>Password</label>
+                                        <label>كلمة المرور</label>
                                         <div class="mb-3">
                                             <input type="password" name="password" class="form-control"
-                                                placeholder="Password" aria-label="Password"
+                                                placeholder="كلمة المرور" aria-label="Password"
                                                 aria-describedby="password-addon">
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="rememberMe"
                                                 checked="">
-                                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                                            <label class="form-check-label" for="rememberMe">تذكرني</label>
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign
-                                                in</button>
+                                            <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">
+                                                تسجيل الدخول
+                                            </button>
                                         </div>
                                     </form>
-                                </div>
-                                <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                                    <p class="mb-4 text-sm mx-auto">
-                                        Don't have an account?
-                                        <a href="javascript:;" class="text-info text-gradient font-weight-bold">Sign
-                                            up</a>
-                                    </p>
                                 </div>
                             </div>
                         </div>

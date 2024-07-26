@@ -31,33 +31,45 @@
                             $currentMonth = now()->month;
                             $sallary = $user->sallary;
                             $totalSaving = 0;
-                            $searchYear = request('year') ?? $currentYear; 
+                            $searchYear = request('year') ?? $currentYear;
                             $startYear = Carbon::parse($user->userInfo->date_runer)->year;
 
                             for ($year = $startYear; $year <= $currentYear; $year++) {
                                 $yearlyTotal = 0;
 
-                                $startMonth = $year == $startYear ? Carbon::parse($user->userInfo->date_runer)->month : 1;
+                                $startMonth =
+                                    $year == $startYear ? Carbon::parse($user->userInfo->date_runer)->month : 1;
                                 $endMonth = $year == $currentYear ? $currentMonth : 12;
 
                                 for ($month = $startMonth; $month <= $endMonth; $month++) {
-                                    $monthTransactions = $user->employeedaily->filter(function ($transaction) use ($year, $month) {
+                                    $monthTransactions = $user->employeedaily->filter(function ($transaction) use (
+                                        $year,
+                                        $month,
+                                    ) {
                                         return $transaction->created_at->year == $year &&
                                             $transaction->created_at->month == $month;
                                     });
 
-                                    $tipsMonth = $user->driverContainer->filter(function ($transaction) use ($year, $month) {
+                                    $tipsMonth = $user->driverContainer->filter(function ($transaction) use (
+                                        $year,
+                                        $month,
+                                    ) {
                                         $transferDate = Carbon::parse($transaction->transfer_date);
                                         return $transferDate->year == $year && $transferDate->month == $month;
                                     });
 
                                     $dailyTransaction = $monthTransactions->where('type', 'withdraw')->sum('price');
                                     $tips = $tipsMonth->sum('tips');
-                                    $tipsEmptyMonth = $tipsMonth->where('tips_empty', true)->sum('tips');
+
+                                    $tipsEmptyMonth = $user
+                                        ->tipsEmpty()
+                                        ->whereMonth('created_at', $month)
+                                        ->whereYear('created_at', $year)
+                                        ->sum('price');
 
                                     $total = $sallary + $tips;
                                     $saving = $total - $dailyTransaction;
-                                    
+
                                     if ($year == $searchYear) {
                                         $annualStatement[] = [
                                             'total' => $total,
@@ -86,7 +98,8 @@
                                 <td>{{ $statement['tips'] }}</td>
                                 <td>{{ $statement['tipsEmpty'] }}</td>
                                 <td>{{ $statement['sallary'] }}</td>
-                                <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }} {{ $statement['year'] }}</td>
+                                <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}
+                                    {{ $statement['year'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>
