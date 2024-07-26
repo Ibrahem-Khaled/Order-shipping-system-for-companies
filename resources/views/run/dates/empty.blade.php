@@ -40,7 +40,11 @@
                             @endif
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
-                            <td class="text-center">{{ $item->customs->statement_number }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('showContainer', $item->customs->id) }}">
+                                    {{ $item->customs->statement_number }}
+                                </a>
+                            </td>
                             <td class="text-center">
 
                                 @if ($item->is_rent == 1)
