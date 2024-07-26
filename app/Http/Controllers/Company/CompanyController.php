@@ -80,7 +80,7 @@ class CompanyController extends Controller
             $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
         }
 
-        $containerTransport = Container::whereIn('status', ['transport', 'done'])->get();
+        $containerTransport = Container::get();
         $containerTransferPrice = 0;
 
         foreach ($containerTransport as $container) {

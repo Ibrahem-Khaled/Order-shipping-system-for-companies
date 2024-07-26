@@ -43,4 +43,9 @@ class Container extends Model
     {
         return $this->hasOne(Tips::class, 'container_id');
     }
+
+    public function flatbed()
+    {
+        return $this->belongsToMany(Flatbed::class, 'flatbed_containers', 'container_id', 'flatbed_id');
+    }
 }
