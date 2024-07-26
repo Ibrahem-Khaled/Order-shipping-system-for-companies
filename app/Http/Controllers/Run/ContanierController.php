@@ -33,21 +33,18 @@ class ContanierController extends Controller
                 $number = $numbers[$i];
                 $rent = $rents[$i];
 
-                $status = ($size == 'box') ? 'done' : ($rent == 'rent' ? 'rent' : 'wait');
-                $is_rent = $rent == 'rent' ? 1 : 0;
-
                 Container::create([
                     'number' => $number,
                     'size' => $size,
                     'customs_id' => $customs_id,
                     'client_id' => $custom->client_id,
-                    'status' => $status,
-                    'is_rent' => $is_rent,
+                    'status' => $rent == 'rent' ? 'rent' : 'wait',
+                    'is_rent' => $rent == 'rent' ? 1 : 0,
                     'created_at' => $custom->created_at,
                 ]);
             }
 
-            return redirect()->route('getOfices')->with('success', 'تم إنشاء الحاويات بنجاح');
+            return redirect()->route('getOfices')->with('success', 'تم الانشاء الحاويات بنجاح');
         } else {
             return redirect()->back()->with('error', 'هناك خطأ في البيانات المدخلة');
         }

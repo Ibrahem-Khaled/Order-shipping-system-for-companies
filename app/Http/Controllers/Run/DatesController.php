@@ -106,21 +106,25 @@ class DatesController extends Controller
             return redirect()->back()->with('success', 'تم التحميل بنجاح');
         }
     }
+
+
     public function updateEmpty(Request $request, $id)
     {
         $container = Container::findOrFail($id);
+
+        if ($container->size == 'box') {
+            $request->merge(['status' => 'done']);
+        }
+
         if ($container->is_rent == 0) {
             if ($request->status == 'done') {
-                // التحقق مما إذا كانت الحاوية لديها حوافز فارغة
                 if ($container->tipsEmpty()->exists()) {
-                    // تحديث الحوافز الفارغة
                     $container->tipsEmpty()->update([
                         'user_id' => $request->user_id,
                         'car_id' => $request->car_id,
                         'price' => $request->price,
                     ]);
                 } else {
-                    // إنشاء حوافز جديدة
                     Tips::create([
                         'container_id' => $id,
                         'user_id' => $request->user_id,
@@ -138,9 +142,9 @@ class DatesController extends Controller
             ]);
         }
 
-        // إعادة التوجيه مع رسالة نجاح
         return redirect()->back()->with('success', 'تم التحميل بنجاح');
     }
+
 
 
 
