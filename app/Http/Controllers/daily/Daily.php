@@ -147,6 +147,7 @@ class Daily extends Controller
                     'type' => 'withdraw',
                     'price' => $request->price,
                     'client_id' => $container->client_id,
+                    'created_at' => $container->created_at,
                 ]);
 
                 $message = 'تم تحديث السعر بنجاح';
@@ -156,6 +157,7 @@ class Daily extends Controller
                     'price' => $request->price,
                     'container_id' => $container->id,
                     'client_id' => $container->client_id,
+                    'created_at' => $container->created_at,
                 ]);
 
                 $message = 'تم اضافة السعر بنجاح';
