@@ -116,6 +116,7 @@ class DatesController extends Controller
     public function updateEmpty(Request $request, $id)
     {
         $container = Container::findOrFail($id);
+        $status = ($container->size == 'box') ? 'wait' : $request->status;
         if ($container->is_rent == 0) {
             if ($request->status == 'done') {
                 // التحقق مما إذا كانت الحاوية لديها حوافز فارغة
@@ -136,12 +137,13 @@ class DatesController extends Controller
                     ]);
                 }
             }
+
             $container->update([
-                'status' => $request->status,
+                'status' => $status,
             ]);
         } else {
             $container->update([
-                'status' => $request->status,
+                'status' => $status,
             ]);
         }
 
