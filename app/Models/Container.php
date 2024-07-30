@@ -41,7 +41,7 @@ class Container extends Model
 
     public function tipsEmpty()
     {
-        return $this->hasOne(Tips::class, 'container_id');
+        return $this->hasMany(Tips::class, 'container_id');
     }
 
     public function flatbed()

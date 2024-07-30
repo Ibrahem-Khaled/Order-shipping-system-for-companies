@@ -61,8 +61,10 @@ class DatesController extends Controller
                 ->whereMonth('created_at', $month)
                 ->where('status', 'done')
                 ->with('tipsEmpty')
-                ->paginate(10);
+                ->paginate(1);
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->paginate(10);
+            $storageContainer = Container::whereIn('status', ['storage', 'rent'])->latest('updated_at')->paginate(10);
+
         } else {
             $done = Container::where('status', 'done')
                 ->where(function ($queryBuilder) use ($query) {
@@ -70,8 +72,17 @@ class DatesController extends Controller
                         ->orWhere('number', 'like', '%' . $query . '%')
                         ->orWhere('price', 'like', '%' . $query . '%');
                 })
-                ->paginate(10);
+                ->paginate(1);
+
             $containerPort = Container::where('status', 'transport')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('number', 'like', '%' . $query . '%')
+                        ->orWhere('created_at', 'like', '%' . $query . '%')
+                        ->orWhere('price', 'like', '%' . $query . '%');
+                })
+                ->paginate(10);
+
+            $storageContainer = Container::whereIn('status', ['storage', 'rent'])
                 ->where(function ($queryBuilder) use ($query) {
                     $queryBuilder->where('number', 'like', '%' . $query . '%')
                         ->orWhere('created_at', 'like', '%' . $query . '%')
@@ -83,8 +94,9 @@ class DatesController extends Controller
         $driver = User::where('role', 'driver')->whereNotNull('sallary')->get();
         $rents = User::where('role', 'rent')->get();
         $cars = Cars::where('type', 'transfer')->get();
+        $rents = User::where('role', 'rent')->get();
 
-        return view('run.dates.empty', compact('done', 'driver', 'containerPort', 'cars', 'rents'));
+        return view('run.dates.empty', compact('done', 'driver', 'containerPort', 'cars', 'rents', 'storageContainer', 'rents'));
     }
 
     public function update(Request $request, $id)
@@ -159,7 +171,7 @@ class DatesController extends Controller
             'status' => $request->status == 'wait' ? 'rent' : 'wait',
             'is_rent' => $request->status == 'wait' ? 1 : 0,
         ]);
-        if ($request->status == 'wait') {
+        if ($request->status == 'wait' || $request->status == 'storage') {
             return redirect()->back()->with('success', 'تم تاجير الحاوية');
         } else {
             return redirect()->back()->with('success', 'تم الغاء تاجير');

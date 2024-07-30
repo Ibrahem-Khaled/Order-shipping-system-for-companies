@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('car_id')->nullable();
             $table->integer('price')->nullable();
+            $table->string('type')->nullable()->default('empty');
             $table->foreign('container_id')->references('id')->on('containers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');

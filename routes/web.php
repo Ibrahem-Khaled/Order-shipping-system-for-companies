@@ -14,6 +14,7 @@ use App\Http\Controllers\Run\CustomsController;
 use App\Http\Controllers\Run\DatesController;
 use App\Http\Controllers\Run\OfficeController;
 use App\Http\Controllers\Run\ContanierController;
+use App\Http\Controllers\Run\StorageContainerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -130,6 +131,9 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
 
     //thanks God
     Route::get('thanks/god', [ContanierController::class, 'thanksGod'])->name('thanks.god');
+
+    //this route storage container
+    Route::post('container/storage/{id}', [StorageContainerController::class, 'storageContainer'])->name('container.storage');
 });
 
 

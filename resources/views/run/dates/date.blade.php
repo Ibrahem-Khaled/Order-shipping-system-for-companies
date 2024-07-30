@@ -43,6 +43,82 @@
                                         @endif
                                     </button>
                                 </form>
+
+                                <button type="button" class="btn btn-success d-inline-block" data-bs-toggle="modal"
+                                    data-bs-target="#storageContainer{{ $item->id }}">
+                                    تخزين
+                                </button>
+
+                                <!-- Storage Confirmation Modal -->
+                                <div class="modal fade" id="storageContainer{{ $item->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="storageContainerLabel{{ $item->id }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="storageContainerLabel{{ $item->id }}">تأكيد
+                                                    التخزين</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('container.storage', $item->id) }}" method="POST">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="driver-{{ $item->id }}"
+                                                            class="form-label">السائق</label>
+                                                        <select class="form-select" id="driver-{{ $item->id }}"
+                                                            name="driver" required>
+                                                            <option value="">اختر السائق</option>
+                                                            <!-- اضافة خيارات السائقين -->
+                                                            @foreach ($driver as $driverItem)
+                                                                <option value="{{ $driverItem->id }}">
+                                                                    {{ $driverItem->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="car-{{ $item->id }}"
+                                                            class="form-label">السيارة</label>
+                                                        <select class="form-select" id="car-{{ $item->id }}"
+                                                            name="car" required>
+                                                            <option value="">اختر السيارة</option>
+                                                            <!-- اضافة خيارات السيارات -->
+                                                            @foreach ($cars as $car)
+                                                                <option value="{{ $car->id }}">
+                                                                    {{ $car->driver?->name }}-{{ $car->number }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="tips-{{ $item->id }}"
+                                                            class="form-label">الحوافز</label>
+                                                        <input type="number" class="form-control"
+                                                            id="tips-{{ $item->id }}" name="tips"
+                                                            placeholder="ادخل مبلغ الحوافز" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="notes-{{ $item->id }}"
+                                                            class="form-label">التاريخ</label>
+                                                        <input type="date" class="form-control"
+                                                            id="notes-{{ $item->id }}" name="transfer_date">
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                    <button type="submit" class="btn btn-success">تأكيد</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @if (!auth()->user()?->userinfo?->job_title == 'operator')
                                     <button type="button" class="btn btn-danger d-inline-block" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ $item->id }}">
@@ -55,7 +131,8 @@
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">تأكيد
+                                                    <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">
+                                                        تأكيد
                                                         الحذف</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
@@ -66,7 +143,8 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">إلغاء</button>
-                                                    <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
+                                                    <form action="{{ route('deleteContainer', $item->id) }}"
+                                                        method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-danger">حذف</button>
                                                     </form>

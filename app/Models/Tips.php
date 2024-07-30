@@ -9,7 +9,7 @@ class Tips extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['price', 'container_id', 'user_id', 'car_id'];
+    protected $fillable = ['price', 'container_id', 'user_id', 'car_id', 'type', 'created_at'];
 
     public function container()
     {
