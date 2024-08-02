@@ -12,6 +12,7 @@ use App\Http\Controllers\FinanceialManagement\RevenuesController;
 use App\Http\Controllers\FinanceialManagement\SellAndBuyController;
 use App\Http\Controllers\Run\CustomsController;
 use App\Http\Controllers\Run\DatesController;
+use App\Http\Controllers\Run\FlatbedController;
 use App\Http\Controllers\Run\OfficeController;
 use App\Http\Controllers\Run\ContanierController;
 use App\Http\Controllers\Run\StorageContainerController;
@@ -134,6 +135,9 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
 
     //this route storage container
     Route::post('container/storage/{id}', [StorageContainerController::class, 'storageContainer'])->name('container.storage');
+
+    //this route flatbed 
+    Route::resource('flatbeds', FlatbedController::class);
 });
 
 

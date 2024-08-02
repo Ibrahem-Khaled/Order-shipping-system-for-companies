@@ -27,12 +27,7 @@
                     @endphp
                     @foreach ($customs as $custom)
                         @php
-                            $transportContainers = $custom->container->whereIn('status', [
-                                'transport',
-                                'done',
-                                'rent',
-                                'wait',
-                            ]);
+                            $transportContainers = $custom->container;
                         @endphp
                         @if ($transportContainers->isNotEmpty())
                             <input type="hidden" value="{{ $custom->id }}" name="id[]" />
