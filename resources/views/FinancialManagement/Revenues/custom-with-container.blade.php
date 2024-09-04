@@ -91,6 +91,8 @@
                                 في النقل
                             @elseif($item->status == 'wait')
                                 في الانتظار
+                            @elseif($item->status == 'storage')
+                                في ساحة التخزين
                             @endif
                         </td>
                         <td>{{ $item->client->name }}</td>

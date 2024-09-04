@@ -68,6 +68,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     //add Container
     Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
     Route::post('edit/contanier/price/{id}', [RevenuesController::class, 'priceContainerEdit'])->name('editContainerPrice');
+    Route::post('update/contanier/empty/date/{containerId}', [ContanierController::class, 'updateDateEmpty'])->name('updateDateEmpty');
 
     //Dates and empty
     Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
@@ -135,6 +136,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
 
     //this route storage container
     Route::post('container/storage/{id}', [StorageContainerController::class, 'storageContainer'])->name('container.storage');
+    Route::post('chnage/container/status/{id}', [StorageContainerController::class, 'changeContainerStatus'])->name('change.container.status');
 
     //this route flatbed 
     Route::resource('flatbeds', FlatbedController::class);

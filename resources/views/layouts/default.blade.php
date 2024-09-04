@@ -17,10 +17,8 @@
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 
-    <!-- CSS Files -->
+    <!-- CSS Files --> 
     <link id="pagestyle" href="{{ asset('assets/css/soft-ui-dashboard.css?v=1.0.7') }}" rel="stylesheet" />
-    <!-- Nepcha is an easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA, and PECR. -->
-    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 
     <style>
         body {
@@ -353,16 +351,17 @@
         @include('layouts.nav')
         <!-- End Navbar -->
         <div id="pageContentPdf">
-            @include('layouts.body')
-            @include('layouts.footer')
+            @include('layouts.body') 
         </div>
+
+        @include('layouts.footer')
 
         <div class="dropup position-fixed bottom-0 end-0 rounded-circle m-5">
             <button onclick="printDiv('pageContentPdf')" type="button" class="btn btn-danger">
                 PDF
             </button>
         </div>
-    </main>
+    </main> 
 
     <!-- Core JS Files -->
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>

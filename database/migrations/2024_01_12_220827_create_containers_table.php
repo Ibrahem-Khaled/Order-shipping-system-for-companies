@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->bigInteger('rent_price')->nullable()->default(0);
             $table->enum('status', ['wait', 'transport', 'done', 'rent', 'storage'])->default('wait');
             $table->timestamp('transfer_date')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('date_empty')->nullable();
             $table->timestamps();
         });
     }

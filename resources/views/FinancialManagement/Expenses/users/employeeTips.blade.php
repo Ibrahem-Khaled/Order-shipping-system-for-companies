@@ -8,7 +8,7 @@
                 <h2 class="text-center mb-4 text-white">{{ $user->name }}</h2>
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
-                        <tr class="text-uppercase text-success">
+                        <tr class="text-uppercase">
                             <th scope="col">حالة التعديل</th>
                             <th scope="col">نوع الترب</th>
                             <th scope="col">السعر</th>
@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($currentMonthContainers as $item)
+                        @foreach ($currentMonthContainers->whereNotNull('tips') as $item)
                             <tr>
                                 <td>
                                     @if ($item->created_at != $item->updated_at)

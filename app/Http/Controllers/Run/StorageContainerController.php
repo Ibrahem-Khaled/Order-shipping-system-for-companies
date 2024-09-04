@@ -29,4 +29,17 @@ class StorageContainerController extends Controller
 
         return redirect()->back()->with('success', 'تم تخزين الحاوية بنجاح');
     }
+
+    public function changeContainerStatus(Request $request, $id)
+    {
+        $container = Container::find($id);
+        $container->update([
+            'status' => $request->status,
+        ]);
+        $lastTip = $container->tipsEmpty()->orderBy('created_at', 'desc')->first();
+        if ($lastTip) {
+            $lastTip->delete();
+        }
+        return redirect()->back()->with('success', 'تم تغيير حالة الحاوية بنجاح');
+    }
 }

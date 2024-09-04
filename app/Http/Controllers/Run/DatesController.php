@@ -129,37 +129,42 @@ class DatesController extends Controller
     {
         $container = Container::findOrFail($id);
         $status = ($container->size == 'box') ? 'wait' : $request->status;
+
         if ($container->is_rent == 0) {
             if ($request->status == 'done') {
                 // التحقق مما إذا كانت الحاوية لديها حوافز فارغة
-                if ($container->tipsEmpty()->exists()) {
-                    // تحديث الحوافز الفارغة
-                    $container->tipsEmpty()->update([
-                        'user_id' => $request->user_id,
-                        'car_id' => $request->car_id,
-                        'price' => $request->price,
-                    ]);
-                } else {
-                    // إنشاء حوافز جديدة
-                    Tips::create([
-                        'container_id' => $id,
-                        'user_id' => $request->user_id,
-                        'car_id' => $request->car_id,
-                        'price' => $request->price,
-                    ]);
+                // if ($container->tipsEmpty()->exists()) {
+                //     // تحديث الحوافز الفارغة
+                //     $container->tipsEmpty()->update([
+                //         'user_id' => $request->user_id,
+                //         'car_id' => $request->car_id,
+                //         'price' => $request->price,
+                //     ]);
+                // } else {
+                // إنشاء حوافز جديدة
+                Tips::create([
+                    'container_id' => $id,
+                    'user_id' => $request->user_id,
+                    'car_id' => $request->car_id,
+                    'price' => $request->price,
+                ]);
+                //}
+            } elseif ($request->status == 'transport') {
+                $lastTip = $container->tipsEmpty()->orderBy('created_at', 'desc')->first();
+                if ($lastTip) {
+                    $lastTip->delete();
                 }
             }
-
             $container->update([
                 'status' => $status,
             ]);
+
         } else {
             $container->update([
                 'status' => $status,
             ]);
         }
 
-        // إعادة التوجيه مع رسالة نجاح
         return redirect()->back()->with('success', 'تم التحميل بنجاح');
     }
 
@@ -167,15 +172,17 @@ class DatesController extends Controller
 
     public function ContainerRentStatus($id, Request $request)
     {
+        $status = $request->status;
+        $storage = $request->storage !== null ? 'storage' : 'wait';
+
         $container = Container::find($id)->update([
-            'status' => $request->status == 'wait' ? 'rent' : 'wait',
-            'is_rent' => $request->status == 'wait' ? 1 : 0,
+            'status' => $status !== 'rent' ? 'rent' : $storage,
+            'is_rent' => $status !== 'rent' ? 1 : 0,
         ]);
-        if ($request->status == 'wait' || $request->status == 'storage') {
-            return redirect()->back()->with('success', 'تم تاجير الحاوية');
-        } else {
-            return redirect()->back()->with('success', 'تم الغاء تاجير');
-        }
+
+        $message = $status == 'rent' ? 'تم الغاء تاجير' : 'تم تاجير الحاوية';
+
+        return redirect()->back()->with('success', $message);
     }
 
     public function deleteContainer($id)

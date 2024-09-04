@@ -25,6 +25,8 @@ class ContanierController extends Controller
         $sizes = $request->input('size');
         $numbers = $request->input('number');
         $rents = $request->input('rent');
+        $date_emptys = $request->input('date_empty');
+
 
         if (count($sizes)) {
             $count = count($sizes);
@@ -32,6 +34,7 @@ class ContanierController extends Controller
                 $size = $sizes[$i];
                 $number = $numbers[$i];
                 $rent = $rents[$i];
+                $date_empty = $date_emptys[$i];
 
                 Container::create([
                     'number' => $number,
@@ -40,6 +43,7 @@ class ContanierController extends Controller
                     'client_id' => $custom->client_id,
                     'status' => $rent == 'rent' ? 'rent' : 'wait',
                     'is_rent' => $rent == 'rent' ? 1 : 0,
+                    'date_empty' => $date_empty,
                     'created_at' => $custom->created_at,
                 ]);
             }
@@ -56,6 +60,16 @@ class ContanierController extends Controller
         $containers = Container::with('daily')->get();
 
         return view('thanksGod', compact('containers'));
+    }
+
+    public function updateDateEmpty(Request $request, $containerId)
+    {
+        $container = Container::findOrFail($containerId);
+        $container->update([
+            'date_empty' => $request->input('date_empty')
+        ]);
+
+        return redirect()->back()->with('success', 'تم تعديل التاريخ بنجاح');
     }
 
 

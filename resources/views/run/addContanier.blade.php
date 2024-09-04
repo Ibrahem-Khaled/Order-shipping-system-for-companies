@@ -12,19 +12,19 @@
                         @csrf
                         @for ($i = 0; $i < Route::current()->parameter('contNum'); $i++)
                             <div class="row justify-content-between text-left">
-                                <div class="mb-3 col-md-3">
-                                    <label for="containerSize">هل الحاوية ايجار</label>
-                                    <select id="containerSize" name="rent[]" class="form-select">
+                                <div class="mb-3 col-md-2">
+                                    <label for="containerRent">هل الحاوية ايجار</label>
+                                    <select id="containerRent" name="rent[]" class="form-select">
                                         <option value="">هل الحاوية ايجار</option>
                                         <option value="rent">ايجار</option>
                                     </select>
                                 </div>
-                                <div class="mb-3 col-md-3">
-                                    <label for="containerNumber">اسم العميل</label>
-                                    <input type="text" id="containerNumber" name="subclient_id"
+                                <div class="mb-3 col-md-2">
+                                    <label for="containerClient">اسم العميل</label>
+                                    <input type="text" id="containerClient" name="subclient_id"
                                         value="{{ $custom->subclient_id }}" class="form-control" disabled>
                                 </div>
-                                <div class="mb-3 col-md-3">
+                                <div class="mb-3 col-md-2">
                                     <label for="containerSize">حجم الحاوية</label>
                                     <select id="containerSize" name="size[]" class="form-select" required>
                                         <option value="">اختر</option>
@@ -33,10 +33,14 @@
                                         <option value="box">طرد</option>
                                     </select>
                                 </div>
-                                <div class="mb-3 col-md-3">
+                                <div class="mb-3 col-md-2">
                                     <label for="containerNumber">رقم الحاوية</label>
                                     <input type="number" id="containerNumber" name="number[]" class="form-control"
                                         placeholder="N123" required>
+                                </div>
+                                <div class="mb-3 col-md-2">
+                                    <label for="dateEmpty">تاريخ ارضية الفارغ</label>
+                                    <input type="date" id="dateEmpty" name="date_empty[]" class="form-control">
                                 </div>
                             </div>
                         @endfor
@@ -49,6 +53,5 @@
             </div>
         </div>
     </div>
-
 
 @stop
