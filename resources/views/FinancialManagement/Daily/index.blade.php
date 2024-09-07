@@ -5,7 +5,7 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h4 class="text-center">الحركات اليومية</h4>
+                <h4 class="text-center ">الحركات اليومية</h4>
                 <div class="card shadow-2-strong">
                     <div class="card-body p-0">
                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true">
@@ -32,6 +32,10 @@
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </form>
+                                <button type="button" class="btn btn-info btn-lg m-1" data-bs-toggle="modal"
+                                    data-bs-target="#ordersModal">
+                                    عرض أوامر النقل
+                                </button>
                             </div>
 
                             <!-- Modal for Edit Tips -->
@@ -214,6 +218,57 @@
                                 </div>
                             </div>
 
+                            <!-- مودال لعرض اوامر النقل -->
+                            <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog"
+                                aria-labelledby="ordersModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ordersModalLabel">أوامر النقل</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-striped">
+                                                <thead class="bg-light">
+                                                    <tr class="text-center">
+                                                        <th scope="col">سعر امر النقل</th>
+                                                        <th scope="col">اسم العميل</th>
+                                                        <th scope="col">اسم المكتب</th>
+                                                        <th scope="col">رقم الحاوية</th>
+                                                        <th scope="col">البيان</th>
+                                                        <th scope="col">التاريخ</th>
+                                                        <th scope="col">#</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($daily as $item)
+                                                        @if ($item->container_id !== null)
+                                                            <tr>
+                                                                <td>{{ $item->price }}</td>
+                                                                <td>{{ $item?->container?->customs?->subclient_id }}</td>
+                                                                <td>{{ $item->client?->name }}</td>
+                                                                <td>{{ $item->container?->number }}</td>
+                                                                <td>{{ $item?->container?->customs?->statement_number }}
+                                                                </td>
+                                                                <td>{{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d') }}
+                                                                </td>
+                                                                <td>{{ $loop->iteration }}</td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">إغلاق</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <table class="table">
                                 <thead style="background-color: #f8f9fa;">
                                     <tr class=" text-white text-center">
@@ -226,7 +281,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($daily as $item)
+                                    @foreach ($daily->whereNull('container_id') as $item)
                                         <tr>
                                             <td class="text-center">
                                                 @if ($item->created_at != $item->updated_at)
@@ -361,13 +416,7 @@
                                                 @if ($item->car_id !== null)
                                                     {{ $item->description }} - {{ $item?->car?->number }}
                                                 @elseif ($item->client_id !== null)
-                                                    {{ $item->container_id !== null ? 'امر نقل -' : null }}
                                                     {{ $item?->description }} - {{ $item?->client?->name }} -
-                                                    @if ($item->container_id !== null)
-                                                        {{ $item?->container?->customs->statement_number }}
-                                                        {{ $item?->container?->customs->subclient_id }}
-                                                        {{ $item?->container?->number }}
-                                                    @endif
                                                 @elseif ($item->employee_id !== null)
                                                     {{ $item->description }} - {{ $item?->emplyee?->name }}
                                                 @else

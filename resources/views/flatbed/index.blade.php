@@ -22,16 +22,12 @@
                         <td>{{ $flatbed->number }}</td>
                         <td>{{ $flatbed->type }}</td>
                         <td>{{ $flatbed->description }}</td>
-                        <td>{{ $flatbed->status ? 'نشط' : 'غير نشط' }}</td>
+                        <td>{{ $flatbed->status ? 'فارغ' : 'محمل' }}</td>
                         <td>
                             <button class="btn btn-info" data-bs-toggle="modal"
                                 data-bs-target="#editFlatbedModal{{ $flatbed->id }}">تعديل</button>
-                            <form action="{{ route('flatbeds.destroy', $flatbed->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger" type="submit">حذف</button>
-                            </form>
+                            <button class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteFlatbedModal{{ $flatbed->id }}">حذف</button>
                         </td>
                     </tr>
                 @endforeach
@@ -127,6 +123,32 @@
                             <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteFlatbedModal{{ $flatbed->id }}" tabindex="-1" aria-labelledby="deleteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>هل أنت متأكد أنك تريد حذف هذه السطحة؟</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <form action="{{ route('flatbeds.destroy', $flatbed->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">تأكيد الحذف</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

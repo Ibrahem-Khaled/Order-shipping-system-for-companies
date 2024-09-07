@@ -134,7 +134,12 @@
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function() {
                                         var createdAt = new Date("{{ $item->transfer_date }}").getTime();
-                                        var dateEmpty = new Date("{{ $item->date_empty }}").getTime();
+                                        var dateEmpty = new Date("{{ $item->date_empty }}");
+
+                                        // تحديد نهاية اليوم للـdateEmpty
+                                        dateEmpty.setHours(23, 59, 59, 999);
+                                        dateEmpty = dateEmpty.getTime();
+
                                         var countdownElement = document.getElementById("countdown-{{ $item->id }}");
                                         var loadingElement = document.getElementById("loading-{{ $item->id }}");
 
@@ -170,7 +175,7 @@
                             </td>
                             <td class="text-center">{{ $item->customs->subclient_id }}</td>
                             <td class="text-center">{{ $item->client->name }}</td>
-                            <td class="text-center">{{ $item->created_at }}</td>
+                            <td class="text-center">{{ $item?->transfer_date }}</td>
                             @if ($item->rent_id == null)
                                 <td class="text-center">{{ $item->car->number ?? 'N/A' }}</td>
                                 <td class="text-center">{{ $item->driver->name ?? 'N/A' }}</td>
@@ -186,7 +191,6 @@
                                 </a>
                             </td>
                             <td class="text-center">
-
                                 @if ($item->is_rent == 1)
                                     <form action="{{ route('updateEmpty', $item->id) }}" method="POST">
                                         @csrf
@@ -331,11 +335,15 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function() {
                                         var createdAt = new Date("{{ $item->transfer_date }}").getTime();
-                                        var dateEmpty = new Date("{{ $item->date_empty }}").getTime();
+                                        var dateEmpty = new Date("{{ $item->date_empty }}");
+
+                                        // تحديد نهاية اليوم للـdateEmpty
+                                        dateEmpty.setHours(23, 59, 59, 999);
+                                        dateEmpty = dateEmpty.getTime();
+
                                         var countdownElement = document.getElementById("countdown-{{ $item->id }}");
                                         var loadingElement = document.getElementById("loading-{{ $item->id }}");
 

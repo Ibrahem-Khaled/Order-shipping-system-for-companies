@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Run;
 use App\Http\Controllers\Controller;
 use App\Models\Cars;
 use App\Models\Container;
+use App\Models\Flatbed;
+use App\Models\FlatbedContainer;
 use App\Models\Tips;
 use App\Models\User;
 use Carbon\Carbon;
@@ -103,13 +105,16 @@ class DatesController extends Controller
     {
         $container = Container::find($id);
         $driver = User::find($request->driver);
+        // الحصول على السطحات المتاحة فقط من نفس النوع
+        $flatbeds = Flatbed::where('type', $container->size)->where('status', 1)->get();
 
-        // تغيير الحالة إلى "done" إذا كان حجم الحاوية "box"
+        // إذا كانت الحاوية من نوع 'box'
         if ($container->size == 'box') {
             $request->merge(['status' => 'done']);
         }
 
-        $container->update([
+        // تحديث بيانات الحاوية
+        $containerUpdated = $container->update([
             'status' => $request->status,
             'transfer_date' => $request->transfer_date,
             'driver_id' => $request->driver,
@@ -118,12 +123,38 @@ class DatesController extends Controller
             'rent_id' => $request->rent_id ?? null,
         ]);
 
-        if ($request->status == 'wait') {
-            return redirect()->back()->with('success', 'تم الغاء التحميل ');
-        } else {
-            return redirect()->back()->with('success', 'تم التحميل بنجاح');
+        // إذا كانت الحالة 'transport' (تحميل الحاوية)
+        if ($containerUpdated && $request->status == 'transport') {
+            $countFlatBedType = $flatbeds->count(); // عدد السطحات المتاحة من نفس نوع الحاوية
+
+            // تحقق إذا كانت هناك سطحة متاحة
+            if ($countFlatBedType > 0) {
+                $flatbed = $flatbeds->first(); // احصل على أول سطحة متاحة من نفس النوع
+
+                // إنشاء سجل في FlatbedContainer
+                FlatbedContainer::create([
+                    'container_id' => $id,
+                    'flatbed_id' => $flatbed->id,
+                ]);
+
+                // تحديث حالة السطحة إلى غير متاحة (0) بعد تحميل الحاوية عليها
+                $flatbed->update(['status' => 0]);
+
+                return redirect()->back()->with('success', 'تم التحميل بنجاح');
+            } else {
+                // إذا لم تكن هناك سطحات متاحة من نفس الحجم
+                return redirect()->back()->with('error', 'لا توجد سطحة متاحة لهذا الحجم');
+            }
         }
+
+        // إذا كانت الحالة 'wait' (إلغاء التحميل)
+        if ($request->status == 'wait') {
+            return redirect()->back()->with('success', 'تم الغاء التحميل');
+        }
+
+        return redirect()->back()->with('success', 'تم التحديث بنجاح');
     }
+
 
     public function updateEmpty(Request $request, $id)
     {
@@ -132,23 +163,22 @@ class DatesController extends Controller
 
         if ($container->is_rent == 0) {
             if ($request->status == 'done') {
-                // التحقق مما إذا كانت الحاوية لديها حوافز فارغة
-                // if ($container->tipsEmpty()->exists()) {
-                //     // تحديث الحوافز الفارغة
-                //     $container->tipsEmpty()->update([
-                //         'user_id' => $request->user_id,
-                //         'car_id' => $request->car_id,
-                //         'price' => $request->price,
-                //     ]);
-                // } else {
-                // إنشاء حوافز جديدة
                 Tips::create([
                     'container_id' => $id,
                     'user_id' => $request->user_id,
                     'car_id' => $request->car_id,
                     'price' => $request->price,
                 ]);
-                //}
+                
+                $flatbedContainer = FlatbedContainer::where('container_id', $id)->first();
+                if ($flatbedContainer) {
+                    $flatbed = Flatbed::find($flatbedContainer->flatbed_id);
+                    if ($flatbed) {
+                        // إعادة حالة السطحة إلى متاحة
+                        $flatbed->update(['status' => 1]);
+                    }
+                }
+
             } elseif ($request->status == 'transport') {
                 $lastTip = $container->tipsEmpty()->orderBy('created_at', 'desc')->first();
                 if ($lastTip) {

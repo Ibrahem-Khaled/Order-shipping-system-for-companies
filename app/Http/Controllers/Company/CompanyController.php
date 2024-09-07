@@ -7,6 +7,7 @@ use App\Models\Cars;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
 use App\Models\Daily;
+use App\Models\Flatbed;
 use App\Models\SellAndBuy;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -163,6 +164,7 @@ class CompanyController extends Controller
         $withdraws = $cars + $employeeSum + $totalPriceFromRent + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
 
         $allCustoms = User::where('role', 'client')->with('container')->get();
+        $flatbeds = Flatbed::get();
 
         return view(
             'Company.index',
@@ -175,7 +177,8 @@ class CompanyController extends Controller
                 'canCashWithdraw',
                 'withdraws',
                 'deposits',
-                'allCustoms'
+                'allCustoms',
+                'flatbeds',
             )
         );
     }

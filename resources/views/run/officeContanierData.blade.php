@@ -122,7 +122,12 @@
                             <script>
                                 document.addEventListener("DOMContentLoaded", function() {
                                     var createdAt = new Date("{{ $item->transfer_date }}").getTime();
-                                    var dateEmpty = new Date("{{ $item->date_empty }}").getTime();
+                                    var dateEmpty = new Date("{{ $item->date_empty }}");
+
+                                    // تحديد نهاية اليوم للـdateEmpty
+                                    dateEmpty.setHours(23, 59, 59, 999);
+                                    dateEmpty = dateEmpty.getTime();
+
                                     var countdownElement = document.getElementById("countdown-{{ $item->id }}");
                                     var loadingElement = document.getElementById("loading-{{ $item->id }}");
 

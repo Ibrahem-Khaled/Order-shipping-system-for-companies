@@ -42,6 +42,23 @@
                                 $endMonth = $year == $currentYear ? $currentMonth : 12;
 
                                 for ($month = $startMonth; $month <= $endMonth; $month++) {
+                                    $daysInMonth = Carbon::createFromDate($year, $month)->daysInMonth; // عدد أيام الشهر
+                                    $startOfMonth = Carbon::createFromDate($year, $month, 1);
+                                    $endOfMonth = Carbon::createFromDate($year, $month, $daysInMonth);
+
+                                    // حساب عدد الأيام التي عملها الموظف من يوم تعيينه
+                                    $dateHired = Carbon::parse($user->userInfo->date_runer);
+                                    if ($dateHired->year == $year && $dateHired->month == $month) {
+                                        // إذا تم تعيين الموظف خلال الشهر
+                                        $workedDays = $endOfMonth->diffInDays($dateHired) + 1;
+                                    } else {
+                                        $workedDays = $daysInMonth; // إذا كان الموظف قد عمل كامل الشهر
+                                    }
+
+                                    // حساب الراتب اليومي وعدد الأيام الفعلية
+                                    $dailySallary = $sallary / $daysInMonth;
+                                    $actualSallary = $dailySallary * $workedDays;
+
                                     $monthTransactions = $user->employeedaily->filter(function ($transaction) use (
                                         $year,
                                         $month,
@@ -67,7 +84,7 @@
                                         ->whereYear('created_at', $year)
                                         ->sum('price');
 
-                                    $total = $sallary + $tips + $tipsEmptyMonth;
+                                    $total = $actualSallary + $tips + $tipsEmptyMonth;
                                     $saving = $total - $dailyTransaction;
 
                                     if ($year == $searchYear) {
@@ -79,7 +96,7 @@
                                             'year' => $year,
                                             'tips' => $tips,
                                             'tipsEmpty' => $tipsEmptyMonth,
-                                            'sallary' => $sallary,
+                                            'sallary' => $actualSallary,
                                         ];
                                     }
 
@@ -88,16 +105,32 @@
 
                                 $totalSaving += $yearlyTotal;
                             }
+
+                            // تجهيز بيانات المعاملات لـ JavaScript
+                            $transactionsData = $user->employeedaily->map(function ($transaction) {
+                                return [
+                                    'description' => $transaction->description,
+                                    'price' => $transaction->price,
+                                    'date' => $transaction->created_at->format('Y-m-d'),
+                                    'year' => $transaction->created_at->year,
+                                    'month' => $transaction->created_at->month,
+                                ];
+                            });
                         @endphp
 
                         @foreach ($annualStatement as $statement)
                             <tr>
-                                <td>{{ $statement['saving'] }}</td>
-                                <td>{{ $statement['dailyTransaction'] }}</td>
-                                <td>{{ $statement['total'] }}</td>
+                                <td>{{ intval($statement['saving']) }}</td>
+                                <td>
+                                    <button class="btn btn-info btn-sm"
+                                        onclick="showDetailsModal({{ $statement['year'] }}, {{ $statement['month'] }})">
+                                        {{ $statement['dailyTransaction'] }}
+                                    </button>
+                                </td>
+                                <td>{{ intval($statement['total']) }}</td>
                                 <td>{{ $statement['tips'] }}</td>
                                 <td>{{ $statement['tipsEmpty'] }}</td>
-                                <td>{{ $statement['sallary'] }}</td>
+                                <td>{{ intval($statement['sallary']) }}</td>
                                 <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}
                                     {{ $statement['year'] }}</td>
                             </tr>
@@ -109,4 +142,62 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal for showing daily transactions -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">تفاصيل الواصل له</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">الوصف</th>
+                                <th scope="col">المبلغ</th>
+                                <th scope="col">التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsModalBody">
+                            <!-- سيتم تعبئة التفاصيل هنا بواسطة JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function showDetailsModal(year, month) {
+            const detailsModalBody = document.getElementById('detailsModalBody');
+            detailsModalBody.innerHTML = ''; // مسح المحتوى الحالي
+
+            // جلب التفاصيل التي تتعلق بالشهر والسنة المحددين
+            const transactions = @json($transactionsData);
+
+            const filteredTransactions = transactions.filter(function(transaction) {
+                return transaction.year === year && transaction.month === month;
+            });
+
+            // عرض التفاصيل في المودال
+            filteredTransactions.forEach(function(transaction) {
+                const row = `<tr>
+                    <td>${transaction.description}</td>
+                    <td>${transaction.price}</td>
+                    <td>${transaction.date}</td>
+                </tr>`;
+                detailsModalBody.innerHTML += row;
+            });
+
+            // عرض المودال
+            const detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            detailsModal.show();
+        }
+    </script>
 @stop

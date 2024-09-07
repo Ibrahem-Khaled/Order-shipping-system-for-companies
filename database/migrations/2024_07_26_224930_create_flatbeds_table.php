@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('flatbeds', function (Blueprint $table) {
             $table->id();
-            $table->string('number');
+            $table->string('number')->nullable()->autoIncrement();
             $table->enum('type', ['20', '40', 'box'])->nullable();
             $table->text('description')->nullable();
             $table->text('image')->nullable();
