@@ -413,7 +413,7 @@
                                             </div>
                                             <form id="confirmationForm{{ $item->id }}"
                                                 action="{{ route('updateContainer', $item->id) }}" method="POST">
-                                                @csrf
+                                                @csrf 
                                                 <div class="modal-body">
                                                     @if ($item->status == 'rent')
                                                         <select class="form-select" name="rent_id" required>

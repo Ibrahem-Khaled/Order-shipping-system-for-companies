@@ -59,10 +59,11 @@ class DatesController extends Controller
 
         $query = $request->input('query');
         if (is_null($query)) {
-            $done = Container::whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
+            $done = Container::whereYear('updated_at', $year)
+                ->whereMonth('updated_at', $month)
                 ->where('status', 'done')
                 ->with('tipsEmpty')
+                ->orderBy('updated_at', 'desc')
                 ->paginate(1);
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->paginate(10);
             $storageContainer = Container::whereIn('status', ['storage', 'rent'])->latest('updated_at')->paginate(10);
@@ -124,7 +125,7 @@ class DatesController extends Controller
         ]);
 
         // إذا كانت الحالة 'transport' (تحميل الحاوية)
-        if ($containerUpdated && $request->status == 'transport') {
+        if ($request->status == 'transport') {
             $countFlatBedType = $flatbeds->count(); // عدد السطحات المتاحة من نفس نوع الحاوية
 
             // تحقق إذا كانت هناك سطحة متاحة
@@ -149,17 +150,33 @@ class DatesController extends Controller
 
         // إذا كانت الحالة 'wait' (إلغاء التحميل)
         if ($request->status == 'wait') {
-            return redirect()->back()->with('success', 'تم الغاء التحميل');
-        }
+            // احصل على السطحة المرتبطة بهذه الحاوية
+            $flatbedContainer = FlatbedContainer::where('container_id', $id)->first();
+            if ($flatbedContainer) {
+                // احصل على السطحة المرتبطة
+                $flatbed = Flatbed::find($flatbedContainer->flatbed_id);
 
+                // تحقق من وجود السطحة وقم بتحديث حالتها إلى مفعلة (1)
+                if ($flatbed) {
+                    $flatbed->update(['status' => 1]);
+
+                    // احذف السجل من FlatbedContainer بعد إرجاع السطحة
+                    $flatbedContainer->delete();
+                }
+            }
+            return redirect()->back()->with('success', 'تم الغاء التحميل وإرجاع السطحة بنجاح');
+        }
         return redirect()->back()->with('success', 'تم التحديث بنجاح');
     }
+
 
 
     public function updateEmpty(Request $request, $id)
     {
         $container = Container::findOrFail($id);
         $status = ($container->size == 'box') ? 'wait' : $request->status;
+
+        $flatbedContainer = FlatbedContainer::where('container_id', $id)->first();
 
         if ($container->is_rent == 0) {
             if ($request->status == 'done') {
@@ -169,8 +186,7 @@ class DatesController extends Controller
                     'car_id' => $request->car_id,
                     'price' => $request->price,
                 ]);
-                
-                $flatbedContainer = FlatbedContainer::where('container_id', $id)->first();
+
                 if ($flatbedContainer) {
                     $flatbed = Flatbed::find($flatbedContainer->flatbed_id);
                     if ($flatbed) {
@@ -180,9 +196,23 @@ class DatesController extends Controller
                 }
 
             } elseif ($request->status == 'transport') {
-                $lastTip = $container->tipsEmpty()->orderBy('created_at', 'desc')->first();
+                // جلب آخر Tip فارغ (tipsEmpty)
+                $lastTip = $container->tipsEmpty()->latest('created_at')->first();
+
+                // إذا وجد، قم بحذفه
                 if ($lastTip) {
                     $lastTip->delete();
+                }
+
+                // التحقق من وجود FlatbedContainer المرتبط بالحاوية
+                if ($flatbedContainer) {
+                    // جلب السطحة المرتبطة
+                    $flatbed = Flatbed::find($flatbedContainer->flatbed_id);
+
+                    // التحقق من وجود السطحة ثم تحديث حالتها
+                    if ($flatbed) {
+                        $flatbed->update(['status' => 0]); // تغيير حالة السطحة إلى غير متاحة
+                    }
                 }
             }
             $container->update([

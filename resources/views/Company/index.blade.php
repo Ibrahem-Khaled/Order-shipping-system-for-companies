@@ -135,94 +135,65 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">
-                                        إجمالي السطحات الفارغة</th>
-                                    <th
-                                        class="text-uppercase text-white text-xxs font-weight-bolder ps-2 text-end">
-                                        إجمالي السطحات المحملة</th>
-                                    <th
-                                        class="text-uppercase text-white text-xxs font-weight-bolder ps-2 text-end">
-                                        إجمالي السطحات الكلية</th>
-                                    <th
-                                        class="text-uppercase text-white text-xxs font-weight-bolder ps-2 text-end">
-                                        نوع السطحة</th>
+                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">نوع السطحة</th>
+                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">20</th>
+                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">40</th>
+                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">إجمالي</th>
                                 </tr>
                             </thead>
-
+            
                             <tbody>
+                                <!-- إجمالي السطحات الفارغة -->
                                 <tr>
-                                    <!-- إجمالي السطحات الفارغة 20 -->
+                                    <td class="align-middle text-end text-sm">إجمالي السطحات الفارغة</td>
                                     <td class="align-middle text-end text-lg">
                                         <span class="text-xxl fw-bold">
                                             {{ $flatbeds->where('status', 1)->where('type', '20')->count() }}
                                         </span>
                                     </td>
-
-                                    <!-- إجمالي السطحات المحملة 20 -->
-                                    <td class="align-middle text-end text-lg">
-                                        <span class="text-xxl fw-bold">
-                                            {{ $flatbeds->where('status', 0)->where('type', '20')->count() }}
-                                        </span>
-                                    </td>
-
-                                    <!-- إجمالي السطحات الكلية 20 -->
-                                    <td class="align-middle text-end text-lg">
-                                        <span class="text-xxl fw-bold">
-                                            {{ $flatbeds->where('type', '20')->count() }}
-                                        </span>
-                                    </td>
-
-                                    <!-- نوع السطحة (20) -->
-                                    <td class="align-middle text-end text-sm">
-                                        سطحات
-                                        <span class="text-xxl fw-bold">20</span>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <!-- إجمالي السطحات الفارغة 40 -->
                                     <td class="align-middle text-end text-lg">
                                         <span class="text-xxl fw-bold">
                                             {{ $flatbeds->where('status', 1)->where('type', '40')->count() }}
                                         </span>
                                     </td>
-
-                                    <!-- إجمالي السطحات المحملة 40 -->
+                                    <td class="align-middle text-end text-lg">
+                                        <span class="text-xxl fw-bold">{{ $flatbeds->where('status', 1)->count() }}</span>
+                                    </td>
+                                </tr>
+            
+                                <!-- إجمالي السطحات المحملة -->
+                                <tr>
+                                    <td class="align-middle text-end text-sm">إجمالي السطحات المحملة</td>
+                                    <td class="align-middle text-end text-lg">
+                                        <span class="text-xxl fw-bold">
+                                            {{ $flatbeds->where('status', 0)->where('type', '20')->count() }}
+                                        </span>
+                                    </td>
                                     <td class="align-middle text-end text-lg">
                                         <span class="text-xxl fw-bold">
                                             {{ $flatbeds->where('status', 0)->where('type', '40')->count() }}
                                         </span>
                                     </td>
-
-                                    <!-- إجمالي السطحات الكلية 40 -->
+                                    <td class="align-middle text-end text-lg">
+                                        <span class="text-xxl fw-bold">{{ $flatbeds->where('status', 0)->count() }}</span>
+                                    </td>
+                                </tr>
+            
+                                <!-- إجمالي السطحات الكلية -->
+                                <tr>
+                                    <td class="align-middle text-end text-sm">إجمالي السطحات الكلية</td>
+                                    <td class="align-middle text-end text-lg">
+                                        <span class="text-xxl fw-bold">
+                                            {{ $flatbeds->where('type', '20')->count() }}
+                                        </span>
+                                    </td>
                                     <td class="align-middle text-end text-lg">
                                         <span class="text-xxl fw-bold">
                                             {{ $flatbeds->where('type', '40')->count() }}
                                         </span>
                                     </td>
-
-                                    <!-- نوع السطحة (40) -->
-                                    <td class="align-middle text-end text-sm">
-                                        سطحات
-                                        <span class="text-xxl fw-bold">40</span>
-                                    </td>
-                                </tr>
-
-                                <!-- إضافة صف بإجمالي السطحات -->
-                                <tr>
-                                    <td class="align-middle text-end text-lg">
-                                        <span
-                                            class="text-xxl fw-bold">{{ $flatbeds->where('status', 1)->count() }}</span>
-                                    </td>
-                                    <td class="align-middle text-end text-lg">
-                                        <span
-                                            class="text-xxl fw-bold">{{ $flatbeds->where('status', 0)->count() }}</span>
-                                    </td>
                                     <td class="align-middle text-end text-lg">
                                         <span class="text-xxl fw-bold">{{ $flatbeds->count() }}</span>
-                                    </td>
-                                    <td class="align-middle text-end text-sm">
-                                        <span class="text-xxl fw-bold">اجمالي السطحات المحملة\الفارغة</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -230,6 +201,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>
         <div class="row mt-4">
             <div class="col-lg-5 mb-lg-0 mb-4">
