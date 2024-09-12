@@ -13,6 +13,6 @@ class Flatbed extends Model
 
     public function containers()
     {
-        return $this->belongsToMany(Container::class, 'flatbed_containers', 'container_id', 'flatbed_id');
+        return $this->belongsToMany(Container::class, 'flatbed_containers', 'flatbed_id', 'container_id');
     }
 }

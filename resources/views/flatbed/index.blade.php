@@ -12,6 +12,7 @@
                     <th>نوع السطحة</th>
                     <th>الوصف</th>
                     <th>الحالة</th>
+                    <th>بيانات الحاوية</th>
                     <th>العمليات</th>
                 </tr>
             </thead>
@@ -23,6 +24,27 @@
                         <td>{{ $flatbed->type }}</td>
                         <td>{{ $flatbed->description }}</td>
                         <td>{{ $flatbed->status ? 'فارغ' : 'محمل' }}</td>
+
+                        <!-- بيانات الحاوية الأخيرة -->
+                        <td>
+                            @if (!$flatbed->status && $flatbed->containers->isNotEmpty())
+                                @php
+                                    $lastContainer = $flatbed->containers->last();
+                                @endphp
+                                <ul>
+                                    <li>رقم الحاوية: {{ $lastContainer->number }}</li>
+                                    <li>نوع الحاوية: {{ $lastContainer->size }}</li>
+                                    <li>اسم العميل: {{ $lastContainer->customs->subclient_id }}</li>
+                                    <li>رقم البيان: {{ $lastContainer->customs->statement_number }}</li>
+                                    <li>تاريخ التحميل:
+                                        {{ \Carbon\Carbon::parse($lastContainer->transfer_date)->format('Y-m-d') }}</li>
+                                </ul>
+                            @else
+                                <p>لا توجد بيانات للحاوية.</p>
+                            @endif
+                        </td>
+
+                        <!-- العمليات -->
                         <td>
                             <button class="btn btn-info" data-bs-toggle="modal"
                                 data-bs-target="#editFlatbedModal{{ $flatbed->id }}">تعديل</button>
@@ -34,7 +56,6 @@
             </tbody>
         </table>
     </div>
-
     <!-- Create Modal -->
     <div class="modal fade" id="createFlatbedModal" tabindex="-1" aria-labelledby="createFlatbedModalLabel"
         aria-hidden="true">
@@ -128,8 +149,8 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="deleteFlatbedModal{{ $flatbed->id }}" tabindex="-1" aria-labelledby="deleteModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="deleteFlatbedModal{{ $flatbed->id }}" tabindex="-1"
+            aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -143,7 +164,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <form action="{{ route('flatbeds.destroy', $flatbed->id) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('flatbeds.destroy', $flatbed->id) }}" method="POST"
+                            style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">تأكيد الحذف</button>
