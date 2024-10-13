@@ -176,7 +176,7 @@
                                         @endif
                                     </button>
                                 </form>
-                                
+
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                     data-bs-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                 <!-- مودال عرض التفاصيل -->
@@ -210,10 +210,6 @@
                 <x-slot name="header">
                     <th scope="col" class="text-center">العميل</th>
                     <th scope="col" class="text-center">مكتب التخليص</th>
-                    <th scope="col" class="text-center">سيارة المحملة</th>
-                    <th scope="col" class="text-center">سائق المحملة</th>
-                    <th scope="col" class="text-center">سيارة الفارغ</th>
-                    <th scope="col" class="text-center">سائق الفارغ</th>
                     <th scope="col" class="text-center">حجم الحاوية</th>
                     <th scope="col" class="text-center">رقم الحاوية</th>
                     <th scope="col" class="text-center">رقم البيان</th>
@@ -225,15 +221,6 @@
                         <tr>
                             <td class="text-center">{{ $item->customs->subclient_id }}</td>
                             <td class="text-center">{{ $item->client->name }}</td>
-                            @if ($item->rent_id == null)
-                                <td class="text-center">{{ $item->car->number ?? 'N/A' }}</td>
-                                <td class="text-center">{{ $item->driver->name ?? 'N/A' }}</td>
-                                <td class="text-center">{{ $item->tipsEmpty()->first()?->car->number ?? 'N/A' }}</td>
-                                <td class="text-center">{{ $item->tipsEmpty->first()?->user->name ?? 'N/A' }}</td>
-                            @else
-                                <td class="text-center">{{ $item->rent->name }}</td>
-                                <td class="text-center">اسم شركة الايجار</td>
-                            @endif
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
                             <td class="text-center">
@@ -249,6 +236,10 @@
                                     <button type="button" class="btn btn-warning"
                                         onclick="showConfirmation({{ $item->id }})">فارغ</button>
                                 </form>
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
+                                <!-- مودال عرض التفاصيل -->
+                                <x-container-details :item="$item" />
                             </td>
                             <td class="text-center">{{ $item->id }}</td>
                         </tr>
