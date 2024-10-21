@@ -157,7 +157,7 @@
 
         // Company price withdraw for the search year and month
         $companyPriceWithdrawYear = $companyPriceWithdraw
-            ->employeedaily()
+            ?->employeedaily()
             ->where('type', 'withdraw')
             ->whereYear('created_at', $searchYear)
             ->whereMonth('created_at', $searchMonth)
@@ -165,37 +165,29 @@
 
         // Company price withdraw for the current month
         $companyPriceWithdrawCurrentMonth = $companyPriceWithdraw
-            ->employeedaily()
+            ?->employeedaily()
             ->where('type', 'withdraw')
             ->whereYear('created_at', $currentYear)
             ->whereMonth('created_at', $currentMonth)
             ->sum('price');
 
         // Calculate net sell transactions for the search year and month
-        $sellTransactionYear = $sellTransaction
+        $sellTransactionYear = $sellAndBuyTransactions
+            ->where('type', 'sell')
             ->filter(function ($item) use ($searchYear, $searchMonth) {
                 return Carbon::parse($item->created_at)->year == $searchYear &&
-                    (!$searchMonth || Carbon::parse($item->created_at)->month == $searchMonth) &&
-                    $item->parent()->exists();
+                    (!$searchMonth || Carbon::parse($item->created_at)->month == $searchMonth);
             })
-            ->map(function ($item) {
-                $buyPrice = $item->parent->price;
-                return $item->price - $buyPrice;
-            })
-            ->sum();
+            ->sum('price');
 
-        // Calculate net sell transactions for the current month
-        $sellTransactionCurrentMonth = $sellTransaction
-            ->filter(function ($item) use ($currentYear, $currentMonth) {
-                return Carbon::parse($item->created_at)->year == $currentYear &&
-                    Carbon::parse($item->created_at)->month == $currentMonth &&
-                    $item->parent()->exists();
+        // Calculate net buy transactions for the search year and month
+        $buyTransactionYear = $sellAndBuyTransactions
+            ->where('type', 'buy')
+            ->filter(function ($item) use ($searchYear, $searchMonth) {
+                return Carbon::parse($item->created_at)->year == $searchYear &&
+                    (!$searchMonth || Carbon::parse($item->created_at)->month == $searchMonth);
             })
-            ->map(function ($item) {
-                $buyPrice = $item->parent->price;
-                return $item->price - $buyPrice;
-            })
-            ->sum();
+            ->sum('price');
 
         $partnerWithdrawFromCurrentMonth = $partnerWithdraw
             ->filter(function ($item) use ($searchYear, $searchMonth) {
@@ -248,7 +240,7 @@
                         <tr>
                             <td>
                                 <a href="{{ route('sell.buy') }}">
-                                    اجمالي ارباح حركة البيع وشراء
+                                    اجمالي عمليات البيع
                                 </a>
                             </td>
                             <td>{{ $sellTransactionYear }}</td>
@@ -283,9 +275,13 @@
                         </tr>
                         <tr>
                             <td>
-                                <a href="{{ route('expensesAlbancherDaily', $companyPriceWithdraw->id) }}">
-                                    اجمالي المصروفات النثرية والادارية
-                                </a>
+                                @if ($companyPriceWithdraw)
+                                    <a href="{{ route('expensesAlbancherDaily', $companyPriceWithdraw->id) }}">
+                                        اجمالي المصروفات النثرية والادارية
+                                    </a>
+                                @else
+                                    <span>لا يوجد بيانات</span>
+                                @endif
                             </td>
                             <td>{{ $companyPriceWithdrawYear }}</td>
                         </tr>
@@ -328,6 +324,14 @@
                                 </a>
                             </td>
                             <td>{{ $partnerWithdrawFromCurrentMonth }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#">
+                                    اجمالي عمليات الشراء
+                                </a>
+                            </td>
+                            <td>{{ $buyTransactionYear }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -429,7 +433,7 @@
                                     ->sum('price');
                             });
 
-                        $totalPriceForMonthCompanyWithdraw = $companyPriceWithdraw->employeedaily
+                        $totalPriceForMonthCompanyWithdraw = $companyPriceWithdraw?->employeedaily
                             ->filter(function ($daily) use ($month, $searchYear) {
                                 return $daily->type == 'withdraw' &&
                                     Carbon::parse($daily->created_at)->month == $month &&
@@ -449,17 +453,20 @@
                             ->where('type', 'partner_withdraw')
                             ->sum('price');
 
-                        $sellTransactionMonthly = $sellTransaction
+                        $sellTransactionMonthly = $sellAndBuyTransactions
+                            ->where('type', 'sell')
                             ->filter(function ($item) use ($month, $searchYear) {
                                 return Carbon::parse($item->created_at)->month === $month &&
-                                    Carbon::parse($item->created_at)->year == $searchYear &&
-                                    $item->parent()->exists();
+                                    Carbon::parse($item->created_at)->year == $searchYear;
                             })
-                            ->map(function ($item) {
-                                $buyPrice = $item->parent->price;
-                                return $item->price - $buyPrice;
+                            ->sum('price');
+                        $buyTransactionMonthly = $sellAndBuyTransactions
+                            ->where('type', 'buy')
+                            ->filter(function ($item) use ($month, $searchYear) {
+                                return Carbon::parse($item->created_at)->month === $month &&
+                                    Carbon::parse($item->created_at)->year == $searchYear;
                             })
-                            ->sum();
+                            ->sum('price');
 
                         $carSumfromMonth = $carsFiltered->sum('price');
                         $rent_priceSumfromMonth = $containerFiltered->sum('rent_price');
@@ -472,13 +479,14 @@
                             $transferPriceFromMonth +
                             $partnerWithdraw +
                             $totalRentPriceFromMonth +
-                            $otherSumfromMonth;
+                            $otherSumfromMonth +
+                            $buyTransactionMonthly;
 
                         $totalPriceForYear += $withdrawMonth;
                         $totalSumContainer += $sumContainer + $sellTransactionMonthly;
                     @endphp
                     <tr>
-                        <td>{{ $sumContainer - $withdrawMonth }}</td>
+                        <td>{{ $sumContainer - $withdrawMonth + $sellTransactionMonthly }}</td>
                         <td>{{ $withdrawMonth }}</td>
                         <td>{{ $sumContainer + $sellTransactionMonthly }}</td>
                         <td>

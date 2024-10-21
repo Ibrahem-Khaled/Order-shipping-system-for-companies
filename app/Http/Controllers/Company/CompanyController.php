@@ -137,17 +137,6 @@ class CompanyController extends Controller
         $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
 
-        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
-        $sellTransactionSum = $sellTransaction
-            ->filter(function ($item) {
-                return $item->parent()->exists();
-            })
-            ->map(function ($item) {
-                $buyPrice = $item->parent->price;
-                return $item->price - $buyPrice;
-            })
-            ->sum();
-
         $Profits_from_buying_and_selling = $buyTransactions->sum('price') - $sellTransactions->sum('price');
 
         $canCashWithdraw =
@@ -242,20 +231,12 @@ class CompanyController extends Controller
             ->get();
 
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
-        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
-        $sellTransactionSum = $sellTransaction
-            ->filter(function ($item) {
-                return $item->parent()->exists();
-            })
-            ->map(function ($item) {
-                $buyPrice = $item->parent->price;
-                return $item->price - $buyPrice;
-            })
-            ->sum();
+        $buyTransactions = SellAndBuy::where('type', 'buy')->get();
+        $sellTransactions = SellAndBuy::where('type', 'sell')->get();
 
         $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
 
-        $deposit = $container->sum('price') + $transferPrice + $sellTransactionSum;
+        $deposit = $container->sum('price') + $transferPrice + $sellTransactions->sum('price');
 
         $withdraw = $cars->sum('price') +
             $totalPriceFromRent +
@@ -263,7 +244,8 @@ class CompanyController extends Controller
             $elbancherSum +
             $othersSum +
             $transferPrice +
-            $partnerWithdraw->sum('price');
+            $partnerWithdraw->sum('price') +
+            $buyTransactions->sum('price');
 
         return view(
             'Company.companyDetailes',
@@ -337,7 +319,7 @@ class CompanyController extends Controller
 
         $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
 
-        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
+        $sellAndBuyTransactions = SellAndBuy::get();
         return view(
             'Company.companyRevExp',
             compact(
@@ -351,7 +333,7 @@ class CompanyController extends Controller
                 'customs',
                 'companyPriceWithdraw',
                 'transferPrice',
-                'sellTransaction',
+                'sellAndBuyTransactions',
                 'partnerWithdraw'
             )
         );
