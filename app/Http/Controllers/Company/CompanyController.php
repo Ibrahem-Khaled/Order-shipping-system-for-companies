@@ -158,10 +158,19 @@ class CompanyController extends Controller
 
 
         $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
+        $buyTransaction = SellAndBuy::where('type', 'buy')->get();
+        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
 
-        $deposits = $container->sum('price') + $transferPrice + $sellTransactionSum;
+        $deposits = $container->sum('price') + $transferPrice + $sellTransaction->sum('price');
 
-        $withdraws = $cars + $employeeSum + $totalPriceFromRent + $elbancherSum + $othersSum + $partnerWithdraw->sum('price') + $transferPrice;
+        $withdraws = $cars +
+            $employeeSum +
+            $totalPriceFromRent +
+            $elbancherSum +
+            $othersSum +
+            $partnerWithdraw->sum('price') +
+            $transferPrice +
+            $buyTransaction->sum('price');
 
         $allCustoms = User::where('role', 'client')->with('container')->get();
         $flatbeds = Flatbed::get();

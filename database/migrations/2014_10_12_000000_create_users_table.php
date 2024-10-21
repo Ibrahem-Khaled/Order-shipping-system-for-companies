@@ -23,6 +23,13 @@ return new class extends Migration {
             $table->rememberToken();
             $table->timestamps();
         });
+
+        DB::table('users')->insert([
+            'name' => 'SuperAdmin',
+            'phone' => '01234567890',
+            'role' => 'superAdmin',
+            'password' => Hash::make('123456'),
+        ]);
     }
 
     /**
