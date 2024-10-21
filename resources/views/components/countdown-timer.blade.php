@@ -13,7 +13,10 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var createdAt = new Date("{{ $transfer_date }}").getTime();
-        var dateEmpty = new Date("{{ $date_empty }}").getTime();
+        
+        // ضبط نهاية اليوم للوقت الفارغ إلى الساعة 23:59:59
+        var dateEmpty = new Date("{{ $date_empty }}");
+        dateEmpty.setHours(23, 59, 59, 999);  // تعيين نهاية اليوم
 
         var countdownElement = document.getElementById("countdown-{{ $id }}");
         var loadingElement = document.getElementById("loading-{{ $id }}");
@@ -25,7 +28,7 @@
 
         var countdownInterval = setInterval(function() {
             var now = new Date().getTime();
-            var distance = dateEmpty - now;
+            var distance = dateEmpty.getTime() - now;
 
             var days = Math.floor(distance / (1000 * 60 * 60 * 24));
             var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
