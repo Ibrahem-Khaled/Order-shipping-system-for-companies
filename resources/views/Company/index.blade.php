@@ -135,13 +135,14 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">نوع السطحة</th>
+                                    <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">نوع السطحة
+                                    </th>
                                     <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">20</th>
                                     <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">40</th>
                                     <th class="text-uppercase text-white text-xxs font-weight-bolder text-end">إجمالي</th>
                                 </tr>
                             </thead>
-            
+
                             <tbody>
                                 <!-- إجمالي السطحات الفارغة -->
                                 <tr>
@@ -160,7 +161,7 @@
                                         <span class="text-xxl fw-bold">{{ $flatbeds->where('status', 1)->count() }}</span>
                                     </td>
                                 </tr>
-            
+
                                 <!-- إجمالي السطحات المحملة -->
                                 <tr>
                                     <td class="align-middle text-end text-sm">إجمالي السطحات المحملة</td>
@@ -178,7 +179,7 @@
                                         <span class="text-xxl fw-bold">{{ $flatbeds->where('status', 0)->count() }}</span>
                                     </td>
                                 </tr>
-            
+
                                 <!-- إجمالي السطحات الكلية -->
                                 <tr>
                                     <td class="align-middle text-end text-sm">إجمالي السطحات الكلية</td>
@@ -201,7 +202,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
         <div class="row mt-4">
             <div class="col-lg-5 mb-lg-0 mb-4">
@@ -494,6 +495,10 @@
                                         @if ($car->type !== 'private')
                                             <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
                                                 عدد الحاويات المحملة {{ $car->container->count() }}
+                                            </p>
+                                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                                عدد الحاويات فارغة
+                                                {{ $car->container->where('status', 'empty')->count() }}
                                             </p>
                                         @endif
                                         <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">

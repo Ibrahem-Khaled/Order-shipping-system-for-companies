@@ -2,7 +2,8 @@
 
 <div id="loading-{{ $id }}" class="loading-spinner"></div>
 @if ($date_empty == null)
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDateModal-{{ $id }}">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#editDateModal-{{ $id }}">
         اضافة تاريخ ارضية الفارغ
     </button>
 @else
@@ -13,10 +14,10 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var createdAt = new Date("{{ $transfer_date }}").getTime();
-        
+
         // ضبط نهاية اليوم للوقت الفارغ إلى الساعة 23:59:59
         var dateEmpty = new Date("{{ $date_empty }}");
-        dateEmpty.setHours(23, 59, 59, 999);  // تعيين نهاية اليوم
+        dateEmpty.setHours(23, 59, 59, 999); // تعيين نهاية اليوم
 
         var countdownElement = document.getElementById("countdown-{{ $id }}");
         var loadingElement = document.getElementById("loading-{{ $id }}");
