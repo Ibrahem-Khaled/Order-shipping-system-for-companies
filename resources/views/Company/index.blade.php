@@ -498,7 +498,7 @@
                                             </p>
                                             <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
                                                 عدد الحاويات فارغة
-                                                {{ $car->container->where('status', 'empty')->count() }}
+                                                {{ $car->container->where('status', 'done')->count() }}
                                             </p>
                                         @endif
                                         <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
