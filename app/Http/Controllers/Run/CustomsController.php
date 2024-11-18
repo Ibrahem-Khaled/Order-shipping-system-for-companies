@@ -38,6 +38,7 @@ class CustomsController extends Controller
     {
         $statement_number = $request->statement_number;
         $sub_client = $request->subClient;
+        $customs_weight = $request->customs_weight;
         $contNum = $request->contNum;
 
         $customNumis = CustomsDeclaration::where('statement_number', $statement_number)->first();
@@ -56,6 +57,7 @@ class CustomsController extends Controller
             'statement_number' => $statement_number,
             'subclient_id' => $sub_client,
             'client_id' => $clientId,
+            'customs_weight' => $customs_weight,
             'created_at' => $request->created_at,
         ]);
 

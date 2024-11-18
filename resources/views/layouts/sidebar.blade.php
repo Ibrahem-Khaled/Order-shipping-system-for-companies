@@ -77,6 +77,7 @@
                 <button class="btn bg-gradient-primary " style="font-size: 16px">ادارة التشغيل</button>
                 <div class="dropdown-content bg-gradient-primary">
                     <a class="dropdown-item" href="{{ route('getOfices') }}">البيان الجمركي</a>
+                    <a class="dropdown-item" href="{{ route('reservations.index') }}">الحجوزات</a>
                     <a class="dropdown-item" href="{{ route('empty') }}">كشف حساب الفارغ</a>
                     <a class="dropdown-item" href="{{ route('dates') }}">المواعيد</a>
                 </div>

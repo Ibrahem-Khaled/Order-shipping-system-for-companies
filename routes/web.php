@@ -15,6 +15,7 @@ use App\Http\Controllers\Run\DatesController;
 use App\Http\Controllers\Run\FlatbedController;
 use App\Http\Controllers\Run\OfficeController;
 use App\Http\Controllers\Run\ContanierController;
+use App\Http\Controllers\Run\ReservationsController;
 use App\Http\Controllers\Run\StorageContainerController;
 use Illuminate\Support\Facades\Route;
 
@@ -140,6 +141,9 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
 
     //this route flatbed 
     Route::resource('flatbeds', FlatbedController::class);
+
+    //this route Reservations
+    Route::get('reservations', [ReservationsController::class, 'index'])->name('reservations.index');
 });
 
 

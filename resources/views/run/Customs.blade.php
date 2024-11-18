@@ -91,6 +91,12 @@
                                                         id="exampleFormControlInput1" placeholder="1">
                                                 </div>
                                                 <div class="mb-3">
+                                                    <label for="exampleFormControlInput1" class="form-label">وزن
+                                                        البيان</label>
+                                                    <input type="number" class="form-control" required
+                                                        name="customs_weight" id="exampleFormControlInput1" placeholder="1">
+                                                </div>
+                                                <div class="mb-3">
                                                     <label for="exampleFormControlInput1" class="form-label">عدد
                                                         التاريخ</label>
                                                     <input type="date" class="form-control" required name="created_at"
