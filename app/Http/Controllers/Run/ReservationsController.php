@@ -10,7 +10,9 @@ class ReservationsController extends Controller
 {
     public function index()
     {
-        $statements = CustomsDeclaration::all();
+        $statements = CustomsDeclaration::whereHas('container', function ($query) {
+            $query->where('status', 'wait');
+        })->with('container')->get();
 
         return view('run.Reservations.index', compact('statements'));
     }
