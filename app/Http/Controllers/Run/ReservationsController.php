@@ -16,4 +16,10 @@ class ReservationsController extends Controller
 
         return view('run.Reservations.index', compact('statements'));
     }
+
+    public function show(CustomsDeclaration $statement)
+    {
+        return view('run.Reservations.customs-containers', compact('statement'));
+    }
+
 }

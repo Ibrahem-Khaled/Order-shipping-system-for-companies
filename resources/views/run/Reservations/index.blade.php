@@ -24,7 +24,10 @@
                         <td>{{ $statement->customs_weight }} كجم</td>
                         <td>{{ $statement->container->where('status', 'transport')->count() }}</td>
                         <td>{{ $statement->container->where('status', 'wait')->count() }}</td>
-                        <td>{{ $statement->statement_number }}</td>
+                        <td>
+                            <a href="{{ route('reservations.show', $statement->id) }}">
+                                {{ $statement->statement_number }}</a>
+                        </td>
                     </tr>
                 @empty
                     <tr>

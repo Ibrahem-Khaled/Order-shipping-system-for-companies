@@ -144,6 +144,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
 
     //this route Reservations
     Route::get('reservations', [ReservationsController::class, 'index'])->name('reservations.index');
+    Route::get('reservations/{id}', [ReservationsController::class, 'show'])->name('reservations.show');
 });
 
 
