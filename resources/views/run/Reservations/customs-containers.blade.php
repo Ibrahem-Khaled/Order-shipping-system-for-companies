@@ -26,6 +26,13 @@
                             </tr>
                         @endforelse
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="text-center">
+                                إجمالي الحاويات المنتظرة: {{ $statement->container->where('status', 'wait')->count() }}
+                            </th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <!-- جدول الحاويات المنقولة -->
@@ -50,6 +57,13 @@
                             </tr>
                         @endforelse
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="text-center">
+                                إجمالي الحاويات المنقولة: {{ $statement->container->where('status', 'transport')->count() }}
+                            </th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
