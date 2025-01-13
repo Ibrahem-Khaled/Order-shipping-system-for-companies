@@ -9,6 +9,7 @@
                 <table class="table table-striped table-bordered table-hover table-sm">
                     <thead class="bg-aqua text-white" style="position: sticky; top: 0; z-index: 0;">
                         <tr class="text-uppercase">
+                            <th scope="col"></th>
                             <th scope="col">حالة التعديل</th>
                             <th scope="col">نوع الترب</th>
                             <th scope="col">السعر</th>
@@ -19,8 +20,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($currentMonthContainers->whereNotNull('tips') as $item)
+                        @foreach ($currentMonthContainers->whereNotNull('tips') as $index => $item)
                             <tr>
+                                <td>{{ $index + 1 }}</td>
                                 <td>
                                     @if ($item->created_at != $item->updated_at)
                                         معدل
@@ -28,7 +30,7 @@
                                         {{ null }}
                                     @endif
                                 </td>
-                                <td>محمل</td>
+                                <td>{{ $item->status }}</td>
                                 <td>{{ $item->tips ?? 'N/A' }}</td>
                                 <td>{{ $item->size ?? 'N/A' }}</td>
                                 <td>{{ $item->number ?? 'N/A' }}</td>
@@ -37,8 +39,9 @@
                                 </td>
                             </tr>
                         @endforeach
-                        @foreach ($tipsEmpty as $item)
+                        @foreach ($tipsEmpty as $index => $item)
                             <tr>
+                                <td>{{ $index + 1 }}</td>
                                 <td>
                                     @if ($item->created_at != $item->updated_at)
                                         معدل
@@ -46,7 +49,7 @@
                                         {{ null }}
                                     @endif
                                 </td>
-                                <td>فارغ</td>
+                                <td>{{ $item->status }}</td>
                                 <td>{{ $item->price ?? 'N/A' }}</td>
                                 <td>{{ $item->container->size ?? 'N/A' }}</td>
                                 <td>{{ $item->container->number ?? 'N/A' }}</td>
@@ -54,6 +57,10 @@
                                 <td>{{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                {{ $currentMonthContainers->whereNotNull('tips')->count() + $tipsEmpty->count() }}</td>
+                        </tr>
                     </tbody>
                 </table>
                 @if ($user->role == 'driver')

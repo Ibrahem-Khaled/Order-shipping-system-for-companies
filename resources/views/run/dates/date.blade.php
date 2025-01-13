@@ -44,8 +44,8 @@
                                     </button>
                                 </form>
 
-                                <button type="button" class="btn btn-success d-inline-block" data-bs-toggle="modal"
-                                    data-bs-target="#storageContainer{{ $item->id }}">
+                                <button type="button" class="btn btn-success d-inline-block" data-toggle="modal"
+                                    data-target="#storageContainer{{ $item->id }}">
                                     تخزين
                                 </button>
 
@@ -58,7 +58,7 @@
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="storageContainerLabel{{ $item->id }}">تأكيد
                                                     التخزين</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                <button type="button" class="btn-close" data-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
                                             <form action="{{ route('container.storage', $item->id) }}" method="POST">
@@ -111,7 +111,7 @@
 
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                        data-dismiss="modal">إلغاء</button>
                                                     <button type="submit" class="btn btn-success">تأكيد</button>
                                                 </div>
                                             </form>
@@ -120,8 +120,8 @@
                                 </div>
 
                                 @if (!auth()->user()?->userinfo?->job_title == 'operator')
-                                    <button type="button" class="btn btn-danger d-inline-block" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal{{ $item->id }}">
+                                    <button type="button" class="btn btn-danger d-inline-block" data-toggle="modal"
+                                        data-target="#deleteModal{{ $item->id }}">
                                         حذف
                                     </button>
                                     <!-- Delete Confirmation Modal -->
@@ -134,7 +134,7 @@
                                                     <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">
                                                         تأكيد
                                                         الحذف</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    <button type="button" class="btn-close" data-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body text-center">
@@ -142,7 +142,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                        data-dismiss="modal">إلغاء</button>
                                                     <form action="{{ route('deleteContainer', $item->id) }}"
                                                         method="POST">
                                                         @csrf
@@ -250,8 +250,8 @@
                                 <td class="text-center">{{ $item->size }}</td>
                                 <td class="text-center">{{ $item->number }}</td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-success d-inline-block" data-bs-toggle="modal"
-                                        data-bs-target="#confirmationModal{{ $item->id }}">
+                                    <button type="button" class="btn btn-success d-inline-block" data-toggle="modal"
+                                        data-target="#confirmationModal{{ $item->id }}">
                                         {{ $item->status == 'transport' ? 'الغاء التحميل' : $item->status }}
                                     </button>
                                 </td>
@@ -265,7 +265,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">تأكيد العملية</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body text-center"
@@ -285,7 +285,7 @@
                                             @endif
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">إلغاء</button>
+                                                    data-dismiss="modal">إلغاء</button>
                                                 <button type="submit" class="btn btn-primary">تأكيد</button>
                                             </div>
                                         </form>

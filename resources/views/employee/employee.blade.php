@@ -6,8 +6,8 @@
         <div class="container mt-5">
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <h3 class="text-center mb-4"> {{ count($employee) }} الموظفين </h3>
-                <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
-                    data-bs-target="#addcarModal">
+                <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-toggle="modal"
+                    data-target="#addcarModal">
                     اضافة سيارة
                 </button>
                 <div class="modal fade" id="addcarModal" tabindex="-1" role="dialog"
@@ -17,7 +17,7 @@
                             <!-- Modal Content Goes Here -->
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addEmployeeModalLabel">اضافة سيارة</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                <button type="button" class="btn-close" data-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -79,14 +79,14 @@
                                 <!-- Include your form elements for adding employee data here -->
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <!-- Include your "Add" button here to submit the form -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
-                    data-bs-target="#addEmployeeModal">
+                <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-toggle="modal"
+                    data-target="#addEmployeeModal">
                     إضافة موظف
                 </button>
                 <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog"
@@ -96,7 +96,7 @@
                             <!-- Modal Content Goes Here -->
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addEmployeeModalLabel">اضافة الموظف</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                <button type="button" class="btn-close" data-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -169,7 +169,7 @@
                                 <!-- Include your form elements for adding employee data here -->
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <!-- Include your "Add" button here to submit the form -->
                             </div>
                         </div>
@@ -257,8 +257,8 @@
                         @foreach ($cars as $car)
                             <tr>
                                 <td class="text-center">
-                                    <button class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#editCarModal{{ $car->id }}">
+                                    <button class="btn btn-success" data-toggle="modal"
+                                        data-target="#editCarModal{{ $car->id }}">
                                         تعديل
                                     </button>
                                     <div class="modal fade" id="editCarModal{{ $car->id }}" tabindex="-1"
@@ -269,7 +269,7 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="addEmployeeModalLabel"> تعديل سيارة
                                                     </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    <button type="button" class="btn-close" data-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -352,7 +352,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                                        data-dismiss="modal">Close</button>
                                                     <!-- Include your "Add" button here to submit the form -->
                                                 </div>
                                             </div>

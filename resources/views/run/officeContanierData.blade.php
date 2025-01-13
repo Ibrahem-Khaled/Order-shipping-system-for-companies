@@ -78,13 +78,13 @@
                         <td class="text-center">
                             <div id="loading-{{ $item->id }}" class="loading-spinner"></div>
                             @if ($item->date_empty == null)
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#editDateModal-{{ $item->id }}">
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#editDateModal-{{ $item->id }}">
                                     اضافة تاريخ ارضية الفارغ
                                 </button>
                             @else
                                 <div id="countdown-{{ $item->id }}" class="countdown-timer d-none"
-                                    data-bs-toggle="modal" data-bs-target="#editDateModal-{{ $item->id }}"></div>
+                                    data-toggle="modal" data-target="#editDateModal-{{ $item->id }}"></div>
                             @endif
 
                             <!-- Modal for Editing Date -->
@@ -95,7 +95,7 @@
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editDateModalLabel-{{ $item->id }}">تعديل تاريخ
                                                 الإفراغ</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <form action="{{ route('updateDateEmpty', $item->id) }}" method="POST">
@@ -111,7 +111,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">إلغاء</button>
+                                                    data-dismiss="modal">إلغاء</button>
                                                 <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
                                             </div>
                                         </form>

@@ -25,14 +25,25 @@
         $annualStatement = [];
         $cumulativeResidual = 0;
 
-        // Calculate the cumulative residual for previous years
-        for ($pastYear = $year - 1; $pastYear >= now()->year - 5; $pastYear--) {
+        // حساب cumulativeResidual للسنوات السابقة فقط (بدون السنة الحالية)
+        for ($pastYear = $year - 1; $pastYear >= $year - 5; $pastYear--) {
             $yearlyTransactions =
                 $user->role == 'rent'
                     ? $user->rentCont->filter(fn($transaction) => $transaction->created_at->year == $pastYear)
                     : $user->container->filter(fn($transaction) => $transaction->created_at->year == $pastYear);
 
             $yearlyTotalFromContainer = $yearlyTransactions->sum('price');
+
+            // حساب priceTransfer للسنوات السابقة
+            $priceTransfer = 0;
+            if ($user->role != 'rent') {
+                foreach ($yearlyTransactions as $transaction) {
+                    $priceTransfer += $transaction->daily->filter(fn($item) => $item->type == 'withdraw')->sum('price');
+                }
+            }
+
+            $yearlyTotalFromContainer += $priceTransfer; // إضافة priceTransfer إلى yearlyTotalFromContainer
+
             $yearlyDeposit =
                 $user->role == 'rent'
                     ? $user->employeedaily
@@ -47,6 +58,9 @@
             $yearlyResidual = $yearlyTotalFromContainer - $yearlyDeposit;
             $cumulativeResidual += $yearlyResidual;
         }
+
+        // بدء الحساب الشهري للسنة الحالية مع تضمين cumulativeResidual للسنوات السابقة
+        $cumulativeResidualCurrentYear = $cumulativeResidual; // حفظ قيمة cumulativeResidual للسنوات السابقة
 
         for ($month = 1; $month <= 12; $month++) {
             $priceTransfer = 0;
@@ -91,14 +105,14 @@
                         : 0);
 
             $residual = $monthlyTotalFromContainer - $monthlyDeposit;
-            $cumulativeResidual += $residual;
+            $cumulativeResidualCurrentYear += $residual; // تحديث cumulativeResidual للسنة الحالية
 
             $annualStatement[] = [
                 'month' => $month,
-                'monthlyTotalFromContainer' => $monthlyTotalFromContainer + $cumulativeResidual,
+                'monthlyTotalFromContainer' => $monthlyTotalFromContainer + $cumulativeResidualCurrentYear,
                 'monthlyTotalFromContainerCurrent' => $monthlyTotalFromContainer,
                 'monthlyDeposit' => $monthlyDeposit,
-                'residual' => $monthlyTotalFromContainer || $monthlyDeposit ? $cumulativeResidual : 0,
+                'residual' => $monthlyTotalFromContainer || $monthlyDeposit ? $cumulativeResidualCurrentYear : 0,
             ];
         }
     @endphp
@@ -116,6 +130,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- صف إضافي لعرض المتبقي من السنوات الفائتة -->
+                        <tr>
+                            <td>{{ $cumulativeResidual }}</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>السنوات الفائتة</td>
+                        </tr>
+
+                        <!-- عرض البيانات الشهرية -->
                         @foreach ($annualStatement as $statement)
                             <tr>
                                 <td>{{ $statement['residual'] }}</td>
@@ -154,7 +177,7 @@
 
         <div class="col-md-12">
             <h1 class="text-primary">المتبقي</h1>
-            <h3 class="text-white">{{ $cumulativeResidual }}</h3>
+            <h3 class="text-white">{{ $cumulativeResidualCurrentYear }}</h3>
         </div>
     </div>
 

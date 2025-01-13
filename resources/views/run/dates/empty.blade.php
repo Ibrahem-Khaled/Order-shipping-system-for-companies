@@ -100,13 +100,13 @@
                                         <button type="submit" class="btn btn-primary">محملة</button>
                                     </form>
                                 @else
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal{{ $item->id }}">محملة</button>
+                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                        data-target="#updateModal{{ $item->id }}">محملة</button>
                                     <x-update-container-status :item="$item" :driver="$driver" :cars="$cars"
                                         :rents="$rents" />
 
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
+                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                        data-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                     <!-- مودال عرض التفاصيل -->
                                     <x-container-details :item="$item" />
                                 @endif
@@ -155,8 +155,8 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#confirmationModal{{ $item->id }}">
+                                <button type="button" class="btn btn-warning" data-toggle="modal"
+                                    data-target="#confirmationModal{{ $item->id }}">
                                     تحميل
                                 </button>
 
@@ -177,8 +177,8 @@
                                     </button>
                                 </form>
 
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
+                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                 <!-- مودال عرض التفاصيل -->
                                 <x-container-details :item="$item" />
 
@@ -236,8 +236,8 @@
                                     <button type="button" class="btn btn-warning"
                                         onclick="showConfirmation({{ $item->id }})">فارغ</button>
                                 </form>
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
+                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                 <!-- مودال عرض التفاصيل -->
                                 <x-container-details :item="$item" />
                             </td>

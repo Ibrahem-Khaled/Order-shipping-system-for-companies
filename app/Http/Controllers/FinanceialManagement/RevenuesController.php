@@ -96,8 +96,6 @@ class RevenuesController extends Controller
     }
 
 
-
-
     public function accountYears($clientId)
     {
         $currentYear = Carbon::now()->year;

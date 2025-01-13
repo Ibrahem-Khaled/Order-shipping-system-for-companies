@@ -7,7 +7,7 @@
                 <h5 class="modal-title" id="updateModalLabel{{ $item->id }}">
                     تحديث
                     الحالة</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                <button type="button" class="btn-close" data-dismiss="modal"
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">إغلاق</button>
+                            data-dismiss="modal">إغلاق</button>
                         <button type="submit" class="btn btn-primary">تحديث</button>
                     </div>
                 </form>

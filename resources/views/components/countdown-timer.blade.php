@@ -2,13 +2,13 @@
 
 <div id="loading-{{ $id }}" class="loading-spinner"></div>
 @if ($date_empty == null)
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#editDateModal-{{ $id }}">
+    <button type="button" class="btn btn-primary" data-toggle="modal"
+        data-target="#editDateModal-{{ $id }}">
         اضافة تاريخ ارضية الفارغ
     </button>
 @else
-    <div id="countdown-{{ $id }}" class="countdown-timer d-none" data-bs-toggle="modal"
-        data-bs-target="#editDateModal-{{ $id }}"></div>
+    <div id="countdown-{{ $id }}" class="countdown-timer d-none" data-toggle="modal"
+        data-target="#editDateModal-{{ $id }}"></div>
 @endif
 
 <script>

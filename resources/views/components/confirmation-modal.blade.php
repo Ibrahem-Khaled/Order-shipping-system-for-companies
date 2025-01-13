@@ -5,7 +5,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmationModalLabel{{ $item->id }}">
                     تأكيد التحميل</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="confirmationForm{{ $item->id }}" action="{{ route('updateContainer', $item->id) }}"
                 method="POST">
@@ -55,7 +55,7 @@
                     <input type="hidden" name="status" value="{{ $item->status == 'rent' ? 'done' : 'transport' }}">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
                     <button type="submit" class="btn btn-warning">تأكيد</button>
                 </div>
             </form>

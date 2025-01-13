@@ -27,16 +27,16 @@
 
     <div class="container mt-5 justify-between">
         <div class="row justify-content-center">
-            <button type="button" class="btn bg-gradient-primary card btn-square" data-bs-toggle="modal"
-                data-bs-target="#expenses">
+            <button type="button" class="btn bg-gradient-primary card btn-square" data-toggle="modal"
+                data-target="#expenses">
                 المصروفات
             </button>
-            <button type="button" class="btn bg-gradient-primary card btn-square" data-bs-toggle="modal"
-                data-bs-target="#addEmployeeModal">
+            <button type="button" class="btn bg-gradient-primary card btn-square" data-toggle="modal"
+                data-target="#addEmployeeModal">
                 الايرادات
             </button>
-            <button type="button" class="btn bg-gradient-primary card btn-square" data-bs-toggle="modal"
-                data-bs-target="#rent">
+            <button type="button" class="btn bg-gradient-primary card btn-square" data-toggle="modal"
+                data-target="#rent">
                 الايجارات
             </button>
         </div>
@@ -50,7 +50,7 @@
                 <!-- Modal Content Goes Here -->
                 <div class="modal-header">
                     <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Form to Add Employee Data -->
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                 <!-- Modal Content Goes Here -->
                 <div class="modal-header">
                     <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Form to Add Employee Data -->
@@ -96,7 +96,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
                 <!-- Modal Content Goes Here -->
                 <div class="modal-header">
                     <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Form to Add Employee Data -->
@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

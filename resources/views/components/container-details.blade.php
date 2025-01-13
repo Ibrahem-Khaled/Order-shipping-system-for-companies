@@ -100,7 +100,7 @@
             <div class="modal-header-custom">
                 <h5 class="modal-title" id="containerModalLabel{{ $item->id }}">
                     تفاصيل الحاوية</h5>
-                <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body-custom">
                 <p><strong>مكتب التخليص:</strong> {{ $item->customs->subclient_id }}</p>
@@ -124,7 +124,7 @@
                 <p><strong>تاريخ التحميل:</strong> {{ $item->transfer_date }}</p>
             </div>
             <div class="modal-footer-custom">
-                <button type="button" class="btn-close" data-bs-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn-close" data-dismiss="modal">إغلاق</button>
             </div>
         </div>
     </div>

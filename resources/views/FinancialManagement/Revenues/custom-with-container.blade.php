@@ -25,8 +25,8 @@
                 @foreach ($custom->container as $item)
                     <tr>
                         <td>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal{{ $item->id }}">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModal{{ $item->id }}">
                                 تعديل سعر الحاوية
                             </button>
                             <div class="modal fade" id="exampleModal{{ $item->id }}" tabindex="-1"
@@ -35,7 +35,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">تعديل سعر الحاوية</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">

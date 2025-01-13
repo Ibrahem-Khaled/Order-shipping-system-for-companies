@@ -10,20 +10,20 @@
                     <div class="card-body p-0">
                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true">
                             <div class="d-flex flex-wrap justify-content-around p-3">
-                                <button type="button" class="btn btn-success btn-sm m-1" data-bs-toggle="modal"
-                                    data-bs-target="#editTips">
+                                <button type="button" class="btn btn-success btn-sm m-1" data-toggle="modal"
+                                    data-target="#editTips">
                                     تعديل سعر الترب للحاوية
                                 </button>
-                                <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal"
-                                    data-bs-target="#priceTransfer">
+                                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal"
+                                    data-target="#priceTransfer">
                                     اضافة سعر امر النقل
                                 </button>
-                                <button type="button" class="btn btn-success btn-sm m-1" data-bs-toggle="modal"
-                                    data-bs-target="#addEmployeeModal">
+                                <button type="button" class="btn btn-success btn-sm m-1" data-toggle="modal"
+                                    data-target="#addEmployeeModal">
                                     إضافة كشف حساب جديد
                                 </button>
-                                <button type="button" class="btn btn-primary btn-lg m-1" data-bs-toggle="modal"
-                                    data-bs-target="#addDailyModal">
+                                <button type="button" class="btn btn-primary btn-lg m-1" data-toggle="modal"
+                                    data-target="#addDailyModal">
                                     اضافة حركة مالية
                                 </button>
                                 <form action="{{ route('dailyManagement') }}" method="GET" class="d-flex m-2 ">
@@ -32,8 +32,8 @@
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </form>
-                                <button type="button" class="btn btn-info btn-lg m-1" data-bs-toggle="modal"
-                                    data-bs-target="#ordersModal">
+                                <button type="button" class="btn btn-info btn-lg m-1" data-toggle="modal"
+                                    data-target="#ordersModal">
                                     عرض أوامر النقل
                                 </button>
                             </div>
@@ -45,7 +45,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editTipsLabel">تعديل سعر الترب</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
+                                                data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -80,7 +80,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="priceTransferLabel">اضافة سعر امر النقل</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -102,7 +102,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
+                                                data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="addEmployeeModalLabel">اضافة كشف حساب</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -131,7 +131,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
+                                                data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -144,7 +144,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="addDailyModalLabel">اضافة حركة مالية جديد</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -209,7 +209,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                                        data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary">Submit</button>
                                                 </div>
                                             </form>
@@ -225,7 +225,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="ordersModalLabel">أوامر النقل</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -262,7 +262,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">إغلاق</button>
+                                                data-dismiss="modal">إغلاق</button>
                                         </div>
                                     </div>
                                 </div>
@@ -290,8 +290,8 @@
                                                     {{ null }}
                                                 @endif
                                                 @if (!auth()->user()?->userinfo?->job_title == 'administrative')
-                                                    <button type="button" data-bs-toggle="modal"
-                                                        data-bs-target="#confirmationModal{{ $item->id }}"
+                                                    <button type="button" data-toggle="modal"
+                                                        data-target="#confirmationModal{{ $item->id }}"
                                                         class="btn btn-danger btn-sm m-1">مسح</button>
                                                     <div class="modal fade" id="confirmationModal{{ $item->id }}"
                                                         tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -302,7 +302,7 @@
                                                                     <h5 class="modal-title" id="exampleModalLabel">تأكيد
                                                                         العملية</h5>
                                                                     <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal"
+                                                                        data-dismiss="modal"
                                                                         aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body text-center"
@@ -314,7 +314,7 @@
                                                                     @csrf
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">إلغاء</button>
+                                                                            data-dismiss="modal">إلغاء</button>
                                                                         <button type="submit"
                                                                             class="btn btn-primary">تأكيد</button>
                                                                     </div>
@@ -324,8 +324,8 @@
                                                     </div>
                                                 @endif
                                                 @if ($item->container_id == null)
-                                                    <button type="button" data-bs-toggle="modal"
-                                                        data-bs-target="#editModal{{ $item->id }}"
+                                                    <button type="button" data-toggle="modal"
+                                                        data-target="#editModal{{ $item->id }}"
                                                         class="btn btn-success btn-sm m-1">تعديل</button>
                                                     <div class="modal fade" id="editModal{{ $item->id }}"
                                                         tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -335,7 +335,7 @@
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title" id="editModalLabel">تعديل</h5>
                                                                     <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal"
+                                                                        data-dismiss="modal"
                                                                         aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
@@ -402,7 +402,7 @@
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">اغلاق</button>
+                                                                        data-dismiss="modal">اغلاق</button>
                                                                 </div>
                                                             </div>
                                                         </div>

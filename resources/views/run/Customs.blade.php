@@ -45,8 +45,8 @@
                         </td>
                         <td>
                             <!-- Button to trigger the modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#myModal{{ $item->id }}">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#myModal{{ $item->id }}">
                                 اضافة بيان جمركي
                             </button>
                             @if (!Auth()->user()?->userinfo?->job_title == 'operator')
@@ -64,7 +64,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">اضافة بيان جمركي</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close" data-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -104,10 +104,10 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">انهاء</button>
+                                                        data-dismiss="modal">انهاء</button>
                                                     <button type="submit" class="btn btn-primary"
-                                                        {{-- data-bs-toggle="modal"
-                                                    data-bs-target="#myModal2" --}}>التالي</button>
+                                                        {{-- data-toggle="modal"
+                                                    data-target="#myModal2" --}}>التالي</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -139,8 +139,8 @@
                         </td>
                         <td>
                             <!-- Button to trigger the modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#myModal{{ $item->id }}">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#myModal{{ $item->id }}">
                                 اضافة بيان جمركي
                             </button>
                             <form action="{{ route('deleteOffices', $item->id) }}" method="POST">

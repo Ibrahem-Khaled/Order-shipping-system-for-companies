@@ -11,8 +11,8 @@
             <div class="table-container overflow-auto mt-4 p-3" style="position: relative;">
                 <h3 class="text-center mb-4 text-white"> {{ count($partner) }} الشركاء </h3>
                 <table class="table table-striped table-bordered table-hover table-sm">
-                    <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
-                        data-bs-target="#addEmployeeModal">
+                    <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-toggle="modal"
+                        data-target="#addEmployeeModal">
                         إضافة شريك
                     </button>
                     <!-- Add Employee Modal -->
@@ -22,7 +22,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="addEmployeeModalLabel">اضافة شريك</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close" data-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -67,13 +67,13 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-bs-toggle="modal"
-                        data-bs-target="#addHeadMoney">
+                    <button type="button" style="margin: 5px" class="btn btn-success d-inline-block" data-toggle="modal"
+                        data-target="#addHeadMoney">
                         إضافة رأس مال
                     </button>
                     <!-- Add Employee Modal -->
@@ -83,7 +83,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="addHeadMoneylLabel">اضافة رأس مال</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close" data-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
+                                        data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -307,8 +307,8 @@
                                         style="max-width: 100px; max-height: 100px;">
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-secondary" data-bs-toggle="modal"
-                                        data-bs-target="#editModal{{ $item->id }}">
+                                    <button class="btn btn-secondary" data-toggle="modal"
+                                        data-target="#editModal{{ $item->id }}">
                                         تعديل
                                     </button>
                                     <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
@@ -318,7 +318,7 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="addEmployeeModalLabel">تعديل بيانات الشريك
                                                     </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    <button type="button" class="btn-close" data-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -365,7 +365,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                                        data-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
                                         </div>

@@ -70,8 +70,8 @@
                                 </td>
                                 <td class="text-center font-weight-bold" style="font-size: 18px;">
                                     @if ($item->role == 'driver')
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#expenses{{ $item->id }}">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#expenses{{ $item->id }}">
                                             {{ $item->name }}
                                         </button>
                                         <div class="modal fade" id="expenses{{ $item->id }}" tabindex="-1"
@@ -83,7 +83,7 @@
                                                         <h5 class="modal-title" id="expensesLabel{{ $item->id }}">اختر
                                                             نوع
                                                             الطلب:</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        <button type="button" class="btn-close" data-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -98,7 +98,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close</button>
+                                                            data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
                                             </div>

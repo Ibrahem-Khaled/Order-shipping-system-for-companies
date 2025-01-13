@@ -29,4 +29,9 @@ class Cars extends Model
     {
         return $this->hasMany(Tips::class, 'car_id');
     }
+
+    public function oilChanges()
+    {
+        return $this->hasMany(CarChanegOilData::class, 'car_id');
+    }
 }

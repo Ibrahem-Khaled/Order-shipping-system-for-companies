@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h1 class="text-white">السطحات</h1>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFlatbedModal">إضافة سطحة</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#createFlatbedModal">إضافة سطحة</button>
         <table class="table">
             <thead>
                 <tr>
@@ -46,10 +46,10 @@
 
                         <!-- العمليات -->
                         <td>
-                            <button class="btn btn-info" data-bs-toggle="modal"
-                                data-bs-target="#editFlatbedModal{{ $flatbed->id }}">تعديل</button>
-                            <button class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteFlatbedModal{{ $flatbed->id }}">حذف</button>
+                            <button class="btn btn-info" data-toggle="modal"
+                                data-target="#editFlatbedModal{{ $flatbed->id }}">تعديل</button>
+                            <button class="btn btn-danger" data-toggle="modal"
+                                data-target="#deleteFlatbedModal{{ $flatbed->id }}">حذف</button>
                         </td>
                     </tr>
                 @endforeach
@@ -63,7 +63,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createFlatbedModalLabel">إضافة سطحة جديدة</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
                         <button type="submit" class="btn btn-primary">حفظ</button>
                     </div>
                 </form>
@@ -108,7 +108,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editFlatbedModalLabel{{ $flatbed->id }}">تعديل السطحة</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
                             <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                         </div>
                     </form>
@@ -155,7 +155,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -163,7 +163,7 @@
                         <p>هل أنت متأكد أنك تريد حذف هذه السطحة؟</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
                         <form action="{{ route('flatbeds.destroy', $flatbed->id) }}" method="POST"
                             style="display:inline;">
                             @csrf

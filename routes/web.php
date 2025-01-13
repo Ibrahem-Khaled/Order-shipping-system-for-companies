@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CarChangeOilsController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\PartnerController;
 use App\Http\Controllers\daily\Daily;
@@ -145,6 +146,10 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     //this route Reservations
     Route::get('reservations', [ReservationsController::class, 'index'])->name('reservations.index');
     Route::get('reservations/{id}', [ReservationsController::class, 'show'])->name('reservations.show');
+
+    //this routes change oil
+    Route::resource('car_change_oils', CarChangeOilsController::class);
+
 });
 
 

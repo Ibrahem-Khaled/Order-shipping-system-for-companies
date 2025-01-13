@@ -9,7 +9,7 @@
         <form action="{{ route('updateContainerPrice') }}" method="POST">
             @csrf
             <table class="table">
-                <thead>
+                <thead class="thead-dark text-center">
                     <tr>
                         <th scope="col">اجمالي سعر النقل</th>
                         <th scope="col">سعر النقل</th>
@@ -20,7 +20,7 @@
                         <th scope="col">#</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-center">
                     @php
                         $totalPrice = 0;
                         $totalWithdrawPrice = 0;
@@ -43,7 +43,7 @@
                                 @endphp
                                 <td>{{ $containerPrice }}</td>
                                 <td>
-                                    <div class="input-group mb-3">
+                                    <div class="input-group">
                                         @if (auth()->user()?->userinfo?->job_title == 'administrative')
                                             <input type="text"
                                                 value="{{ $containerPrice / $transportContainers->count() }}"

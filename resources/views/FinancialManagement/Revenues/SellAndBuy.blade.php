@@ -6,7 +6,7 @@
         <h1 class="text-success text-end">كشف حساب</h1>
     </div>
 
-    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#transactionModal">
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#transactionModal">
         اضافة حركة بيع وشراء
     </button>
 
@@ -15,7 +15,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="transactionModalLabel">اضافة حركة بيع وشراء</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="transactionForm" action="{{ route('transactions.store') }}" method="POST"
@@ -44,7 +44,7 @@
                             <input type="number" name="price" class="form-control" placeholder="السعر" required>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
                             <button type="submit" class="btn btn-success">اضافة</button>
                         </div>
                     </form>
@@ -117,8 +117,8 @@
                         <td>{{ $transaction->created_at }}</td>
                         <td>
                             @if (!auth()->user()?->userinfo?->job_title == 'administrative')
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#editTransactionModal{{ $transaction->id }}">تعديل</button>
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#editTransactionModal{{ $transaction->id }}">تعديل</button>
 
                                 <div class="modal fade" id="editTransactionModal{{ $transaction->id }}" tabindex="-1"
                                     aria-labelledby="editTransactionModalLabel" aria-hidden="true">
@@ -128,7 +128,7 @@
                                                 <h5 class="modal-title" id="editTransactionModalLabel">تعديل حركة البيع
                                                     والشراء
                                                 </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                <button type="button" class="btn-close" data-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
@@ -146,7 +146,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">الغاء</button>
+                                                            data-dismiss="modal">الغاء</button>
                                                         <button type="submit" class="btn btn-success">حفظ
                                                             التعديلات</button>
                                                     </div>
