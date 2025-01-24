@@ -11,6 +11,7 @@ class Container extends Model
     protected $guarded = ['id'];
 
 
+    // this relation for container and ...
     public function customs()
     {
         return $this->belongsTo(CustomsDeclaration::class, 'customs_id');
@@ -47,5 +48,13 @@ class Container extends Model
     public function flatbed()
     {
         return $this->belongsToMany(Flatbed::class, 'flatbed_containers', 'container_id', 'flatbed_id');
+    }
+
+
+
+    // this function for get the container number
+    public function getPriceTransfer()
+    {
+        return $this->daily->where('type', 'withdraw')->sum('price');
     }
 }

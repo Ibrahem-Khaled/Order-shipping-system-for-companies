@@ -29,12 +29,17 @@ class CarChangeOilsController extends Controller
 
         // جلب السيارة المرتبطة
         $car = Cars::find($request->car_id);
-
-        // جلب آخر تغيير زيت (إن وجد)
         $lastOilChange = $car->oilChanges()->latest('date')->first();
+
+        if ($lastOilChange && $lastOilChange->km_before >= $request->km) {
+            return redirect()->back()
+                ->with('error', 'لا يمكن إضافة بيانات تغيير الزيت بكيلومتر أقل من الكيلومتر السابق.');
+        }
+
         $newKm = $request->km;
 
         // إذا لم يتم إدخال تاريخ
+
         if (!$request->date) {
             if ($lastOilChange) {
                 // حساب الكيلومترات المتبقية
@@ -43,7 +48,7 @@ class CarChangeOilsController extends Controller
                 // تحديث السجل الأخير
                 $lastOilChange->update([
                     'km_before' => $newKm,
-                    'km_after' => $remainingKm,
+                    'km_after' => $lastOilChange->km_after - $remainingKm,
                 ]);
             } else {
                 // إذا لم يكن هناك سجلات سابقة، يتم إنشاء سجل جديد

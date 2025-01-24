@@ -1,62 +1,55 @@
 @extends('layouts.default')
 
 @section('content')
-
     <div class="container mt-5">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">كشف الشهري</th>
-                    <th scope="col">اجمالي عدد الحاويات</th>
-                    <th scope="col">كشف السنوي</th>
-                    <th scope="col">اجمالي المطلوب من المكتب</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $totalContainers = 0;
-                    $totalRemainingRevenue = 0;
-                @endphp
-                @foreach ($users as $user)
-                    @php
-                        $userContainerCount = $containersCount[$user->id] ?? 0;
-                        $totalContainers += $userContainerCount;
-                        $userContainers = $user->container;
-                        $totalContainerPriceTransfer = 0;
+        <button id="toggleButton" class="btn btn-primary mb-3 shadow-sm">إخفاء - اظهار العملاء</button>
 
-                        foreach ($userContainers as $key => $value) {
-                            $totalContainerPriceTransfer += $value->daily()->whereNotNull('container_id')->sum('price');
-                        }
-
-                        $userRemainingRevenue =
-                            $userContainers
-                                // ->where('is_rent', 0)
-                                ->sum('price') +
-                            $totalContainerPriceTransfer -
-                            $user->clientdaily->where('type', 'deposit')->sum('price');
- 
-                        $totalRemainingRevenue += $userRemainingRevenue;
-                    @endphp
-
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered shadow-sm" id="dataTable">
+                <thead class="thead-dark">
                     <tr>
-                        <th scope="row">{{ $user->id }}</th>
-                        <td><a href="{{ route('getAccountStatement', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $userContainerCount }}</td>
-                        <td><a href="{{ route('getAccountYears', $user->id) }}">{{ $user->name }}</a></td>
-                        <td>{{ $userRemainingRevenue }}</td>
+                        <th scope="col">#</th>
+                        <th scope="col">كشف الشهري</th>
+                        <th scope="col">اجمالي عدد الحاويات</th>
+                        <th scope="col">كشف السنوي</th>
+                        <th scope="col">اجمالي المطلوب من المكتب</th>
                     </tr>
-                @endforeach
-                <tr class="fw-bold">
-                    <th scope="row"></th>
-                    <td></td>
-                    <td>{{ $totalContainers }} مجموع الحاويات </td>
-                    <td></td>
-                    <td>{{ $totalRemainingRevenue }} مجموع باقي الايرادات </td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($users as $user)
+                        <tr data-container-count="{{ $containersCount[$user->id] }}"
+                            data-revenue="{{ $user->remaining_revenue }}">
+                            <th scope="row">{{ $user->id }}</th>
+                            <td><a href="{{ route('getAccountStatement', $user->id) }}"
+                                    class="text-primary">{{ $user->name }}</a></td>
+                            <td>{{ $containersCount[$user->id] }}</td>
+                            <td><a href="{{ route('getAccountYears', $user->id) }}"
+                                    class="text-primary">{{ $user->name }}</a></td>
+                            <td>{{ $user->remaining_revenue }}</td>
+                        </tr>
+                    @endforeach
+                    <tr class="fw-bold bg-light">
+                        <th scope="row"></th>
+                        <td></td>
+                        <td>{{ $totalContainers }} مجموع الحاويات </td>
+                        <td></td>
+                        <td>{{ $totalRemainingRevenue }} مجموع باقي الايرادات </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
+    <script>
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach(row => {
+                const containerCount = parseInt(row.getAttribute('data-container-count'));
+                const revenue = parseFloat(row.getAttribute('data-revenue'));
+                if (containerCount === 0 && revenue === 0) {
+                    row.style.display = row.style.display === 'none' ? '' : 'none';
+                }
+            });
+        });
+    </script>
 @stop

@@ -230,8 +230,8 @@
                                         </div>
                                         <div class="modal-body">
                                             <table class="table table-striped">
-                                                <thead class="bg-light">
-                                                    <tr class="text-center">
+                                                <thead class="">
+                                                    <tr class="text-center text-primary">
                                                         <th scope="col">سعر امر النقل</th>
                                                         <th scope="col">اسم العميل</th>
                                                         <th scope="col">اسم المكتب</th>

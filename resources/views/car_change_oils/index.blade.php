@@ -13,9 +13,17 @@
         </button>
 
         @foreach ($cars as $car)
+            @php
+                $lastOilChange = $car->oilChanges->last(); // جلب آخر تغيير زيت
+                $KilometersLeftUntilOilChange = $lastOilChange
+                    ? //$car->oil_change_number -
+                    $lastOilChange->km_after
+                    : 0;
+            @endphp
             <div class="card my-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6>السيارة: {{ $car->type_car }} - الرقم: {{ $car->number }}</h6>
+                    <span class="text-muted">الباقي كيلومترات علي غيار الزيت: {{ $KilometersLeftUntilOilChange }}</span>
                     <button class="btn btn-primary btn-sm" data-toggle="modal"
                         data-target="#detailsModal{{ $car->id }}">
                         عرض التفاصيل
@@ -47,24 +55,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $lastOilChange = $car->oilChanges->last(); // جلب آخر تغيير زيت
-                                        $KilometersLeftUntilOilChange = $lastOilChange
-                                            ? $car->oil_change_number - $lastOilChange->km_after
-                                            : 0;
-                                    @endphp
                                     <tr>
                                         <td>
                                             {{ $KilometersLeftUntilOilChange }}
 
                                             @if ($KilometersLeftUntilOilChange == 0)
-                                            <span class="text-success">(تم تغيير الزيت)</span>
-                                            @elseif ($KilometersLeftUntilOilChange <= 500)
-                                            <span class="text-warning">(اقترب موعد تغيير الزيت)</span>
-                                            @elseif($KilometersLeftUntilOilChange <= 1)
-                                            <span class="text-danger">(يجب تغيير الزيت فورًا)</span>
+                                                <span class="text-success">(تم تغيير الزيت)</span>
+                                            @elseif ($KilometersLeftUntilOilChange <= 500 && $KilometersLeftUntilOilChange > 0)
+                                                <span class="text-warning">(اقترب موعد تغيير الزيت)</span>
+                                            @elseif ($KilometersLeftUntilOilChange < 0)
+                                                <span class="text-danger">(يجب تغيير الزيت فورًا)</span>
                                             @endif
                                         </td>
+
                                         <td>{{ $car->oil_change_number }}</td>
                                         <td>{{ $lastOilChange ? $lastOilChange->date : 'لا يوجد بيانات' }}</td>
                                         <td>{{ $lastOilChange ? $lastOilChange->km_before : 0 }}</td>

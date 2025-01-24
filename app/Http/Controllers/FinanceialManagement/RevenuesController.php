@@ -13,40 +13,32 @@ class RevenuesController extends Controller
 
     public function index()
     {
-        $users = User::with(['container', 'clientdaily'])->where('role', 'client')->get();
+        // جلب جميع العملاء مع الحاويات والإيرادات
+        $users = User::with(['container.daily', 'clientdaily'])
+            ->where('role', 'client')
+            ->get();
 
-        $containersCount = [];
-        $priceSum = 0;
-        $containerCount = 0;
+        // حساب عدد الحاويات الشهرية لكل مستخدم
+        $containersCount = $users->mapWithKeys(function ($user) {
+            return [$user->id => $user->monthlyContainers()->count()];
+        });
 
-        foreach ($users as $user) {
+        // حساب الإيرادات المتبقية لكل مستخدم
+        $users->each(function ($user) {
+            $user->remaining_revenue = $user->remainingRevenue();
+        });
 
-            $monthlyContainers = $user->container()
-                ->whereIn('status', ['transport', 'done'])
-                ->whereMonth('created_at', Carbon::now()->month)
-                ->whereYear('created_at', Carbon::now()->year)
-                ->count();
+        // حساب الإجماليات
+        $totalContainers = $containersCount->sum();
+        $totalRemainingRevenue = $users->sum('remaining_revenue');
 
-            $containersCount[$user->id] = $monthlyContainers;
-
-            $priceSum += $user->container->whereIn('status', ['transport', 'done'])->where('is_rent', 0)->sum('price')
-                - $user->clientdaily->sum('price');
-        }
-
-        //return response()->json($priceSum);
-
-        return view(
-            'FinancialManagement.Revenues.index',
-            compact(
-                'users',
-                'containersCount',
-                'priceSum',
-                'containerCount'
-            )
-        );
+        return view('FinancialManagement.Revenues.index', compact(
+            'users',
+            'containersCount',
+            'totalContainers',
+            'totalRemainingRevenue'
+        ));
     }
-
-
     public function rent()
     {
         $users = User::where('role', 'rent')->get();
