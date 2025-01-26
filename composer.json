@@ -8,9 +8,11 @@
         "php": "^8.1",
         "elibyy/tcpdf-laravel": "^11.1",
         "guzzlehttp/guzzle": "^7.2",
+        "khaled.alshamaa/ar-php": "^6.3",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "spatie/pdf-to-text": "^1.54",
         "yoeunes/toastr": "^2.3"
     },
     "require-dev": {

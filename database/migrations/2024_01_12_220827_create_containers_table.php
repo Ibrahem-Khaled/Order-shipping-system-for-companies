@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('containers', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('driver_id')->nullable();
-            $table->bigInteger('car_id')->nullable();
-            $table->bigInteger('rent_id')->nullable();
+            $table->unsignedBigInteger('driver_id')->nullable();
+            $table->unsignedBigInteger('car_id')->nullable();
+            $table->unsignedBigInteger('rent_id')->nullable();
             $table->bigInteger('tips')->nullable();
             $table->boolean('is_rent')->default(0);
-            $table->bigInteger('customs_id');
-            $table->bigInteger('client_id');
+            $table->unsignedBigInteger('customs_id');
+            $table->unsignedBigInteger('client_id');
             $table->string('number');
             $table->enum('size', [20, 40, 'box']);
             $table->bigInteger('price')->nullable()->default(0);
@@ -27,6 +27,13 @@ return new class extends Migration {
             $table->timestamp('transfer_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('date_empty')->nullable();
             $table->timestamps();
+
+            $table->foreign('driver_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
+            $table->foreign('rent_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('customs_id')->references('id')->on('customs_declarations')->onDelete('cascade');
+            $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

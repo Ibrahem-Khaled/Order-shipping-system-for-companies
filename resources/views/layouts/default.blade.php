@@ -57,6 +57,20 @@
                         <h1 class="h3 mb-0 text-gray-800">{{ Route::currentRouteName() }}</h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                        {{-- @if (session('previous_route'))
+                                    <a href="{{ route(session('previous_route')) }}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> رجوع
+                                    </a>
+                                @endif --}}
+                        <form action="{{ route('convert.pdf.to.text') }}" class="row" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group">
+                                <label for="pdf_file">اختر ملف PDF:</label>
+                                <input type="file" name="pdf_file" id="pdf_file" class="form-control-file"
+                                    accept="application/pdf" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">تحويل PDF إلى نص</button>
+                        </form>
                     </div>
                     <!-- Content Row -->
                     @yield('content')

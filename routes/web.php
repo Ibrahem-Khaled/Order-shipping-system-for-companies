@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CarChangeOilsController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\PartnerController;
+use App\Http\Controllers\convertPdfToTextController;
 use App\Http\Controllers\daily\Daily;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\expenses\CarsController;
@@ -150,6 +151,8 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     //this routes change oil
     Route::resource('car_change_oils', CarChangeOilsController::class);
 
+    //this routes convert pdf to text
+    Route::post('convert/pdf/to/text', [convertPdfToTextController::class, 'convert'])->name('convert.pdf.to.text');
 });
 
 

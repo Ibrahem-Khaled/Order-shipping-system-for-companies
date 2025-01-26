@@ -13,11 +13,13 @@ return new class extends Migration {
         Schema::create('customs_declarations', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('statement_number');
-            $table->bigInteger('client_id');
+            $table->unsignedBigInteger('client_id');
             $table->string('subclient_id')->nullable();
             $table->string('expire_customs')->nullable();
             $table->bigInteger('customs_weight')->default(0)->nullable();
             $table->timestamps();
+
+            $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

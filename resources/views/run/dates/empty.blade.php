@@ -54,13 +54,49 @@
     .d-none {
         display: none;
     }
+
+    /* تنسيقات الباجينيشن */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination .page-item {
+        margin: 0 5px;
+    }
+
+    .pagination .page-link {
+        color: #cb0c9f;
+        border: 1px solid #cb0c9f;
+        border-radius: 5px;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #cb0c9f;
+        color: #fff;
+        border-color: #cb0c9f;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #cb0c9f;
+        color: #fff;
+        border-color: #cb0c9f;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
 </style>
 @section('content')
 
     <!-- جدول الحاويات المحملة -->
     <div class="container mt-5">
         <div class="d-flex justify-content-around align-items-center bg-primary" style="border-radius: 5px">
-            <h3 class="text-white">الحاويات المحملة ({{ $containerPort->total() }})</h3>
+            <h3 class="text-primary">الحاويات المحملة ({{ $containerPort->total() }})</h3>
             <x-search-form />
         </div>
 
@@ -119,13 +155,17 @@
         </div>
 
         <div class="d-flex justify-content-center mt-3">
-            {{ $containerPort->links() }}
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {{ $containerPort->onEachSide(1)->links('pagination::bootstrap-4') }}
+                </ul>
+            </nav>
         </div>
     </div>
 
     <!-- جدول الحاويات التخزين -->
     <div class="container mt-5">
-        <h3 class="text-center mb-4 text-white">الحاويات التخزين ({{ $storageContainer->total() }})</h3>
+        <h3 class="text-center mb-4 text-primary">الحاويات التخزين ({{ $storageContainer->total() }})</h3>
         <div class="table-responsive">
             <x-table>
                 <x-slot name="header">
@@ -198,13 +238,17 @@
         </div>
 
         <div class="d-flex justify-content-center mt-3">
-            {{ $storageContainer->links() }}
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {{ $storageContainer->onEachSide(1)->links('pagination::bootstrap-4') }}
+                </ul>
+            </nav>
         </div>
     </div>
 
     <!-- جدول الحاويات الفارغة -->
     <div class="container mt-5">
-        <h3 class="text-center mb-4 text-white">الحاويات الفارغة ({{ $done->total() }})</h3>
+        <h3 class="text-center mb-4 text-primary">الحاويات الفارغة </h3>
         <div class="table-responsive">
             <x-table>
                 <x-slot name="header">
