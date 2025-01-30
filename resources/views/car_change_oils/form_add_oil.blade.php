@@ -7,15 +7,7 @@
         </button>
     </div>
     <div class="modal-body">
-        <div class="form-group">
-            <label for="car_id">اختر السيارة:</label>
-            <select name="car_id" id="car_id" class="form-control" required>
-                @foreach ($cars as $car)
-                    <option value="{{ $car->id }}">{{ $car->type_car }} - {{ $car->number }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+        <input type="hidden" name="car_id" id="car_id" value="{{ $car->id }}">
         <div class="form-group">
             <label for="km">عدد الكيلومترات:</label>
             <input type="number" name="km" id="km" class="form-control" required>
