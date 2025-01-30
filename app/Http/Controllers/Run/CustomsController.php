@@ -7,20 +7,36 @@ use App\Models\Container;
 use App\Models\CustomsDeclaration;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use GeniusTS\HijriDate\Hijri;
 
 class CustomsController extends Controller
 {
     public function index(Request $request)
     {
         $query = $request->input('query');
-        if (is_null($query)) {
-            $users = User::where('role', 'client')->where('is_active', 1)->get();
-            $usersDeleted = User::where('role', 'client')->where('is_active', 0)->get();
-        } else {
-            $users = User::where('created_at', 'like', '%' . $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%')
-                ->get();
-        }
+
+        // استخدام التخزين المؤقت للبيانات
+        $users = Cache::remember('active_users_' . $query, 600, function () use ($query) {
+            return User::where('role', 'client')
+                ->where('is_active', 1)
+                ->select('id', 'name', 'created_at')
+                ->with(['container', 'customs'])
+                ->when($query, function ($q) use ($query) {
+                    $q->where('created_at', 'like', '%' . $query . '%')
+                        ->orWhere('name', 'like', '%' . $query . '%');
+                })
+                ->paginate(10); // استخدام التقسيم (Pagination)
+        });
+
+        $usersDeleted = Cache::remember('inactive_users', 600, function () {
+            return User::where('role', 'client')
+                ->where('is_active', 0)
+                ->select('id', 'name', 'created_at')
+                ->with(['container', 'customs'])
+                ->paginate(10); // استخدام التقسيم (Pagination)
+        });
+
         return view('run.Customs', compact('users', 'usersDeleted'));
     }
     public function getOfficeContainerData($clientId)
@@ -36,17 +52,35 @@ class CustomsController extends Controller
 
     public function store(Request $request, $clientId)
     {
-        $statement_number = $request->statement_number;
-        $sub_client = $request->subClient;
-        $customs_weight = $request->customs_weight;
-        $contNum = $request->contNum;
+        $request->validate([
+            'statement_number' => 'required',
+            'subClient' => 'required',
+            'customs_weight' => 'required',
+            'expire_customs' => 'required',
+            'created_at' => 'nullable',
+        ]);
 
-        $customNumis = CustomsDeclaration::where('statement_number', $statement_number)->first();
+        // التحقق من صحة التاريخ الهجري
+        $hijriDate = $request->expire_customs;
+        try {
+            // تقسيم التاريخ الهجري إلى أجزاء (سنة، شهر، يوم)
+            list($hijriYear, $hijriMonth, $hijriDay) = explode('-', $hijriDate);
+
+            // تحويل التاريخ الهجري إلى ميلادي
+            $gregorianDate = Hijri::convertToGregorian($hijriYear, $hijriMonth, $hijriDay);
+
+            // تنسيق التاريخ الميلادي كـ YYYY-MM-DD
+            $gregorianDateFormatted = $gregorianDate->format('Y-m-d');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'الرجاء إدخال تاريخ هجري صحيح (YYYY/MM/DD)');
+        }
+
+        $customNumis = CustomsDeclaration::where('statement_number', $request->statement_number)->first();
         if ($customNumis && !$customNumis->container()->exists()) {
             $customNumis->delete();
         }
 
-        $existingDeclaration = CustomsDeclaration::where('statement_number', $statement_number)
+        $existingDeclaration = CustomsDeclaration::where('statement_number', $request->statement_number)
             ->whereYear('created_at', now()->year)
             ->first();
         if ($existingDeclaration) {
@@ -54,15 +88,16 @@ class CustomsController extends Controller
         }
 
         $data = CustomsDeclaration::create([
-            'statement_number' => $statement_number,
-            'subclient_id' => $sub_client,
+            'statement_number' => $request->statement_number,
+            'subclient_id' => $request->subClient,
             'client_id' => $clientId,
-            'customs_weight' => $customs_weight,
+            'customs_weight' => $request->customs_weight,
+            'expire_customs' => $gregorianDateFormatted, // حفظ التاريخ الميلادي
             'created_at' => $request->created_at,
         ]);
 
         return redirect()->route('showContanierPost', [
-            'contNum' => $contNum,
+            'contNum' => $request->contNum,
             'customId' => $data->id,
         ])->with('success', 'تم انشاء بيان بنجاح');
     }

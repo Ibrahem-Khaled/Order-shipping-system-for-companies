@@ -95,13 +95,13 @@
 
     <!-- جدول الحاويات المحملة -->
     <div class="container mt-5">
-        <div class="d-flex justify-content-around align-items-center bg-primary" style="border-radius: 5px">
-            <h3 class="text-primary">الحاويات المحملة ({{ $containerPort->total() }})</h3>
+        <div class="d-flex justify-content-around align-items-center bg-primary p-3" style="border-radius: 5px">
+            <h3 class="text-center mb-0 text-white">الحاويات المحملة ({{ $containerPort->total() }})</h3>
             <x-search-form />
         </div>
 
-        <div class="table-responsive">
-            <x-table>
+        <div class="table-responsive mt-4">
+            <x-table class="table-striped">
                 <x-slot name="header">
                     <th scope="col" class="text-center">ارضية الفارغ</th>
                     <th scope="col" class="text-center">العميل</th>
@@ -124,7 +124,7 @@
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
                             <td class="text-center">
-                                <a href="{{ route('showContainer', $item->customs->id) }}">
+                                <a href="{{ route('showContainer', $item->customs->id) }}" class="text-primary">
                                     {{ $item->customs->statement_number }}
                                 </a>
                             </td>
@@ -133,15 +133,15 @@
                                     <form action="{{ route('updateEmpty', $item->id) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="status" value="done">
-                                        <button type="submit" class="btn btn-primary">محملة</button>
+                                        <button type="submit" class="btn btn-primary btn-sm">محملة</button>
                                     </form>
                                 @else
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                                         data-target="#updateModal{{ $item->id }}">محملة</button>
                                     <x-update-container-status :item="$item" :driver="$driver" :cars="$cars"
                                         :rents="$rents" />
 
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                         data-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                     <!-- مودال عرض التفاصيل -->
                                     <x-container-details :item="$item" />
@@ -154,7 +154,7 @@
             </x-table>
         </div>
 
-        <div class="d-flex justify-content-center mt-3">
+        <div class="d-flex justify-content-center mt-4">
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     {{ $containerPort->onEachSide(1)->links('pagination::bootstrap-4') }}
@@ -165,9 +165,12 @@
 
     <!-- جدول الحاويات التخزين -->
     <div class="container mt-5">
-        <h3 class="text-center mb-4 text-primary">الحاويات التخزين ({{ $storageContainer->total() }})</h3>
-        <div class="table-responsive">
-            <x-table>
+        <div class="d-flex justify-content-around align-items-center bg-primary p-3" style="border-radius: 5px">
+            <h3 class="text-center mb-0 text-white">الحاويات التخزين ({{ $storageContainer->total() }})</h3>
+        </div>
+
+        <div class="table-responsive mt-4">
+            <x-table class="table-striped">
                 <x-slot name="header">
                     <th scope="col" class="text-center">تاريخ ارضية الفارغ</th>
                     <th scope="col" class="text-center">العميل</th>
@@ -190,12 +193,12 @@
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
                             <td class="text-center">
-                                <a href="{{ route('showContainer', $item->customs->id) }}">
+                                <a href="{{ route('showContainer', $item->customs->id) }}" class="text-primary">
                                     {{ $item->customs->statement_number }}
                                 </a>
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-warning" data-toggle="modal"
+                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
                                     data-target="#confirmationModal{{ $item->id }}">
                                     تحميل
                                 </button>
@@ -204,11 +207,12 @@
                                 <x-confirmation-modal :item="$item" :driver="$driver" :cars="$cars"
                                     :rents="$rents" />
 
-                                <form action="{{ route('ContainerRentStatus', $item->id) }}" method="GET">
+                                <form action="{{ route('ContainerRentStatus', $item->id) }}" method="GET"
+                                    class="d-inline">
                                     <input name="status" value="{{ $item->status }}" hidden />
                                     <input name="storage" value="storage" hidden />
 
-                                    <button type="submit" class="btn btn-danger d-inline-block">
+                                    <button type="submit" class="btn btn-danger btn-sm">
                                         @if ($item->status == 'storage')
                                             تاجير حاوية
                                         @elseif($item->status == 'rent')
@@ -217,15 +221,16 @@
                                     </button>
                                 </form>
 
-                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                 <!-- مودال عرض التفاصيل -->
                                 <x-container-details :item="$item" />
 
-                                <form action="{{ route('change.container.status', $item->id) }}" method="POST">
+                                <form action="{{ route('change.container.status', $item->id) }}" method="POST"
+                                    class="d-inline">
                                     @csrf
                                     <input name="status" value="wait" hidden />
-                                    <button type="submit" class="btn btn-warning d-inline-block">
+                                    <button type="submit" class="btn btn-warning btn-sm">
                                         الغاء التخزين
                                     </button>
                                 </form>
@@ -237,7 +242,7 @@
             </x-table>
         </div>
 
-        <div class="d-flex justify-content-center mt-3">
+        <div class="d-flex justify-content-center mt-4">
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     {{ $storageContainer->onEachSide(1)->links('pagination::bootstrap-4') }}
@@ -248,9 +253,12 @@
 
     <!-- جدول الحاويات الفارغة -->
     <div class="container mt-5">
-        <h3 class="text-center mb-4 text-primary">الحاويات الفارغة </h3>
-        <div class="table-responsive">
-            <x-table>
+        <div class="d-flex justify-content-around align-items-center bg-primary p-3" style="border-radius: 5px">
+            <h3 class="text-center mb-0 text-white">الحاويات الفارغة</h3>
+        </div>
+
+        <div class="table-responsive mt-4">
+            <x-table class="table-striped">
                 <x-slot name="header">
                     <th scope="col" class="text-center">العميل</th>
                     <th scope="col" class="text-center">مكتب التخليص</th>
@@ -268,7 +276,7 @@
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
                             <td class="text-center">
-                                <a href="{{ route('showContainer', $item->customs->id) }}">
+                                <a href="{{ route('showContainer', $item->customs->id) }}" class="text-primary">
                                     {{ $item->customs->statement_number }}
                                 </a>
                             </td>
@@ -277,10 +285,10 @@
                                     action="{{ route('updateEmpty', $item->id) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="transport">
-                                    <button type="button" class="btn btn-warning"
+                                    <button type="button" class="btn btn-warning btn-sm"
                                         onclick="showConfirmation({{ $item->id }})">فارغ</button>
                                 </form>
-                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-target="#containerModal{{ $item->id }}">عرض التفاصيل</button>
                                 <!-- مودال عرض التفاصيل -->
                                 <x-container-details :item="$item" />

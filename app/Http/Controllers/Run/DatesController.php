@@ -43,6 +43,7 @@ class DatesController extends Controller
         }
 
         $driver = User::where('role', 'driver')
+            ->where('is_active', 1)
             ->whereNotNull('sallary')
             ->get();
 
@@ -94,7 +95,10 @@ class DatesController extends Controller
                 ->paginate(10);
         }
 
-        $driver = User::where('role', 'driver')->whereNotNull('sallary')->get();
+        $driver = User::where('role', 'driver')
+            ->where('is_active', 1)
+            ->whereNotNull('sallary')
+            ->get();
         $rents = User::where('role', 'rent')->get();
         $cars = Cars::where('type', 'transfer')->get();
         $rents = User::where('role', 'rent')->get();

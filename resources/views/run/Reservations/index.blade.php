@@ -18,7 +18,11 @@
             <tbody>
                 @forelse($statements as $statement)
                     <tr>
-                        <td>{{ $statement?->customs_grounding_date?->format('Y-m-d') }}</td>
+                        <td>
+                            <x-countdown-timer :id="$statement->id" :transfer_date="$statement->expire_customs"
+                                 :date_empty="$statement->expire_customs" />
+                            {{-- <x-edit-modal :id="$statement->id" :date_empty="$statement->date_empty" /> --}}
+                        </td>
                         <td>{{ $statement->client->name }}</td>
                         <td>{{ $statement->subclient_id }}</td>
                         <td>{{ $statement->customs_weight }} كجم</td>
