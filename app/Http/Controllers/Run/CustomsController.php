@@ -16,29 +16,26 @@ class CustomsController extends Controller
     {
         $query = $request->input('query');
 
-        // استخدام التخزين المؤقت للبيانات
-        $users = Cache::remember('active_users_' . $query, 600, function () use ($query) {
-            return User::where('role', 'client')
-                ->where('is_active', 1)
-                ->select('id', 'name', 'created_at')
-                ->with(['container', 'customs'])
-                ->when($query, function ($q) use ($query) {
+        // جلب المستخدمين النشطين وغير النشطين دفعة واحدة
+        $users = User::where('role', 'client')
+            // ->whereIn('is_active', [0, 1]) // جلب النشطين وغير النشطين معًا
+            ->select('id', 'name', 'created_at', 'is_active')
+            ->with(['container', 'customs'])
+            ->when($query, function ($q) use ($query) {
+                $q->where(function ($q) use ($query) {
                     $q->where('created_at', 'like', '%' . $query . '%')
                         ->orWhere('name', 'like', '%' . $query . '%');
-                })
-                ->paginate(10); // استخدام التقسيم (Pagination)
-        });
+                });
+            })
+            ->get();
 
-        $usersDeleted = Cache::remember('inactive_users', 600, function () {
-            return User::where('role', 'client')
-                ->where('is_active', 0)
-                ->select('id', 'name', 'created_at')
-                ->with(['container', 'customs'])
-                ->paginate(10); // استخدام التقسيم (Pagination)
-        });
+        // تقسيم المستخدمين بناءً على الحالة
+        $usersActive = $users->where('is_active', 1);
+        $usersDeleted = $users->where('is_active', 0);
 
-        return view('run.Customs', compact('users', 'usersDeleted'));
+        return view('run.Customs', compact('usersActive', 'usersDeleted', 'users'));
     }
+
     public function getOfficeContainerData($clientId)
     {
         $users = User::find($clientId);
@@ -56,24 +53,9 @@ class CustomsController extends Controller
             'statement_number' => 'required',
             'subClient' => 'required',
             'customs_weight' => 'required',
-            'expire_customs' => 'required',
+            // 'expire_customs' => 'required',
             'created_at' => 'nullable',
         ]);
-
-        // التحقق من صحة التاريخ الهجري
-        $hijriDate = $request->expire_customs;
-        try {
-            // تقسيم التاريخ الهجري إلى أجزاء (سنة، شهر، يوم)
-            list($hijriYear, $hijriMonth, $hijriDay) = explode('-', $hijriDate);
-
-            // تحويل التاريخ الهجري إلى ميلادي
-            $gregorianDate = Hijri::convertToGregorian($hijriYear, $hijriMonth, $hijriDay);
-
-            // تنسيق التاريخ الميلادي كـ YYYY-MM-DD
-            $gregorianDateFormatted = $gregorianDate->format('Y-m-d');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'الرجاء إدخال تاريخ هجري صحيح (YYYY/MM/DD)');
-        }
 
         $customNumis = CustomsDeclaration::where('statement_number', $request->statement_number)->first();
         if ($customNumis && !$customNumis->container()->exists()) {
@@ -92,7 +74,6 @@ class CustomsController extends Controller
             'subclient_id' => $request->subClient,
             'client_id' => $clientId,
             'customs_weight' => $request->customs_weight,
-            'expire_customs' => $gregorianDateFormatted, // حفظ التاريخ الميلادي
             'created_at' => $request->created_at,
         ]);
 

@@ -62,7 +62,7 @@
                                         <i class="fas fa-arrow-left"></i> رجوع
                                     </a>
                                 @endif --}}
-                        <form action="{{ route('convert.pdf.to.text') }}" class="row" method="post" enctype="multipart/form-data">
+                        {{-- <form action="{{ route('convert.pdf.to.text') }}" class="row" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label for="pdf_file">اختر ملف PDF:</label>
@@ -70,7 +70,7 @@
                                     accept="application/pdf" required>
                             </div>
                             <button type="submit" class="btn btn-primary">تحويل PDF إلى نص</button>
-                        </form>
+                        </form> --}}
                     </div>
                     <!-- Content Row -->
                     @yield('content')
