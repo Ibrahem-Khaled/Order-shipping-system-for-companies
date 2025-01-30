@@ -1,63 +1,83 @@
 @extends('layouts.default')
 
 @section('content')
-
     <div class="container mt-5">
-        <div class="input-group input-group-sm mb-3 justify-content-center">
-            <input type="number" id="priceMultiplier" class="form-control" placeholder="أدخل السعر لكل حاوية"
-                style="height: 35px; width: 150px;">
-            <div class="input-group-append">
-                <button class="btn btn-primary btn-sm" type="button" onclick="storeMultiplier()">تخزين السعر</button>
+        <!-- مدخلات السعر والمنصرف -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-4 text-center">
+                <div class="input-group input-group-sm mb-3">
+                    <input type="number" id="priceMultiplier" class="form-control" placeholder="أدخل السعر لكل حاوية">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary btn-sm" type="button" onclick="storeMultiplier()">تخزين
+                            السعر</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="input-group input-group-sm mb-3 justify-content-center">
-            <input type="number" id="expense" class="form-control" placeholder="أدخل المنصرف"
-                style="height: 35px; width: 150px; margin-right: 10px;">
-            <input type="text" id="description" class="form-control" placeholder="أدخل الوصف"
-                style="height: 35px; width: 150px; margin-right: 10px;">
-            <div class="input-group-append">
-                <button class="btn btn-primary btn-sm" type="button" onclick="storeExpense()">تخزين المنصرف</button>
+            <div class="col-md-6 text-center">
+                <div class="input-group input-group-sm mb-3">
+                    <input type="number" id="expense" class="form-control" placeholder="أدخل المنصرف">
+                    <input type="text" id="description" class="form-control" placeholder="أدخل الوصف">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary btn-sm" type="button" onclick="storeExpense()">تخزين
+                            المنصرف</button>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- تفاصيل الحاويات لكل سنة -->
         <div class="mt-5">
-            <h3 class="text-center text-primary">عدد الحاويات لكل شهر عبر جميع السنين</h3>
+            <h3 class="text-center text-primary mb-4">تفاصيل الحاويات لكل سنة</h3>
             @php
-                $containersPerMonth = [];
-
+                $containersPerYear = [];
                 foreach ($containers as $item) {
+                    $year = $item->created_at->format('Y');
                     $month = $item->created_at->format('F');
-                    if (!isset($containersPerMonth[$month])) {
-                        $containersPerMonth[$month] = 0;
+                    if (!isset($containersPerYear[$year])) {
+                        $containersPerYear[$year] = [];
                     }
-                    $containersPerMonth[$month]++;
+                    if (!isset($containersPerYear[$year][$month])) {
+                        $containersPerYear[$year][$month] = 0;
+                    }
+                    $containersPerYear[$year][$month]++;
                 }
             @endphp
 
-            <table class="table table-bordered table-sm">
-                <thead class="thead-light">
-                    <tr>
-                        <th scope="col">الشهر</th>
-                        <th scope="col">عدد الحاويات</th>
-                        <th scope="col">السعر الإجمالي</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                        <tr>
-                            <td><strong>{{ $month }}</strong></td>
-                            @php
-                                $count = $containersPerMonth[$month] ?? 0;
-                            @endphp
-                            <td>{{ $count }}</td>
-                            <td class="multiplied-value" data-count="{{ $count }}"></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            @foreach ($containersPerYear as $year => $months)
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">سنة {{ $year }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-sm">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">الشهر</th>
+                                    <th scope="col">عدد الحاويات</th>
+                                    <th scope="col">السعر الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                    <tr>
+                                        <td><strong>{{ $month }}</strong></td>
+                                        @php
+                                            $count = $months[$month] ?? 0;
+                                        @endphp
+                                        <td>{{ $count }}</td>
+                                        <td class="multiplied-value" data-count="{{ $count }}"></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endforeach
         </div>
+
+        <!-- تاريخ المصاريف -->
         <div class="mt-5">
-            <h3 class="text-center text-primary">تاريخ المصاريف</h3>
+            <h3 class="text-center text-primary mb-4">تاريخ المصاريف</h3>
             <table class="table table-bordered table-sm">
                 <thead class="thead-light">
                     <tr>
@@ -73,10 +93,14 @@
             </table>
         </div>
 
+        <!-- الإجماليات -->
         <div class="mt-5">
-            <h3 class="text-center text-primary">إجمالي السعر وعدد الحاويات لكل السنوات</h3>
+            <h3 class="text-center text-primary mb-4">الإجماليات</h3>
             @php
-                $totalContainers = array_sum($containersPerMonth);
+                $totalContainers = 0;
+                foreach ($containersPerYear as $year => $months) {
+                    $totalContainers += array_sum($months);
+                }
             @endphp
 
             <table class="table table-bordered table-sm">
@@ -98,7 +122,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 
     <script>
@@ -226,14 +249,17 @@
     </script>
 
     <style>
-        .header-title {
-            font-size: 0.85em;
+        .input-group {
+            margin-bottom: 10px;
         }
 
-        .input-group {
-            width: 40%;
-            margin: auto;
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            text-align: center;
         }
     </style>
-
 @stop
