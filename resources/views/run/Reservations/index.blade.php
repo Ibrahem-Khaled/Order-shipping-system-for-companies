@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <h2 class="mb-4 text-center text-white">عرض بيانات البيان الجمركي</h2>
+        <h2 class="mb-4 text-center text-dark">عرض بيانات البيان الجمركي</h2>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -19,9 +19,10 @@
                 @forelse($statements as $statement)
                     <tr>
                         <td>
-                            <x-countdown-timer :id="$statement->id" :transfer_date="$statement->expire_customs"
+                            {{-- <x-countdown-timer :id="$statement->id" :transfer_date="$statement->expire_customs"
                                  :date_empty="$statement->expire_customs" />
-                            {{-- <x-edit-modal :id="$statement->id" :date_empty="$statement->date_empty" /> --}}
+                            <x-edit-modal :id="$statement->id" :date_empty="$statement->date_empty" /> --}}
+                            {{ $statement->expire_customs ?? 'لا يوجد تاريخ' }}
                         </td>
                         <td>{{ $statement->client->name }}</td>
                         <td>{{ $statement->subclient_id }}</td>

@@ -10,6 +10,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>تاريخ الفارغ</th>
                             <th>الحجم</th>
                             <th>رقم الحاوية</th>
                         </tr>
@@ -17,18 +18,21 @@
                     <tbody>
                         @forelse ($statement->container->where('status', 'wait') as $container)
                             <tr>
+                                <td>
+                                    <x-countdown-timer :id="$container->id" :transfer_date="$container->dateEmpty" :date_empty="$container->dateEmpty" />
+                                </td>
                                 <td>{{ $container->size }}</td>
                                 <td>{{ $container->number }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="2" class="text-center">لا توجد حاويات منتظرة</td>
+                                <td colspan="3" class="text-center">لا توجد حاويات منتظرة</td>
                             </tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="2" class="text-center">
+                            <th colspan="3" class="text-center">
                                 إجمالي الحاويات المنتظرة: {{ $statement->container->where('status', 'wait')->count() }}
                             </th>
                         </tr>
@@ -48,18 +52,21 @@
                     <tbody>
                         @forelse ($statement->container->where('status', 'transport') as $container)
                             <tr>
+                                <td>
+                                    <x-countdown-timer :id="$container->id" :transfer_date="$container->dateEmpty" :date_empty="$container->dateEmpty" />
+                                </td>
                                 <td>{{ $container->size }}</td>
                                 <td>{{ $container->number }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="2" class="text-center">لا توجد حاويات منقولة</td>
+                                <td colspan="3" class="text-center">لا توجد حاويات منقولة</td>
                             </tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="2" class="text-center">
+                            <th colspan="3" class="text-center">
                                 إجمالي الحاويات المنقولة: {{ $statement->container->where('status', 'transport')->count() }}
                             </th>
                         </tr>
