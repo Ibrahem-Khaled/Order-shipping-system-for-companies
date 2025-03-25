@@ -65,6 +65,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
 
     //add the customs id
     Route::post('post/customs/data/number/{clientId}', [CustomsController::class, 'store'])->name('postCustoms');
+    Route::post('update/customs/date/{id}', [CustomsController::class, 'updateDateCustom'])->name('updateDateCustom');
     Route::get('show/contanier/post/{customId}/{contNum}', [CustomsController::class, 'showContainerPost'])->name('showContanierPost');
     Route::get('show/contanier/{customId}/', [CustomsController::class, 'showContainer'])->name('showContainer');
 

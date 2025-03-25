@@ -53,7 +53,7 @@ class CustomsController extends Controller
             'statement_number' => 'required',
             'subClient' => 'required',
             'customs_weight' => 'required',
-            // 'expire_customs' => 'required',
+            'expire_customs' => 'nullable|date',
             'created_at' => 'nullable',
         ]);
 
@@ -74,6 +74,7 @@ class CustomsController extends Controller
             'subclient_id' => $request->subClient,
             'client_id' => $clientId,
             'customs_weight' => $request->customs_weight,
+            'expire_customs' => $request->expire_customs,
             'created_at' => $request->created_at,
         ]);
 
@@ -81,6 +82,20 @@ class CustomsController extends Controller
             'contNum' => $request->contNum,
             'customId' => $data->id,
         ])->with('success', 'تم انشاء بيان بنجاح');
+    }
+
+    public function updateDateCustom(Request $request, $id)
+    {
+        $request->validate([
+            'date_custom' => 'required|date',
+        ]);
+
+        $record = CustomsDeclaration::findOrFail($id);
+        // نفترض أن الحقل المعدل في قاعدة البيانات يحمل نفس الاسم أو قم بتغيير الاسم حسب الحاجة
+        $record->expire_customs = $request->input('date_custom');
+        $record->save();
+
+        return redirect()->back()->with('success', 'تم تحديث تاريخ أرضية الجمرك بنجاح.');
     }
 
     public function deleteOffices($id)

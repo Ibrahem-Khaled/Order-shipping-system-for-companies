@@ -1,56 +1,5 @@
 @extends('layouts.default')
 <style>
-    .countdown-timer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 0.9rem;
-        color: #fff;
-        background: #cb0c9f;
-        border-radius: 5px;
-        padding: 5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .countdown-timer .time-unit {
-        margin: 0 5px;
-        text-align: center;
-        position: relative;
-        height: 60px;
-    }
-
-    .countdown-timer .time-unit span {
-        font-size: 1.2rem;
-        font-weight: bold;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .finished {
-        font-size: 1.2rem;
-        color: #ff4d4d;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .loading-spinner {
-        border: 4px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 4px solid #cb0c9f;
-        width: 20px;
-        height: 20px;
-        animation: spin 2s linear infinite;
-        margin: 0 auto;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
     .d-none {
         display: none;
     }

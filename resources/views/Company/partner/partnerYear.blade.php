@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="col-md-12">
-        <h1 class="text-white" style="text-align: right">كشف حساب سنوي ل {{ $user->name }}</h1>
+        <h1 class="text-success" style="text-align: right">كشف حساب سنوي ل {{ $user->name }}</h1>
     </div>
 
     <div class="container mt-5">
@@ -34,7 +34,7 @@
                             for ($year = $userCreationYear; $year <= $currentYear; $year++) {
                                 for ($month = 1; $month <= 12; $month++) {
                                     if ($year == $userCreationYear && $month < $userCreationMonth) {
-                                        $annualStatement[$month][$year] = '0.00';
+                                        $annualStatement[$month][$year] = '-----';
                                         continue;
                                     }
 

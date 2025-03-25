@@ -19,10 +19,10 @@
                 @forelse($statements as $statement)
                     <tr>
                         <td>
-                            {{-- <x-countdown-timer :id="$statement->id" :transfer_date="$statement->expire_customs"
-                                 :date_empty="$statement->expire_customs" />
-                            <x-edit-modal :id="$statement->id" :date_empty="$statement->date_empty" /> --}}
-                            {{ $statement->expire_customs ?? 'لا يوجد تاريخ' }}
+                            <x-countdown-timer :id="$statement->id" :transfer_date="$statement->expire_customs"
+                                 :date_empty="$statement->expire_customs" :type="'custom'" />
+                            <x-edit-modal :id="$statement->id" :date_empty="$statement->expire_customs" :type="'custom'" />
+                            {{-- {{ $statement->expire_customs ?? 'لا يوجد تاريخ' }} --}}
                         </td>
                         <td>{{ $statement->client->name }}</td>
                         <td>{{ $statement->subclient_id }}</td>

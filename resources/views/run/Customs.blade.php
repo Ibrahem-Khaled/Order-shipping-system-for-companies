@@ -108,13 +108,11 @@
                                                             <input type="date" class="form-control" required
                                                                 name="created_at" id="created_at">
                                                         </div>
-                                                        {{-- <div class="mb-3">
+                                                        <div class="mb-3">
                                                             <label for="expire_customs" class="form-label">تاريخ أرضية
                                                                 الجمرك</label>
-                                                            <input type="text" class="form-control" required
-                                                                name="expire_customs"
-                                                                id="expire_customs{{ $item->id }}">
-                                                        </div> --}}
+                                                            <input type="date" class="form-control" name="expire_customs">
+                                                        </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-dismiss="modal">إغلاق</button>
