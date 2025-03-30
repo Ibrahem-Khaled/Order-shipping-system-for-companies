@@ -103,7 +103,7 @@
                 <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body-custom">
-                <p><strong>مكتب التخليص:</strong> {{ $item->customs->subclient_id }}</p>
+                <p><strong>مكتب التخليص:</strong> {{ $item->customs->importer_name }}</p>
                 <p><strong>العميل:</strong> {{ $item->client->name }}</p>
                 <p><strong>رقم البيان:</strong> {{ $item->customs->statement_number }}</p>
                 <p><strong>رقم الحاوية:</strong> {{ $item->number }}</p>

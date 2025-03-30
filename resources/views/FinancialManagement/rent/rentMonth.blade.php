@@ -42,7 +42,7 @@
                                     </div>
                                 @endif
                             </td>
-                            <td>{{ $custom->subclient_id }}</td>
+                            <td>{{ $custom->importer_name }}</td>
                             <td>{{ $custom->client->name }}</td>
                             <td>{{ $item->number }}</td>
                             <td>{{ $custom->statement_number }}</td>

@@ -445,7 +445,7 @@
                                                 <h6 class="mb-0 text-sm">
                                                     {{ $notification['description'] ?? '' }}
                                                     {{ isset($notification['statement_number']) ? $notification['statement_number'] . ' -  ' : '' }}
-                                                    {{ isset($notification['subclient_id']) ? $notification['subclient_id'] . ' - ' : '' }}
+                                                    {{ isset($notification['importer_name']) ? $notification['importer_name'] . ' - ' : '' }}
                                                     @if (isset($notification['customs']))
                                                         البيان: {{ $notification['customs']['statement_number'] }}
                                                     @endif

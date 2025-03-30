@@ -10,6 +10,7 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'لوحة التحكم')</title>
+    @yield('styles')
     <style>
         body {
             font-family: 'Cairo', sans-serif !important;
@@ -110,7 +111,7 @@
     <!-- Page-level custom scripts -->
     <script src="{{ asset('assets/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('assets/js/demo/chart-pie-demo.js') }}"></script>
-
+    @yield('scripts')
 </body>
 
 </html>

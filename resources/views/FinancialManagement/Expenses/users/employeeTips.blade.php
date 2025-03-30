@@ -34,7 +34,7 @@
                                 <td>{{ $item->tips ?? 'N/A' }}</td>
                                 <td>{{ $item->size ?? 'N/A' }}</td>
                                 <td>{{ $item->number ?? 'N/A' }}</td>
-                                <td>{{ $item->customs->subclient_id ?? 'N/A' }}</td>
+                                <td>{{ $item->customs->importer_name ?? 'N/A' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->transfer_date ?? $item->created_at)->format('Y-m-d') }}
                                 </td>
                             </tr>
@@ -53,7 +53,7 @@
                                 <td>{{ $item->price ?? 'N/A' }}</td>
                                 <td>{{ $item->container->size ?? 'N/A' }}</td>
                                 <td>{{ $item->container->number ?? 'N/A' }}</td>
-                                <td>{{ $item->container->customs->subclient_id ?? 'N/A' }}</td>
+                                <td>{{ $item->container->customs->importer_name ?? 'N/A' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach

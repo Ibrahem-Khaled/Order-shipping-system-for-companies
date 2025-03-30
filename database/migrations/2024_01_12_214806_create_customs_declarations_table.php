@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('statement_number');
             $table->unsignedBigInteger('client_id');
-            $table->string('subclient_id')->nullable();
+            $table->string('importer_name')->nullable();
             $table->date('expire_customs')->nullable();
             $table->bigInteger('customs_weight')->default(0)->nullable();
             $table->timestamps();

@@ -1,302 +1,450 @@
 @extends('layouts.default')
 
 @section('content')
-
-    <form action="{{ route('dates') }}" class="row align-items-center" method="GET">
-        <div class="col">
-            <input type="text" name="query" class="form-control" placeholder="Search...">
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-success">Search</button>
-        </div>
-    </form>
-
-    <div class="container mt-5">
-        <div class="table-container overflow-auto mt-4 p-3" style="max-height: 700px; overflow: auto; position: relative;">
-            <h3 class="text-center mb-4 text-white"> {{ count($container) }} تحميل الحاويات</h3>
-            <table class="table table-striped table-bordered table-hover table-sm">
-                <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
-                    <tr>
-                        <th scope="col" class="text-center">حالة الحاوية</th>
-                        <th scope="col" class="text-center">العميل</th>
-                        <th scope="col" class="text-center">مكتب التخليص</th>
-                        <th scope="col" class="text-center">التاريخ</th>
-                        <th scope="col" class="text-center">السيارة</th>
-                        <th scope="col" class="text-center">السائق</th>
-                        <th scope="col" class="text-center">حجم الحاوية</th>
-                        <th scope="col" class="text-center">رقم الحاوية</th>
-                        <th scope="col" class="text-center">الحالة</th>
-                        <th scope="col" class="text-center">#</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($container as $item)
-                        <tr>
-                            <td class="text-center">
-                                <form action="{{ route('ContainerRentStatus', $item->id) }}" method="GET">
-                                    <input name="status" value="{{ $item->status }}" hidden />
-                                    <button type="submit" class="btn btn-danger d-inline-block">
-                                        @if ($item->status == 'wait')
-                                            تاجير حاوية
-                                        @elseif($item->status == 'rent')
-                                            الغاء تاجير الحاوية
-                                        @endif
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-3">
+                        <form action="{{ route('dates') }}" class="row align-items-center" method="GET">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" name="query" class="form-control border-end-0"
+                                        placeholder="ابحث برقم الحاوية أو العميل..." value="{{ request('query') }}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> بحث
                                     </button>
-                                </form>
-
-                                <button type="button" class="btn btn-success d-inline-block" data-toggle="modal"
-                                    data-target="#storageContainer{{ $item->id }}">
-                                    تخزين
-                                </button>
-
-                                <!-- Storage Confirmation Modal -->
-                                <div class="modal fade" id="storageContainer{{ $item->id }}" tabindex="-1"
-                                    role="dialog" aria-labelledby="storageContainerLabel{{ $item->id }}"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="storageContainerLabel{{ $item->id }}">تأكيد
-                                                    التخزين</h5>
-                                                <button type="button" class="btn-close" data-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <form action="{{ route('container.storage', $item->id) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="driver-{{ $item->id }}"
-                                                            class="form-label">السائق</label>
-                                                        <select class="form-select" id="driver-{{ $item->id }}"
-                                                            name="driver" required>
-                                                            <option value="">اختر السائق</option>
-                                                            <!-- اضافة خيارات السائقين -->
-                                                            @foreach ($driver as $driverItem)
-                                                                <option value="{{ $driverItem->id }}">
-                                                                    {{ $driverItem->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="car-{{ $item->id }}"
-                                                            class="form-label">السيارة</label>
-                                                        <select class="form-select" id="car-{{ $item->id }}"
-                                                            name="car" required>
-                                                            <option value="">اختر السيارة</option>
-                                                            <!-- اضافة خيارات السيارات -->
-                                                            @foreach ($cars as $car)
-                                                                <option value="{{ $car->id }}">
-                                                                    {{ $car->driver?->name }}-{{ $car->number }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="tips-{{ $item->id }}"
-                                                            class="form-label">الحوافز</label>
-                                                        <input type="number" class="form-control"
-                                                            id="tips-{{ $item->id }}" name="tips"
-                                                            placeholder="ادخل مبلغ الحوافز" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="notes-{{ $item->id }}"
-                                                            class="form-label">التاريخ</label>
-                                                        <input type="date" class="form-control"
-                                                            id="notes-{{ $item->id }}" name="transfer_date">
-                                                    </div>
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">إلغاء</button>
-                                                    <button type="submit" class="btn btn-success">تأكيد</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
                                 </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <!-- Button trigger PDF modal -->
+                                <button type="button" class="btn btn-info" data-toggle="modal"
+                                    data-target="#pdfAnalysisModal">
+                                    <i class="fas fa-file-pdf"></i> تحليل ملف PDF
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 bg-primary text-white">
+                    <div class="card-body py-2 text-center">
+                        <h5 class="mb-0">إجمالي الحاويات: {{ count($container) + count($containerPort) }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                @if (!auth()->user()?->userinfo?->job_title == 'operator')
-                                    <button type="button" class="btn btn-danger d-inline-block" data-toggle="modal"
-                                        data-target="#deleteModal{{ $item->id }}">
-                                        حذف
-                                    </button>
-                                    <!-- Delete Confirmation Modal -->
-                                    <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1"
-                                        role="dialog" aria-labelledby="deleteModalLabel{{ $item->id }}"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">
-                                                        تأكيد
-                                                        الحذف</h5>
-                                                    <button type="button" class="btn-close" data-dismiss="modal"
-                                                        aria-label="Close"></button>
+        <!-- PDF Analysis Modal -->
+        <div class="modal fade" id="pdfAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="pdfAnalysisModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="pdfAnalysisModalLabel">تحليل ملف PDF بالذكاء الاصطناعي</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="pdfAnalysisForm" action="{{ route('analyze.pdf') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="pdfFile" class="form-label">اختر ملف PDF لتحليله:</label>
+                                <input type="file" class="form-control" id="pdfFile" name="pdf_file" accept=".pdf"
+                                    required>
+                                <small class="text-muted">الحد الأقصى لحجم الملف: 5MB</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="analysisType" class="form-label">نوع التحليل:</label>
+                                <select class="form-select" id="analysisType" name="analysis_type" required>
+                                    <option value="container_info">استخراج معلومات الحاويات</option>
+                                    <option value="customs_data">استخراج بيانات التخليص الجمركي</option>
+                                    <option value="shipping_details">استخراج تفاصيل الشحن</option>
+                                </select>
+                            </div>
+                            <div id="analysisPreview" class="d-none p-3 bg-light rounded">
+                                <h6>نتيجة التحليل:</h6>
+                                <div id="analysisResults" class="mt-2"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-brain"></i> بدء التحليل
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Waiting Containers Card -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>حاويات في انتظار التحميل
+                        </h5>
+                        <span class="badge bg-white text-dark rounded-pill">{{ count($container) }}</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light" style="position: sticky; top: 0;">
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">رقم الحاوية</th>
+                                        <th class="text-center">العميل</th>
+                                        <th class="text-center">الحجم</th>
+                                        <th class="text-center">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($container as $item)
+                                        <tr>
+                                            <td class="text-center align-middle">{{ $item->id }}</td>
+                                            <td class="text-center align-middle fw-bold">{{ $item->number }}</td>
+                                            <td class="text-center align-middle">{{ $item->customs->importer_name }}</td>
+                                            <td class="text-center align-middle">
+                                                <span class="badge bg-primary">{{ $item->size }}</span>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <!-- Rent/Unrent Button -->
+                                                    <form action="{{ route('ContainerRentStatus', $item->id) }}"
+                                                        method="GET" class="d-inline">
+                                                        <input name="status" value="{{ $item->status }}" hidden />
+                                                        <button type="submit"
+                                                            class="btn btn-sm {{ $item->status == 'wait' ? 'btn-outline-danger' : 'btn-outline-warning' }}"
+                                                            title="{{ $item->status == 'wait' ? 'تأجير الحاوية' : 'إلغاء التأجير' }}">
+                                                            <i
+                                                                class="fas {{ $item->status == 'wait' ? 'fa-hand-holding-usd' : 'fa-ban' }}"></i>
+                                                        </button>
+                                                    </form>
+
+                                                    <!-- Storage Button -->
+                                                    <button type="button" class="btn btn-sm btn-outline-success"
+                                                        data-toggle="modal"
+                                                        data-target="#storageContainer{{ $item->id }}"
+                                                        title="تخزين">
+                                                        <i class="fas fa-warehouse"></i>
+                                                    </button>
+
+                                                    @if (!auth()->user()?->userinfo?->job_title == 'operator')
+                                                        <!-- Delete Button -->
+                                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                            data-toggle="modal"
+                                                            data-target="#deleteModal{{ $item->id }}" title="حذف">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @endif
                                                 </div>
-                                                <div class="modal-body text-center">
-                                                    <p>هل أنت متأكد أنك تريد حذف الحاوية رقم {{ $item->number }}؟</p>
+
+                                                <!-- Storage Modal -->
+                                                <div class="modal fade" id="storageContainer{{ $item->id }}"
+                                                    tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-success text-white">
+                                                                <h5 class="modal-title">تخزين الحاوية {{ $item->number }}
+                                                                </h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="{{ route('container.storage', $item->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">السائق</label>
+                                                                        <select class="form-select" name="driver"
+                                                                            required>
+                                                                            <option value="">اختر السائق</option>
+                                                                            @foreach ($driver as $driverItem)
+                                                                                <option value="{{ $driverItem->id }}">
+                                                                                    {{ $driverItem->name }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">السيارة</label>
+                                                                        <select class="form-select" name="car"
+                                                                            required>
+                                                                            <option value="">اختر السيارة</option>
+                                                                            @foreach ($cars as $car)
+                                                                                <option value="{{ $car->id }}">
+                                                                                    {{ $car->driver?->name }} -
+                                                                                    {{ $car->number }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">الحوافز</label>
+                                                                        <input type="number" class="form-control"
+                                                                            name="tips" placeholder="مبلغ الحوافز"
+                                                                            required>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">تاريخ النقل</label>
+                                                                        <input type="date" class="form-control"
+                                                                            name="transfer_date">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">إلغاء</button>
+                                                                    <button type="submit" class="btn btn-success">تأكيد
+                                                                        التخزين</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">إلغاء</button>
-                                                    <form action="{{ route('deleteContainer', $item->id) }}"
+
+                                                <!-- Delete Modal -->
+                                                @if (!auth()->user()?->userinfo?->job_title == 'operator')
+                                                    <div class="modal fade" id="deleteModal{{ $item->id }}"
+                                                        tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header bg-danger text-white">
+                                                                    <h5 class="modal-title">حذف الحاوية</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body text-center">
+                                                                    <div class="mb-4">
+                                                                        <i
+                                                                            class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                                                                        <h5>هل أنت متأكد من حذف الحاوية؟</h5>
+                                                                        <p>رقم الحاوية:
+                                                                            <strong>{{ $item->number }}</strong></p>
+                                                                        <p>العميل:
+                                                                            <strong>{{ $item->customs->importer_name }}</strong>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">إلغاء</button>
+                                                                    <form
+                                                                        action="{{ route('deleteContainer', $item->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <button type="submit"
+                                                                            class="btn btn-danger">تأكيد الحذف</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transported Containers Card -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-truck-moving me-2"></i>الحاويات المحملة
+                        </h5>
+                        <span class="badge bg-white text-success rounded-pill">{{ count($containerPort) }}</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light" style="position: sticky; top: 0;">
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">رقم الحاوية</th>
+                                        <th class="text-center">العميل</th>
+                                        <th class="text-center">التاريخ</th>
+                                        <th class="text-center">الحجم</th>
+                                        <th class="text-center">الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($containerPort as $item)
+                                        <tr>
+                                            <td class="text-center align-middle">{{ $item->id }}</td>
+                                            <td class="text-center align-middle fw-bold">{{ $item->number }}</td>
+                                            <td class="text-center align-middle">{{ $item->customs->importer_name }}</td>
+                                            <td class="text-center align-middle">{{ $item->transfer_date }}</td>
+                                            <td class="text-center align-middle">
+                                                <span class="badge bg-primary">{{ $item->size }}</span>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    data-toggle="modal"
+                                                    data-target="#confirmationModal{{ $item->id }}"
+                                                    title="إلغاء التحميل">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Cancel Transport Modal -->
+                                        <div class="modal fade" id="confirmationModal{{ $item->id }}" tabindex="-1"
+                                            role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title">إلغاء تحميل الحاوية</h5>
+                                                        <button type="button" class="btn-close" data-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('updateContainer', $item->id) }}"
                                                         method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-danger">حذف</button>
+                                                        <input type="hidden" name="status"
+                                                            value="{{ $item->rent_id ? 'rent' : 'wait' }}">
+                                                        <div class="modal-body text-center">
+                                                            <div class="mb-4">
+                                                                <i
+                                                                    class="fas fa-question-circle fa-3x text-warning mb-3"></i>
+                                                                <h5>هل تريد إلغاء تحميل هذه الحاوية؟</h5>
+                                                                <p>رقم الحاوية: <strong>{{ $item->number }}</strong></p>
+                                                                <p>العميل:
+                                                                    <strong>{{ $item->customs->importer_name }}</strong>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">إلغاء</button>
+                                                            <button type="submit" class="btn btn-danger">تأكيد
+                                                                الإلغاء</button>
+                                                        </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
-                            </td>
-                            <form action="{{ route('updateContainer', $item->id) }}" method="POST">
-                                @csrf
-                                <input type="text" hidden name="status" value="transport">
-                                <td class="text-center">{{ $item->customs->subclient_id }}</td>
-                                <td class="text-center">{{ $item->client->name }}</td>
-
-                                @if ($item->status == 'rent')
-                                    <td class="text-center">
-                                        <input class="form-select" required type="date" name="created_at" />
-                                    </td>
-                                    <td class="text-center">
-                                        <select class="form-select" name="rent_id" required>
-                                            <option value="">اختر شركة الاجار</option>
-                                            @foreach ($rents as $items)
-                                                <option value="{{ $items->id }}">{{ $items->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td></td>
-                                @else
-                                    <td class="text-center">
-                                        <input class="form-select" required type="date" name="transfer_date" />
-                                    </td>
-                                    <td class="text-center">
-                                        <select class="form-select w-100" name="car" required>
-                                            <option value="">اختر السيارة</option>
-                                            @foreach ($cars as $driverItem)
-                                                <option value="{{ $driverItem->id }}">
-                                                    {{ $driverItem->driver?->name }} - {{ $driverItem->number }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td class="text-center">
-                                        <select class="form-select w-100" name="driver" required>
-                                            <option value="">اختر السائق</option>
-                                            @foreach ($driver as $driverItem)
-                                                <option value="{{ $driverItem->id }}">{{ $driverItem->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                @endif
-                                <td class="text-center">{{ $item->size }}</td>
-                                <td class="text-center">{{ $item->number }}</td>
-                                <td class="text-center">
-                                    <button type="submit" class="btn btn-danger d-inline-block">
-                                        @if ($item->status == 'wait')
-                                            الانتظار
-                                        @elseif($item->status == 'rent')
-                                            ايجار
-                                        @endif
-                                    </button>
-                                </td>
-                                <td class="text-center">{{ $item->id }}</td>
-                            </form>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="container mt-5">
-            <div class="table-container overflow-auto mt-4 p-3"
-                style="max-height: 700px; overflow: auto; position: relative;">
-                <h3 class="text-center mb-4 text-white" style="position: sticky; top: 0; z-index: 0;">
-                    {{ count($containerPort) }} الحاويات المحملة</h3>
-                <table class="table table-striped table-bordered table-hover table-sm">
-                    <thead class="bg-aqua" style="position: sticky; top: 0; z-index: 0;">
-                        <tr>
-                            <th scope="col" class="text-center">العميل</th>
-                            <th scope="col" class="text-center">مكتب التخليص</th>
-                            <th scope="col" class="text-center">التاريخ</th>
-                            <th scope="col" class="text-center">السيارة</th>
-                            <th scope="col" class="text-center">السائق</th>
-                            <th scope="col" class="text-center">حجم الحاوية</th>
-                            <th scope="col" class="text-center">رقم الحاوية</th>
-                            <th scope="col" class="text-center">الحالة</th>
-                            <th scope="col" class="text-center">#</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($containerPort as $item)
-                            <tr>
-                                <td class="text-center">{{ $item->customs->subclient_id }}</td>
-                                <td class="text-center">{{ $item->client->name }}</td>
-                                <td class="text-center">{{ $item->transfer_date }}</td>
-                                @if ($item->rent_id == null)
-                                    <td class="text-center">{{ $item->car->number ?? 0 }}</td>
-                                    <td class="text-center">{{ $item->driver->name ?? 0 }}</td>
-                                @else
-                                    <td class="text-center">{{ $item->rent->name }}</td>
-                                    <td class="text-center">اسم شركة الايجار</td>
-                                @endif
-                                <td class="text-center">{{ $item->size }}</td>
-                                <td class="text-center">{{ $item->number }}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-success d-inline-block" data-toggle="modal"
-                                        data-target="#confirmationModal{{ $item->id }}">
-                                        {{ $item->status == 'transport' ? 'الغاء التحميل' : $item->status }}
-                                    </button>
-                                </td>
-                                <td class="text-center">{{ $item->id }}</td>
-                            </tr>
-
-                            <!-- Status Confirmation Modal -->
-                            <div class="modal fade" id="confirmationModal{{ $item->id }}" tabindex="-1"
-                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">تأكيد العملية</h5>
-                                            <button type="button" class="btn-close" data-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body text-center"
-                                            style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: bold;">
-                                            <?php $container = \App\Models\Container::find($item->id); ?>
-                                            <p>
-                                                هل تريد الغاء تحميل حاوية {{ $container->number }} للعميل
-                                                {{ $container->customs->subclient_id }}
-                                            </p>
-                                        </div>
-                                        <form action="{{ route('updateContainer', $item->id) }}" method="POST">
-                                            @csrf
-                                            @if ($container->rent_id == null)
-                                                <input type="text" hidden name="status" value="wait">
-                                            @else
-                                                <input type="text" hidden name="status" value="rent">
-                                            @endif
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">إلغاء</button>
-                                                <button type="submit" class="btn btn-primary">تأكيد</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </tbody>
-                </table>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            // PDF Analysis Form Submission
+            $('#pdfAnalysisForm').on('submit', function(e) {
+                e.preventDefault();
+
+                // Show loading state
+                $('#analysisResults').html(`
+            <div class="text-center py-4">
+                <div class="spinner-border text-info" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">جاري تحليل الملف، الرجاء الانتظار...</p>
+            </div>
+        `);
+                $('#analysisPreview').removeClass('d-none');
+
+                // Submit form via AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#analysisResults').html(`
+                        <div class="alert alert-success">
+                            <h6>نتيجة التحليل:</h6>
+                            <pre>${JSON.stringify(response.data, null, 2)}</pre>
+                        </div>
+                        <button class="btn btn-sm btn-primary" onclick="importAnalysisResults()">
+                            <i class="fas fa-file-import"></i> استيراد النتائج
+                        </button>
+                    `);
+                        } else {
+                            $('#analysisResults').html(`
+                        <div class="alert alert-danger">
+                            <h6>خطأ في التحليل:</h6>
+                            <p>${response.message}</p>
+                        </div>
+                    `);
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#analysisResults').html(`
+                    <div class="alert alert-danger">
+                        <h6>حدث خطأ:</h6>
+                        <p>${xhr.responseJSON?.message || 'حدث خطأ أثناء معالجة الملف'}</p>
+                    </div>
+                `);
+                    }
+                });
+            });
+
+            function importAnalysisResults() {
+                // Implement your import logic here
+                alert('سيتم تنفيذ استيراد النتائج هنا');
+            }
+        </script>
+    @endpush
+
+    <style>
+        .table-container {
+            scrollbar-width: thin;
+            scrollbar-color: #adb5bd #f8f9fa;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #adb5bd;
+            border-radius: 10px;
+        }
+
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            font-weight: 600;
+        }
+
+        .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.65em;
+        }
+
+        .form-select,
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
 
 @stop

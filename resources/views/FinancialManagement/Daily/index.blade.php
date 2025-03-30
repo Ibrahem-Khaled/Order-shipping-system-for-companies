@@ -246,7 +246,7 @@
                                                         @if ($item->container_id !== null)
                                                             <tr>
                                                                 <td>{{ $item->price }}</td>
-                                                                <td>{{ $item?->container?->customs?->subclient_id }}</td>
+                                                                <td>{{ $item?->container?->customs?->importer_name }}</td>
                                                                 <td>{{ $item->client?->name }}</td>
                                                                 <td>{{ $item->container?->number }}</td>
                                                                 <td>{{ $item?->container?->customs?->statement_number }}

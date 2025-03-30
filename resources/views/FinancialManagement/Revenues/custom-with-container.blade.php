@@ -62,11 +62,11 @@
                                                 </div>
                                                 <div class="col">
                                                     @if (auth()->user()?->userinfo?->job_title == 'administrative')
-                                                        <input type="text" value="{{ $custom->subclient_id }}"
+                                                        <input type="text" value="{{ $custom->importer_name }}"
                                                             class="form-control" placeholder="اسم العميل" disabled>
                                                     @else
-                                                        <input type="text" name="customs_subclient_id"
-                                                            value="{{ $custom->subclient_id }}" class="form-control"
+                                                        <input type="text" name="customs_importer_name"
+                                                            value="{{ $custom->importer_name }}" class="form-control"
                                                             placeholder="اسم العميل">
                                                     @endif
                                                 </div>
@@ -96,7 +96,7 @@
                             @endif
                         </td>
                         <td>{{ $item->client->name }}</td>
-                        <td>{{ $custom->subclient_id }}</td>
+                        <td>{{ $custom->importer_name }}</td>
                         <td>{{ $item->number }}</td>
                     </tr>
                 @endforeach

@@ -57,7 +57,7 @@
                                 </td>
                                 <td>{{ $withdrawPrice }}</td>
                                 <td>{{ $transportContainers->count() }}</td>
-                                <td>{{ $custom->subclient_id }}</td>
+                                <td>{{ $custom->importer_name }}</td>
                                 <td>
                                     <a href="{{ route('showContainer', $custom->id) }}">{{ $custom->statement_number }}</a>
                                 </td>

@@ -34,7 +34,7 @@
                                 <ul>
                                     <li>رقم الحاوية: {{ $lastContainer->number }}</li>
                                     <li>نوع الحاوية: {{ $lastContainer->size }}</li>
-                                    <li>اسم العميل: {{ $lastContainer->customs->subclient_id }}</li>
+                                    <li>اسم العميل: {{ $lastContainer->customs->importer_name }}</li>
                                     <li>رقم البيان: {{ $lastContainer->customs->statement_number }}</li>
                                     <li>تاريخ التحميل:
                                         {{ \Carbon\Carbon::parse($lastContainer->transfer_date)->format('Y-m-d') }}</li>

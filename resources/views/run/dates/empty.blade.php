@@ -68,7 +68,7 @@
                                 <x-countdown-timer :id="$item->id" :transfer_date="$item->transfer_date" :date_empty="$item->date_empty" />
                                 <x-edit-modal :id="$item->id" :date_empty="$item->date_empty" />
                             </td>
-                            <td class="text-center">{{ $item->customs->subclient_id }}</td>
+                            <td class="text-center">{{ $item->customs->importer_name }}</td>
                             <td class="text-center">{{ $item->client->name }}</td>
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
@@ -137,7 +137,7 @@
                                 <x-countdown-timer :id="$item->id" :transfer_date="$item->transfer_date" :date_empty="$item->date_empty" />
                                 <x-edit-modal :id="$item->id" :date_empty="$item->date_empty" />
                             </td>
-                            <td class="text-center">{{ $item->customs->subclient_id }}</td>
+                            <td class="text-center">{{ $item->customs->importer_name }}</td>
                             <td class="text-center">{{ $item->client->name }}</td>
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>
@@ -220,7 +220,7 @@
                 <x-slot name="body">
                     @foreach ($done as $item)
                         <tr>
-                            <td class="text-center">{{ $item->customs->subclient_id }}</td>
+                            <td class="text-center">{{ $item->customs->importer_name }}</td>
                             <td class="text-center">{{ $item->client->name }}</td>
                             <td class="text-center">{{ $item->size }}</td>
                             <td class="text-center">{{ $item->number }}</td>

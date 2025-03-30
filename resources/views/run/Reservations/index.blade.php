@@ -25,7 +25,7 @@
                             {{-- {{ $statement->expire_customs ?? 'لا يوجد تاريخ' }} --}}
                         </td>
                         <td>{{ $statement->client->name }}</td>
-                        <td>{{ $statement->subclient_id }}</td>
+                        <td>{{ $statement->importer_name }}</td>
                         <td>{{ $statement->customs_weight }} كجم</td>
                         <td>{{ $statement->container->where('status', 'transport')->count() }}</td>
                         <td>{{ $statement->container->where('status', 'wait')->count() }}</td>

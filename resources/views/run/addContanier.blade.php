@@ -21,8 +21,8 @@
                                 </div>
                                 <div class="mb-3 col-md-2">
                                     <label for="containerClient">اسم العميل</label>
-                                    <input type="text" id="containerClient" name="subclient_id"
-                                        value="{{ $custom->subclient_id }}" class="form-control" disabled>
+                                    <input type="text" id="containerClient" name="importer_name"
+                                        value="{{ $custom->importer_name }}" class="form-control" disabled>
                                 </div>
                                 <div class="mb-3 col-md-2">
                                     <label for="containerSize">حجم الحاوية</label>

@@ -7,192 +7,188 @@ use App\Models\Container;
 use App\Models\User;
 use App\Models\CustomsDeclaration;
 use Illuminate\Http\Request;
-use Spatie\PdfToText\Pdf;
-use ArPHP\I18N\Arabic;
-
+use DeepSeek\DeepSeekClient;
 
 class ConvertPdfToTextController extends Controller
 {
     public function convert(Request $request)
     {
-        // التحقق من وجود ملف PDF في الطلب
-        if ($request->hasFile('pdf_file')) {
-            $pdfFile = $request->file('pdf_file');
+        set_time_limit(120);
 
-            // حفظ الملف مؤقتًا
-            $path = $pdfFile->store('temp');
+        // التحقق من صحة الطلب
+        $validator = validator($request->all(), [
+            'pdf_file' => 'required|file|mimes:pdf|max:10240', // 10MB
+        ]);
 
-            // استخدام حزمة Spatie لتحويل PDF إلى نص
-            $text = (new Pdf(config('pdf-to-text.pdf_to_text.binaries.windows')))
-                ->setPdf(storage_path('app/' . $path))
-                ->text();
-
-            // حذف الملف المؤقت بعد التحويل
-            unlink(storage_path('app/' . $path));
-
-            // استخراج البيانات المطلوبة من النص
-            $institutionName = $this->extractInstitutionName($text);
-            $statementNumber = $this->extractStatementNumber($text);
-            $subclientId = $this->extractSubclientId($text); // المستورد
-            $expireCustoms = $this->extractExpireCustoms($text);
-            $customsWeight = $this->extractCustomsWeight($text);
-
-            // الحصول على العميل (client) من قاعدة البيانات
-            $client = $this->findClosestMatch($institutionName);
-            if (!$client) {
-                return response()->json(['error' => 'Client not found'], 404);
-            }
-
-            // // حفظ البيانات في جدول customs_declarations
-            // $customsDeclaration = CustomsDeclaration::create([
-            //     'statement_number' => $statementNumber,
-            //     'client_id' => $client->id,
-            //     'subclient_id' => $subclientId,
-            //     'expire_customs' => $expireCustoms,
-            //     'customs_weight' => $customsWeight,
-            // ]);
-
-            // استخراج بيانات الحاوية (Container) من النص
-            $containerNumber = $this->extractContainerNumbers($text);
-            $containerSize = $this->extractContainerSize($text);
-
-            // // حفظ البيانات في جدول containers
-            // $container = Container::create([
-            //     'customs_id' => $customsDeclaration->id,
-            //     'client_id' => $client->id,
-            //     'number' => $containerNumber,
-            //     'size' => $containerSize,
-            //     'status' => 'wait', // الحالة الافتراضية
-            // ]);
-
-            // إرجاع النتيجة
+        if ($validator->fails()) {
             return response()->json([
-                // 'customs_declaration' => $customsDeclaration,
-                // 'container' => $container,
-                'text' => $text,
-                // 'institution_name' => $institutionName,
-                // 'client' => $client,
-                // 'statement_number' => intval($statementNumber),
-                // 'subclient_id' => $subclientId,
-                // 'expire_customs' => $expireCustoms,
-                // 'customs_weight' => intval($customsWeight),
-                'container_number' => $containerNumber,
-                // 'container_size' => $containerSize,
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $pdfFile = $request->file('pdf_file');
+        // حفظ الملف مؤقتًا
+        $path = $pdfFile->store('temp');
+        $fullPath = storage_path('app/' . $path);
+
+        // استخراج النص من الملف
+        try {
+            $parser = new \Smalot\PdfParser\Parser();
+            $pdf = $parser->parseFile($fullPath);
+            $textContent = $pdf->getText();
+        } catch (\Exception $e) {
+            // إذا كان الخطأ بسبب Invalid object reference، نجرب طريقة بديلة باستخدام pdftotext
+            if (strpos($e->getMessage(), 'Invalid object reference') !== false) {
+                $output = shell_exec("pdftotext " . escapeshellarg($fullPath) . " -");
+                if ($output) {
+                    $textContent = $output;
+                } else {
+                    unlink($fullPath);
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'فشل في قراءة الملف PDF باستخدام Smalot أو pdftotext.',
+                    ], 500);
+                }
+            } else {
+                unlink($fullPath);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'فشل في قراءة الملف PDF: ' . $e->getMessage(),
+                ], 500);
+            }
+        }
+        // حذف الملف المؤقت
+        unlink($fullPath);
+
+        // التحقق من وجود نص قابل للقراءة
+        if (empty(trim($textContent))) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'الملف PDF لا يحتوي على نص قابل للقراءة أو قد يكون مسحوباً ضوئياً',
+            ], 400);
+        }
+
+        // التحقق من طول النص
+        if (strlen($textContent) > 100000) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'المستند كبير جداً. الحد الأقصى المسموح: 100000 حرف',
+            ], 400);
+        }
+
+        // معالجة النص باستخدام DeepSeekClient
+        try {
+            $deepseek = app(DeepSeekClient::class);
+            $response = $deepseek->query(
+                "يرجى تحويل بيانات PDF التالية إلى صيغة JSON واستخراج الحقول التالية فقط:
+                1. رقم الإعلان (statement_number) وهو ليس رقم الموحد
+                2. اسم مكتب التخليص الجمركي (client_id)
+                3. اسم المستورد أو المصدر (importer_name)
+                4. تاريخ التفريغ (expire_customs)
+                5. الوزن الإجمالي (customs_weight) وإذا كان الرقم غير صحيح يرجى تصحيحه.
+                
+                بالإضافة إلى ذلك، يرجى استخراج بيانات الحاويات في مصفوفة تحتوي على:
+                - رقم الحاوية (number) مع ازالة الحروف غير الضرورية
+                - حجم الحاوية (size) حيث تكون القيمة 20 أو 40 أو 'box'                
+                النص: " . $textContent
+            )->run();
+
+            if (empty($response)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'لم يتم الحصول على استجابة من خدمة المعالجة',
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'حدث خطأ أثناء معالجة النص: ' . $e->getMessage(),
+            ], 500);
+        }
+        $data = json_decode($response, true);
+
+        if (isset($data['choices'][0]['message']['content'])) {
+            $content = $data['choices'][0]['message']['content'];
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'لم يتم الحصول على استجابة صحيحة من خدمة المعالجة',
+            ], 500);
+        }
+        if (preg_match('/```json(.*?)```/s', $content, $matches)) {
+            $jsonString = trim($matches[1]);
+            $jsonData = json_decode($jsonString, true);
+        } else {
+            // إذا لم يتم العثور على الجزء الصحيح، يمكن إرجاع خطأ
+            return response()->json([
+                'status' => 'error',
+                'message' => 'لم يتم العثور على بيانات JSON صالحة في الاستجابة',
+            ], 500);
+        }
+
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'تم استخراج البيانات بنجاح',
+        //     'data' => $jsonData,
+        // ], 200);
+
+        return $this->addResponseFromModel($jsonData);
+
+    }
+
+    public function addResponseFromModel($data)
+    {
+        $user = User::where('name', 'like', '%' . $data['client_id'] . '%')->first();
+        if (!$user) {
+            $user = User::create([
+                'name' => $data['client_id'],
+                'role' => 'client',
             ]);
         }
+        // تحقق مما إذا كان المستخدم موجودًا
+        if ($user) {
+            $customsDeclaration = CustomsDeclaration::create([
+                'client_id' => $user->id,
+                'statement_number' => $data['statement_number'],
+                'importer_name' => $data['importer_name'],
+                // 'expire_customs' => $data['expire_customs'],
+                'customs_weight' => $data['customs_weight'],
+            ]);
 
-        // في حالة عدم وجود ملف PDF في الطلب
+            foreach ($data['containers'] as $containerData) {
+                $allowedSizes = ['20', '40', 'box'];
+                $size = $containerData['size']; // استخراج القيمة من البيانات
+            
+                // تحويل القيمة إلى سلسلة إذا كانت رقمية
+                if (is_numeric($size)) {
+                    $size = (string)$size;
+                }
+            
+                if (!in_array($size, $allowedSizes, true)) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'حجم الحاوية غير صحيح. يجب أن يكون "20" أو "40" أو "box".'
+                    ], 422);
+                }
+                
+                Container::create([
+                    'customs_id' => $customsDeclaration->id,
+                    'client_id'  => $user->id,
+                    'number'     => $containerData['number'],
+                    'size'       => $size,
+                ]);
+            }
+            
+            
+        }
         return response()->json([
-            'error' => 'No PDF file uploaded'
-        ], 400);
-    }
-
-    private function findClosestMatch($institutionName)
-    {
-        // تحويل الاسم المدخل إلى UTF8 لضمان التوافق مع النصوص العربية
-        $institutionName = mb_strtolower(trim($institutionName), 'UTF-8');
-
-        // استخدام Full-Text Search مع النصوص العربية
-        return User::whereRaw("MATCH(name) AGAINST(? IN BOOLEAN MODE)", [$institutionName])
-            ->orderByRaw("MATCH(name) AGAINST(?) DESC", [$institutionName]) // ترتيب النتائج حسب الأفضل
-            ->first();
-    }
-
-
-    private function extractInstitutionName($text)
-    {
-        // البحث عن النص الذي يسبق ".Licence No"
-        preg_match('/\r\n(.*?)\r\n‫‪\.Licence No‬‬/u', $text, $matches);
-
-        // تنظيف النص إذا تم العثور عليه
-        if (!empty($matches[1])) {
-            $name = preg_replace('/[\r\n]+/', ' ', $matches[1]); // إزالة الانتقالات بين الأسطر
-            $name = preg_replace('/\s+/', ' ', $name); // إزالة المسافات الزائدة
-            return trim($name); // تنظيف المسافات من البداية والنهاية
-        }
-
-        return null; // إذا لم يتم العثور على النص
-    }
-
-    // دالة لاستخراج رقم البيان الجمركي
-    private function extractStatementNumber($text)
-    {
-        preg_match('/\.Dec No[\s\S]*?(\d+)/u', $text, $matches);
-        return $matches[1] ?? null;
-    }
-
-    // دالة لاستخراج المستورد (subclient_id)
-    private function extractSubclientId($text)
-    {
-        // البحث عن المستورد باستخدام نمط معين
-        preg_match('/Delivery Order.*\R+\s*([^\d]+)/u', $text, $matches);
-        $result = $matches[1] ?? null;
-
-        // تنظيف النص إذا تم العثور عليه
-        if ($result) {
-            // إزالة الرموز غير المرئية والمسافات الزائدة
-            $result = preg_replace('/[\r\n]+/', ' ', $result); // إزالة الانتقالات بين الأسطر
-            $result = preg_replace('/\s+/', ' ', $result); // إزالة المسافات الزائدة
-            $result = trim($result); // إزالة المسافات من بداية ونهاية النص
-        }
-
-        return $result;
-    }
-
-    // دالة لاستخراج تاريخ انتهاء الجمارك
-    private function extractExpireCustoms($text)
-    {
-        // إزالة الرموز غير المرئية وتحسين النص
-        $cleanedText = preg_replace('/[\r\n]+/', ' ', $text); // إزالة الانتقالات بين الأسطر
-        $cleanedText = preg_replace('/\s+/', ' ', $cleanedText); // إزالة المسافات الزائدة
-
-        // البحث عن النص "Importer \ Exporter" متبوعًا بتاريخ
-        preg_match('/Importer\s*\\\\\s*Exporter.*?(\d{2}-\d{2}-\d{4})/u', $cleanedText, $matches);
-
-        // إعادة التاريخ إذا وجد
-        return $matches[1] ?? null;
-    }
-
-    // دالة لاستخراج وزن الجمارك
-    private function extractCustomsWeight($text)
-    {
-        // تنظيف النص
-        $cleanedText = preg_replace('/[\r\n]+/', ' ', $text); // إزالة الانتقالات بين الأسطر
-        $cleanedText = preg_replace('/\s+/', ' ', $cleanedText); // إزالة المسافات الزائدة
-
-        // البحث عن الرقم الذي يظهر قبل كلمة "Measurement"
-        preg_match('/(\d+)\s*Measurement/u', $cleanedText, $matches);
-
-        // إعادة الرقم إذا وُجد
-        return $matches[1] ?? 0;
-    }
-    // دالة لاستخراج رقم الحاوية
-    private function extractContainerNumbers($text)
-    {
-        // البحث عن القسم الخاص بـ "Marks & Numbers"
-        if (preg_match('/Marks & Numbers(.*?)(?=(Port of Loading|Port of Discharge|$))/s', $text, $section)) {
-            $relevantPart = $section[1]; // الجزء بين "Marks & Numbers" و "Port of Loading" أو "Port of Discharge"
-
-            // البحث عن جميع أرقام الحاويات بصيغة AAAA 1234567
-            preg_match_all('/\b[A-Z]{4}\s\d{7}\b/', $relevantPart, $matches);
-
-            // التأكد من عدم وجود أرقام حاويات مكررة
-            $uniqueContainers = array_unique($matches[0] ?? []);
-
-            // إرجاع النتائج
-            return $uniqueContainers;
-        }
-
-        // إذا لم يتم العثور على القسم
-        return [];
-    }
-
-
-    // دالة لاستخراج حجم الحاوية
-    private function extractContainerSize($text)
-    {
-        preg_match('/ﺣﺠﻢ ﺍﻟﺤﺎﻭﻳﺔ.*\R+\s*(20|40|box)/u', $text, $matches);
-        return $matches[1] ?? null;
+            'status' => 'success',
+            'customsDeclaration' => $customsDeclaration,
+            'client_id' => $user->id,
+            'containers' => $data['containers'],
+            'message' => 'تمت إضافة البيانات بنجاح',
+        ], 200);
     }
 
 }

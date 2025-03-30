@@ -166,7 +166,7 @@
                         <td style="font-weight: bold">{{ $item->customs->statement_number }}</td>
                         <td>{{ $item->number }}</td>
                         <td>{{ $item->status == 'wait' ? 'انتظار' : 'ايجار' }}</td>
-                        <td>{{ $item->customs->subclient_id }}</td>
+                        <td>{{ $item->customs->importer_name }}</td>
                         <td>{{ $item->size }}</td>
                     </tr>
                 @endforeach

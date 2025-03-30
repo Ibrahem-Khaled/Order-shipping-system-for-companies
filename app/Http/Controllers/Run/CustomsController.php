@@ -71,7 +71,7 @@ class CustomsController extends Controller
 
         $data = CustomsDeclaration::create([
             'statement_number' => $request->statement_number,
-            'subclient_id' => $request->subClient,
+            'importer_name' => $request->subClient,
             'client_id' => $clientId,
             'customs_weight' => $request->customs_weight,
             'expire_customs' => $request->expire_customs,
