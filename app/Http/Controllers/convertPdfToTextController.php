@@ -48,13 +48,15 @@ class ConvertPdfToTextController extends Controller
                     return response()->json([
                         'status' => 'error',
                         'message' => 'فشل في قراءة الملف PDF باستخدام Smalot أو pdftotext.',
+                        'error' => $e->getMessage()
                     ], 500);
                 }
             } else {
                 unlink($fullPath);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'فشل في قراءة الملف PDF: ' . $e->getMessage(),
+                    'message' => 'فشل في قراءة الملف PDF.',
+                    'error' => $e->getMessage()
                 ], 500);
             }
         }
@@ -65,7 +67,7 @@ class ConvertPdfToTextController extends Controller
         if (empty(trim($textContent))) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'الملف PDF لا يحتوي على نص قابل للقراءة أو قد يكون مسحوباً ضوئياً',
+                'message' => 'الملف PDF لا يحتوي على نص قابل للقراءة أو قد يكون مسحوباً ضوئياً'
             ], 400);
         }
 
@@ -73,7 +75,7 @@ class ConvertPdfToTextController extends Controller
         if (strlen($textContent) > 100000) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'المستند كبير جداً. الحد الأقصى المسموح: 100000 حرف',
+                'message' => 'المستند كبير جداً. الحد الأقصى المسموح: 100000 حرف'
             ], 400);
         }
 
@@ -82,28 +84,29 @@ class ConvertPdfToTextController extends Controller
             $deepseek = app(DeepSeekClient::class);
             $response = $deepseek->query(
                 "يرجى تحويل بيانات PDF التالية إلى صيغة JSON واستخراج الحقول التالية فقط:
-                1. رقم الإعلان (statement_number) وهو ليس رقم الموحد
-                2. اسم مكتب التخليص الجمركي (client_id)
-                3. اسم المستورد أو المصدر (importer_name)
-                4. تاريخ التفريغ (expire_customs)
-                5. الوزن الإجمالي (customs_weight) وإذا كان الرقم غير صحيح يرجى تصحيحه.
-                
-                بالإضافة إلى ذلك، يرجى استخراج بيانات الحاويات في مصفوفة تحتوي على:
-                - رقم الحاوية (number) مع ازالة الحروف غير الضرورية
-                - حجم الحاوية (size) حيث تكون القيمة 20 أو 40 أو 'box'                
-                النص: " . $textContent
+            1. رقم الإعلان (statement_number) وهو ليس رقم الموحد
+            2. اسم مكتب التخليص الجمركي (client_id)
+            3. اسم المستورد أو المصدر (importer_name)
+            4. تاريخ التفريغ (expire_customs)
+            5. الوزن الإجمالي (customs_weight) وإذا كان الرقم غير صحيح يرجى تصحيحه.
+            
+            بالإضافة إلى ذلك، يرجى استخراج بيانات الحاويات في مصفوفة تحتوي على:
+            - رقم الحاوية (number) مع ازالة الحروف غير الضرورية
+            - حجم الحاوية (size) حيث تكون القيمة 20 أو 40 أو 'box'                
+            النص: " . $textContent
             )->run();
 
             if (empty($response)) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'لم يتم الحصول على استجابة من خدمة المعالجة',
+                    'message' => 'لم يتم الحصول على استجابة من خدمة المعالجة'
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'حدث خطأ أثناء معالجة النص: ' . $e->getMessage(),
+                'message' => 'حدث خطأ أثناء معالجة النص.',
+                'error' => $e->getMessage()
             ], 500);
         }
         $data = json_decode($response, true);
@@ -113,7 +116,7 @@ class ConvertPdfToTextController extends Controller
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'لم يتم الحصول على استجابة صحيحة من خدمة المعالجة',
+                'message' => 'لم يتم الحصول على استجابة صحيحة من خدمة المعالجة'
             ], 500);
         }
         if (preg_match('/```json(.*?)```/s', $content, $matches)) {
@@ -123,18 +126,11 @@ class ConvertPdfToTextController extends Controller
             // إذا لم يتم العثور على الجزء الصحيح، يمكن إرجاع خطأ
             return response()->json([
                 'status' => 'error',
-                'message' => 'لم يتم العثور على بيانات JSON صالحة في الاستجابة',
+                'message' => 'لم يتم العثور على بيانات JSON صالحة في الاستجابة'
             ], 500);
         }
 
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'تم استخراج البيانات بنجاح',
-        //     'data' => $jsonData,
-        // ], 200);
-
         return $this->addResponseFromModel($jsonData);
-
     }
 
     public function addResponseFromModel($data)
@@ -159,28 +155,28 @@ class ConvertPdfToTextController extends Controller
             foreach ($data['containers'] as $containerData) {
                 $allowedSizes = ['20', '40', 'box'];
                 $size = $containerData['size']; // استخراج القيمة من البيانات
-            
+
                 // تحويل القيمة إلى سلسلة إذا كانت رقمية
                 if (is_numeric($size)) {
-                    $size = (string)$size;
+                    $size = (string) $size;
                 }
-            
+
                 if (!in_array($size, $allowedSizes, true)) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'حجم الحاوية غير صحيح. يجب أن يكون "20" أو "40" أو "box".'
                     ], 422);
                 }
-                
+
                 Container::create([
                     'customs_id' => $customsDeclaration->id,
-                    'client_id'  => $user->id,
-                    'number'     => $containerData['number'],
-                    'size'       => $size,
+                    'client_id' => $user->id,
+                    'number' => $containerData['number'],
+                    'size' => $size,
                 ]);
             }
-            
-            
+
+
         }
         return response()->json([
             'status' => 'success',
