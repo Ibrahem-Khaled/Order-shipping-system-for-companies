@@ -31,7 +31,11 @@ class ConvertPdfToTextController extends Controller
         // حفظ الملف مؤقتًا
         $path = $pdfFile->store('temp');
         $fullPath = storage_path('app/' . $path);
-
+        return response()->json([
+            'status' => 'success',
+            'message' => 'تم تحميل الملف بنجاح',
+            'path' => $fullPath,
+        ], 200);
         // استخراج النص من الملف
         try {
             $parser = new \Smalot\PdfParser\Parser();
