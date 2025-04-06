@@ -30,7 +30,7 @@ class ConvertPdfToTextController extends Controller
         $pdfFile = $request->file('pdf_file');
         // حفظ الملف مؤقتًا
         $path = $pdfFile->store('public');
-        $fullPath = storage_path('app/' . $path);
+        $fullPath = asset('storage/' . str_replace('public/', '', $path));
         return response()->json([
             'status' => 'success',
             'message' => 'تم تحميل الملف بنجاح',
