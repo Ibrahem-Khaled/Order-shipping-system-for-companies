@@ -43,7 +43,7 @@ class ConvertPdfToTextController extends Controller
                 if ($output) {
                     $textContent = $output;
                 } else {
-                    unlink($fullPath);
+                    // unlink($fullPath);
                     return response()->json([
                         'status' => 'error', 
                         'message' => 'فشل في قراءة الملف PDF باستخدام Smalot أو pdftotext.',
@@ -51,7 +51,7 @@ class ConvertPdfToTextController extends Controller
                     ], 500);
                 }
             } else {
-                unlink($fullPath);
+                // unlink($fullPath);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'فشل في قراءة الملف PDF.',
@@ -60,7 +60,7 @@ class ConvertPdfToTextController extends Controller
             }
         }
         // حذف الملف المؤقت
-        unlink($fullPath);
+        // unlink($fullPath);
 
         // التحقق من وجود نص قابل للقراءة
         if (empty(trim($textContent))) {
