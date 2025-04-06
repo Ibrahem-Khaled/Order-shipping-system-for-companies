@@ -45,7 +45,7 @@ class ConvertPdfToTextController extends Controller
                 } else {
                     unlink($fullPath);
                     return response()->json([
-                        'status' => 'error',
+                        'status' => 'error', 
                         'message' => 'فشل في قراءة الملف PDF باستخدام Smalot أو pdftotext.',
                         'error' => $e->getMessage()
                     ], 500);
