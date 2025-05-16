@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="mb-3 col-md-2">
                                     <label for="containerNumber">رقم الحاوية</label>
-                                    <input type="number" id="containerNumber" name="number[]" class="form-control"
+                                    <input type="text" id="containerNumber" name="number[]" class="form-control"
                                         placeholder="N123" required>
                                 </div>
                                 <div class="mb-3 col-md-2">

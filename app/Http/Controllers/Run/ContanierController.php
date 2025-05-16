@@ -15,7 +15,7 @@ class ContanierController extends Controller
         $custom = CustomsDeclaration::find($customs_id);
 
         $validator = Validator::make($request->all(), [
-            'number.*' => 'required|min:7|max:7',
+            'number.*' => 'required|min:7|max:14',
         ]);
 
         if ($validator->fails()) {
