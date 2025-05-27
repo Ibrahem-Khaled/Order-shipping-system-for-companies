@@ -52,6 +52,20 @@ class DatesController extends Controller
         return view('run.dates.date', compact('container', 'driver', 'containerPort', 'cars', 'rents'));
     }
 
+
+    public function updateDirection(Request $request, $id)
+    {
+        $request->validate([
+            'direction' => 'nullable|string|max:255'
+        ]);
+
+        $item = Container::findOrFail($id);
+        $item->direction = $request->direction;
+        $item->save();
+
+        return response()->json(['success' => true]);
+    }
+
     public function empty(Request $request)
     {
         $now = Carbon::now();
@@ -68,7 +82,6 @@ class DatesController extends Controller
                 ->paginate(1);
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->paginate(10);
             $storageContainer = Container::whereIn('status', ['storage', 'rent'])->latest('updated_at')->paginate(10);
-
         } else {
             $done = Container::where('status', 'done')
                 ->where(function ($queryBuilder) use ($query) {
@@ -123,6 +136,7 @@ class DatesController extends Controller
             'status' => $request->status,
             'transfer_date' => $request->transfer_date,
             'driver_id' => $request->driver,
+            'direction' => $request->direction,
             'tips' => $driver->tips ?? null,
             'car_id' => $request->car,
             'rent_id' => $request->rent_id ?? null,
@@ -198,7 +212,6 @@ class DatesController extends Controller
                         $flatbed->update(['status' => 1]);
                     }
                 }
-
             } elseif ($request->status == 'transport') {
                 // جلب آخر Tip فارغ (tipsEmpty)
                 $lastTip = $container->tipsEmpty()->latest('created_at')->first();
@@ -222,7 +235,6 @@ class DatesController extends Controller
             $container->update([
                 'status' => $status,
             ]);
-
         } else {
             $container->update([
                 'status' => $status,

@@ -78,6 +78,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
     Route::get('update/container/{id}', [DatesController::class, 'ContainerRentStatus'])->name('ContainerRentStatus');
     Route::get('empty/contaniers', [DatesController::class, 'empty'])->name('empty');
+    Route::post('/direction/update/{id}', [DatesController::class, 'updateDirection']);
     Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
     Route::post('delete/container/{id}', [DatesController::class, 'deleteContainer'])->name('deleteContainer');
     Route::post('update/container/empty/{id}', [DatesController::class, 'updateEmpty'])->name('updateEmpty');
@@ -113,7 +114,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::get('user/profile/settnigs/{userId}', [AuthController::class, 'profile'])->name('profileSettings');
     Route::post('user/profile/update/{userId}', [AuthController::class, 'update'])->name('updateUser');
 
-    //company 
+    //company
     Route::get('company/home', [CompanyController::class, 'index'])->name('CompanyHome');
     Route::get('home', [CompanyController::class, 'index'])->name('home');
     Route::get('company/Detailes', [CompanyController::class, 'companyDetailes'])->name('companyDetailes');
@@ -142,7 +143,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::post('container/storage/{id}', [StorageContainerController::class, 'storageContainer'])->name('container.storage');
     Route::post('chnage/container/status/{id}', [StorageContainerController::class, 'changeContainerStatus'])->name('change.container.status');
 
-    //this route flatbed 
+    //this route flatbed
     Route::resource('flatbeds', FlatbedController::class);
 
     //this route Reservations
@@ -156,5 +157,3 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::post('convert/pdf/to/text', [convertPdfToTextController::class, 'convert'])->name('process.customs.pdf');
     Route::post('analyze/pdf', [convertPdfToTextController::class, 'convert'])->name('analyze.pdf');
 });
-
-

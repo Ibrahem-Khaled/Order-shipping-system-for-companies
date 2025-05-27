@@ -52,6 +52,7 @@
         <div class="table-responsive mt-4">
             <x-table class="table-striped">
                 <x-slot name="header">
+                    <th scope="col" class="text-center">موقع الحاوية</th>
                     <th scope="col" class="text-center">ارضية الفارغ</th>
                     <th scope="col" class="text-center">العميل</th>
                     <th scope="col" class="text-center">مكتب التخليص</th>
@@ -64,6 +65,9 @@
                 <x-slot name="body">
                     @foreach ($containerPort as $item)
                         <tr>
+                            <td class="text-center">
+                                {{ $item->direction ?? 'غير محدد' }}
+                            </td>
                             <td class="text-center">
                                 <x-countdown-timer :id="$item->id" :transfer_date="$item->transfer_date" :date_empty="$item->date_empty" />
                                 <x-edit-modal :id="$item->id" :date_empty="$item->date_empty" />
@@ -121,6 +125,7 @@
         <div class="table-responsive mt-4">
             <x-table class="table-striped">
                 <x-slot name="header">
+                    <th scope="col" class="text-center">موقع الحاوية</th>
                     <th scope="col" class="text-center">تاريخ ارضية الفارغ</th>
                     <th scope="col" class="text-center">العميل</th>
                     <th scope="col" class="text-center">مكتب التخليص</th>
@@ -133,6 +138,9 @@
                 <x-slot name="body">
                     @foreach ($storageContainer as $item)
                         <tr>
+                            <td class="text-center">
+                                {{ $item->direction ?? 'غير محدد' }}
+                            </td>
                             <td class="text-center">
                                 <x-countdown-timer :id="$item->id" :transfer_date="$item->transfer_date" :date_empty="$item->date_empty" />
                                 <x-edit-modal :id="$item->id" :date_empty="$item->date_empty" />

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\expenses;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cars;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -49,7 +48,7 @@ class UsersController extends Controller
     }
     public function employeeDaily($id)
     {
-        $user = User::with(['employeedaily','tipsEmpty'])->find($id);
+        $user = User::with(['employeedaily', 'tipsEmpty'])->find($id);
 
         return view('FinancialManagement.Expenses.users.employeeDaily', compact('user'));
     }
@@ -60,6 +59,7 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
 
         $query = $request->input('query');
+        $monthName = \Carbon\Carbon::parse($request->query('query'))->translatedFormat('F Y');
 
         $date = $query ? Carbon::createFromFormat('Y-m', $query) : Carbon::now();
         $currentMonth = $date->month;
@@ -84,7 +84,10 @@ class UsersController extends Controller
         $tips = $currentMonthContainers->sum('tips');
         $allTrips = $tips + $tipsEmpty->sum('price');
 
-        return view('FinancialManagement.Expenses.users.employeeTips', compact('user', 'currentMonthContainers', 'tipsEmpty', 'allTrips'));
+        return view(
+            'FinancialManagement.Expenses.users.employeeTips',
+            compact('user', 'currentMonthContainers', 'tipsEmpty', 'allTrips', 'monthName')
+        );
     }
 
 

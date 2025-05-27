@@ -191,6 +191,17 @@
                                                                     </select>
                                                                 </div>
                                                             @endif
+                                                            <div class="form-group">
+                                                                <label>موقع الحاوية</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control"
+                                                                        name="direction" placeholder="موقع الحاوية">
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text">مثال:
+                                                                            ميناء، مستودع، إلخ</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
@@ -357,6 +368,7 @@
                                         <th class="text-center">تاريخ التحميل</th>
                                         <th class="text-center">وسيلة النقل</th>
                                         <th class="text-center">الحالة</th>
+                                        <th class="text-center">موقع الحاوية</th>
                                         <th class="text-center">الإجراءات</th>
                                     </tr>
                                 </thead>
@@ -378,6 +390,13 @@
                                             </td>
                                             <td class="text-center">
                                                 <span class="badge badge-success">محملة</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="direction-label"
+                                                    data-id="{{ $item->id }}">{{ $item->direction ?? 'غير محدد' }}</span>
+                                                <input type="text"
+                                                    class="direction-input form-control form-control-sm d-none text-center"
+                                                    value="{{ $item->direction }}" data-id="{{ $item->id }}">
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
@@ -544,4 +563,64 @@
             background-color: transparent;
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const labels = document.querySelectorAll('.direction-label');
+            const inputs = document.querySelectorAll('.direction-input');
+
+            labels.forEach(label => {
+                label.addEventListener('click', function() {
+                    label.classList.add('d-none');
+                    const input = label.nextElementSibling;
+                    input.classList.remove('d-none');
+                    input.focus();
+                });
+            });
+
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    updateDirection(input);
+                });
+
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        updateDirection(input);
+                    }
+                });
+            });
+
+            function updateDirection(input) {
+                const id = input.dataset.id;
+                const newValue = input.value;
+
+                fetch(`/system/direction/update/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify({
+                            direction: newValue
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const label = input.previousElementSibling;
+                            label.textContent = newValue || 'غير محدد';
+                            label.classList.remove('d-none');
+                            input.classList.add('d-none');
+                        } else {
+                            alert('حدث خطأ أثناء التحديث');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('تعذر الاتصال بالسيرفر');
+                    });
+            }
+        });
+    </script>
 @endsection

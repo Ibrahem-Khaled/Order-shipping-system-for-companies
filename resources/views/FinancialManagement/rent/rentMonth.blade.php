@@ -9,6 +9,8 @@
             </div>
         </div>
 
+        @include('components.alerts')
+
         <table class="table table-sm table-hover table-bordered">
             <thead class="thead-light">
                 <tr>

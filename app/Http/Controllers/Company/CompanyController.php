@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use App\Models\Cars;
 use App\Models\Container;
-use App\Models\CustomsDeclaration;
 use App\Models\Daily;
 use App\Models\Flatbed;
 use App\Models\SellAndBuy;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -19,167 +17,141 @@ class CompanyController extends Controller
 {
     public function index()
     {
+        // 1. تحديد بداية ونهاية الشهر الحالي
         $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        $endOfMonth   = Carbon::now()->endOfMonth();
 
+        // 2. جلب جميع الحاويات
         $container = Container::all();
-        $employee = User::whereIn('role', ['driver', 'administrative'])->whereNotNull('sallary')->get();
-        $employeeSum = 0;
-        foreach ($employee as $key => $employe) {
-            $employeeSum += $employe->employeedaily->where('type', 'withdraw')->sum('price');
-        }
-        $employeeTips = Container::whereNotNull('driver_id')
-            ->get();
 
+        // 3. مجموع سحوبات الموظفين ذوي الرواتب (driver, administrative)
+        $employeeSum = Daily::whereIn('employee_id', function ($q) {
+            $q->select('id')
+                ->from('users')
+                ->whereIn('role', ['driver', 'administrative'])
+                ->whereNotNull('sallary');
+        })
+            ->where('type', 'withdraw')
+            ->sum('price'); // تنفذ SUM في SQL :contentReference[oaicite:0]{index=0}
 
-        $rentOffecis = User::where('role', 'rent')->get();
-        $totalPriceFromRent = 0;
-        foreach ($rentOffecis as $key => $value) {
-            $totalPriceFromRent += $value->employeedaily->where('type', 'withdraw')->sum('price');
-        }
+        // 4. بقشيش السائقين (مجرد جلب دون تجميع)
+        $employeeTips = Container::whereNotNull('driver_id')->get();
 
-        $uniqueEmployeeIds = Daily::select('employee_id')
-            ->whereNotNull('employee_id')
-            ->distinct()
-            ->pluck('employee_id');
+        // 5. مجموع سحوبات مكاتب الإيجار (role = rent)
+        $totalPriceFromRent = Daily::whereIn('employee_id', User::where('role', 'rent')->pluck('id'))
+            ->where('type', 'withdraw')
+            ->sum('price'); // تنفذ SUM في SQL :contentReference[oaicite:1]{index=1}
 
-        $elbancherSum = 0;
-        foreach ($uniqueEmployeeIds as $value) {
-            $user = User::find($value);
-            if (Str::contains($user->name, 'بنشر')) {
-                $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
-                $elbancherSum = $elbancherSum + $sum;
-            }
-        }
+        // 6. مجموع سحوبات من أسمائهم تحوي "بنشر"
+        $elbancherSum = Daily::whereIn('employee_id', function ($q) {
+            $q->select('id')
+                ->from('users')
+                ->where('name', 'like', '%بنشر%');
+        })
+            ->where('type', 'withdraw')
+            ->sum('price');
 
-        $others = User::whereIn('role', ['driver', 'company'])
-            ->Where(function ($query) {
-                $query->whereNull('sallary');
-            })->whereRaw('name NOT LIKE "%بنشر%"')
-            ->get();
-        $othersSum = 0;
-        foreach ($others as $other) {
-            $user = User::find($other->id);
-            $sum = $user?->employeedaily->where('type', 'withdraw')->sum('price');
-            $othersSum = $othersSum + $sum;
-        }
+        // 7. مجموع سحوبات الباقي (drivers & company بدون راتب وبغير "بنشر")
+        $othersSum = Daily::whereIn('employee_id', function ($q) {
+            $q->select('id')
+                ->from('users')
+                ->whereIn('role', ['driver', 'company'])
+                ->whereNull('sallary')
+                ->where('name', 'not like', '%بنشر%');
+        })
+            ->where('type', 'withdraw')
+            ->sum('price');
 
+        // 8. مجموع سحوبات السيارات
         $cars = Daily::whereNotNull('car_id')
             ->where('type', 'withdraw')
             ->sum('price');
 
+        // 9. مصفوفة الحركات الخاصة بالعملاء للإيداع
         $daily = Daily::whereNotNull('client_id')
             ->where('type', 'deposit')
             ->get();
 
-        $clients = User::all();
+        // 10. مجموع إيداعات العملاء (depositCash)
+        //    يعادل: SUM على جميع سجلات Daily من نوع deposit
+        $depositCash = Daily::where('type', 'deposit')
+            ->whereNotNull('client_id')
+            ->sum('price');
 
-        $depositCash = 0;
-        $withdrawCash = Daily::whereIn('type', ['withdraw', 'partner_withdraw']);
+        // 11. حساب نقل الحاويات
+        $containerTransport    = Container::all();
+        $containerTransferPrice = Daily::whereNotNull('container_id')
+            ->sum('price');
 
-        foreach ($clients as $client) {
-            $depositCash += $client?->clientdaily->where('type', 'deposit')->sum('price');
-        }
+        // 12. باقي حساب العملاء بعد الخصم
+        $clintPriceMinesContainer = $containerTransport->sum('price')
+            + $containerTransferPrice
+            - $depositCash;
 
-        $containerTransport = Container::get();
-        $containerTransferPrice = 0;
-
-        foreach ($containerTransport as $container) {
-            $containerTransferPrice += $container->daily()->whereNotNull('container_id')->sum('price');
-        }
-
-        $clintPriceMinesContainer = $containerTransport->sum('price') + $containerTransferPrice - $depositCash;
-
-
-
-        $dailyData = Daily::whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->latest()
-            ->get();
-
-        $UserData = User::whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->latest()
-            ->get();
-
-        $CustomsDeclarationData = CustomsDeclaration::with('container')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->latest()
-            ->get();
-
-        $containerData = Container::with('customs', 'driver', 'car')
-            ->where('status', 'transport')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->latest()
-            ->get();
-
-        $dailyDataArray = $dailyData->toArray();
-        $CustomsDeclarationDataArray = $CustomsDeclarationData->toArray();
-        $userDataArray = $UserData->toArray();
-        $containerDataArray = $containerData->toArray();
-
-        $notifications = array_merge($dailyDataArray, $CustomsDeclarationDataArray, $userDataArray, $containerDataArray);
-        usort($notifications, function ($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
-
-
+        // 13. بيانات السيارات مع التحميل المسبق للعلاقات لتفادي N+1
         $carData = Cars::with([
             'driver',
-            'container' => function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->whereIn('status', ['transport', 'done'])->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+            'container' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereIn('status', ['transport', 'done'])
+                    ->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
             },
-            'daily' => function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->where('type', 'withdraw')->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
-            }
-        ])->get();
+            'daily' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->where('type', 'withdraw')
+                    ->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+            },
+        ])->get(); // Eager Loading يقلل عدد الاستعلامات :contentReference[oaicite:2]{index=2}
 
-        $buyTransactions = SellAndBuy::where('type', 'buy')->get();
-        $sellTransactions = SellAndBuy::where('type', 'sell')->get();
-        $sellFromHeadMony = SellAndBuy::where('type', 'sell_from_head_mony')->get();
-        $partnerWithdraw = Daily::where('type', 'partner_withdraw')->get();
+        // 14. مجموع عمليات الشراء والبيع والسحب للشركاء
+        $buySum             = SellAndBuy::where('type', 'buy')->sum('price');
+        $sellSum            = SellAndBuy::where('type', 'sell')->sum('price');
+        $sellFromHeadMony   = SellAndBuy::where('type', 'sell_from_head_mony')->sum('price');
+        $partnerWithdrawSum = Daily::where('type', 'partner_withdraw')->sum('price');
 
-        $Profits_from_buying_and_selling = $buyTransactions->sum('price') - $sellTransactions->sum('price');
+        // 15. أرباح الفرق بين الشراء والبيع
+        $Profits_from_buying_and_selling = $buySum - $sellSum;
 
-        $canCashWithdraw =
-            $depositCash -
-            $withdrawCash->sum('price') -
-            $sellFromHeadMony->sum('price') -
-            $Profits_from_buying_and_selling;
+        // 16. النقد المتاح للسحب
+        $canCashWithdraw = $depositCash
+            - $partnerWithdrawSum
+            - $sellFromHeadMony
+            - $Profits_from_buying_and_selling;
 
+        // 17. مجموع التحويلات (نفس containerTransferPrice)
+        $transferPrice = $containerTransferPrice;
 
-        $transferPrice = Daily::where('type', 'withdraw')->whereNotNull('container_id')->sum('price');
-        $buyTransaction = SellAndBuy::where('type', 'buy')->get();
-        $sellTransaction = SellAndBuy::where('type', 'sell')->get();
+        // 18. إجمالي الإيداعات
+        $deposits = $container->sum('price')
+            + $transferPrice
+            + $sellSum;
 
-        $deposits = $container->sum('price') + $transferPrice + $sellTransaction->sum('price');
+        // 19. إجمالي السحوبات
+        $withdraws = $cars
+            + $employeeSum
+            + $totalPriceFromRent
+            + $elbancherSum
+            + $othersSum
+            + $partnerWithdrawSum
+            + $transferPrice
+            + $buySum;
 
-        $withdraws = $cars +
-            $employeeSum +
-            $totalPriceFromRent +
-            $elbancherSum +
-            $othersSum +
-            $partnerWithdraw->sum('price') +
-            $transferPrice +
-            $buyTransaction->sum('price');
-
+        // 20. بيانات العملاء والحاويات الخاصة بهم، والسطحات
         $allCustoms = User::where('role', 'client')->with('container')->get();
-        $flatbeds = Flatbed::get();
+        $flatbeds   = Flatbed::all();
 
-        return view(
-            'Company.index',
-            compact(
-                'container',
-                'notifications',
-                'daily',
-                'carData',
-                'clintPriceMinesContainer',
-                'canCashWithdraw',
-                'withdraws',
-                'deposits',
-                'allCustoms',
-                'flatbeds',
-            )
-        );
+        // عرض الـ View بنفس المتغيرات
+        return view('Company.index', compact(
+            'container',
+            'daily',
+            'carData',
+            'clintPriceMinesContainer',
+            'canCashWithdraw',
+            'withdraws',
+            'deposits',
+            'allCustoms',
+            'flatbeds'
+        ));
     }
+
     public function companyDetailes()
     {
         $partner = User::where('role', 'partner')->get();

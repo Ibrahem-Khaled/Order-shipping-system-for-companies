@@ -47,9 +47,10 @@ class RevenuesController extends Controller
 
     public function accountStatement(Request $request, $clientId)
     {
-        $user = User::with(['customs.container.daily'])->find($clientId);
+        $user = User::with(['customs.container.daily'])->findOrFail($clientId);
         $query = $request->input('query');
         $date = $query ? Carbon::createFromFormat('Y-m', $query) : Carbon::now();
+        $monthName = \Carbon\Carbon::parse($request->query('query'))->translatedFormat('Y F');
 
         $customs = $user->customs()
             ->whereYear('created_at', $date->year)
@@ -58,7 +59,7 @@ class RevenuesController extends Controller
 
         $container = Container::where('number', 'like', '%' . $query . '%')->first();
 
-        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs', ));
+        return view('FinancialManagement.Revenues.accountStatement', compact('user', 'container', 'customs', 'monthName'));
     }
     public function rentMonth(Request $request, $clientId)
     {
@@ -109,25 +110,46 @@ class RevenuesController extends Controller
 
     public function updateContainerPrice(Request $request)
     {
-        $customIds = $request->input('id');
-        $prices = $request->input('price');
+        // قراءة القيم المرسلة من النموذج: كل custom_id يحتوي على مجموعة أسعار جديدة
+        $groupedPrices = $request->input('price_grouped');
 
-        $count = count($prices);
-        if ($count > 0) {
-            for ($i = 0; $i < $count; $i++) {
-                $customId = $customIds[$i];
-                $price = $prices[$i];
-                $custom = Container::where('customs_id', $customId)
-                    ->whereIn('status', ['transport', 'done', 'rent', 'wait'])
-                    ->update([
-                        'price' => $price,
-                    ]);
+        // التحقق من صحة البيانات: كل حقل price يجب أن يكون رقمًا موجبًا
+        $request->validate([
+            'price_grouped' => 'required|array',
+            'price_grouped.*' => 'required|array',
+            'price_grouped.*.*' => 'numeric|min:0',
+        ]);
+
+        // نمر على كل بيان (custom_id)
+        foreach ($groupedPrices as $customId => $newPrices) {
+
+            // نحصل على جميع الحاويات التابعة لهذا البيان والتي حالتها نشطة
+            $containers = Container::where('customs_id', $customId)
+                ->whereIn('status', ['transport', 'done', 'rent', 'wait'])
+                ->get();
+
+            // نجمع الحاويات حسب السعر الحالي (قبل التعديل)
+            $groupedByOriginalPrice = $containers->groupBy('price')->values();
+
+            // الآن نطابق كل مجموعة من الحاويات بسعرها الجديد (بنفس الترتيب)
+            foreach ($newPrices as $index => $newPrice) {
+                // التأكد من وجود مجموعة مقابلة لهذا السعر
+                if (isset($groupedByOriginalPrice[$index])) {
+                    $group = $groupedByOriginalPrice[$index];
+
+                    // تحديث كل الحاويات في هذه المجموعة إلى السعر الجديد
+                    foreach ($group as $container) {
+                        $container->price = $newPrice;
+                        $container->save();
+                    }
+                }
             }
-            return redirect()->back()->with('success', 'تم التحديث بنجاح');
-        } else {
-            return redirect()->back()->with('error', 'يوجد خطا ما');
         }
+
+        return redirect()->back()->with('success', 'تم تحديث أسعار الحاويات بنجاح');
     }
+
+
     public function updateContainerOnly(Request $request)
     {
         $number = $request->input('number');

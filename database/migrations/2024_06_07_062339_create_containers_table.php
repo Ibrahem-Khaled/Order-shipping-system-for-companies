@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -26,6 +27,7 @@ return new class extends Migration {
             $table->enum('status', ['wait', 'transport', 'done', 'rent', 'storage'])->default('wait');
             $table->timestamp('transfer_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('date_empty')->nullable();
+            $table->text('direction')->nullable();
             $table->timestamps();
 
             $table->foreign('driver_id')->references('id')->on('users')->onDelete('cascade');

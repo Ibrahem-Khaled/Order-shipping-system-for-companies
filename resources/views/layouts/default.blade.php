@@ -1,117 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+        rel="stylesheet">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'لوحة التحكم')</title>
     @yield('styles')
     <style>
         body {
-            font-family: 'Cairo', sans-serif !important;
-            background-image: url('{{ asset('logo.jpeg') }}');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center center;
+            font-family: "Tajawal", sans-serif !important;
+            background: url('{{ asset('logo.jpeg') }}') center/cover no-repeat;
+        }
+
+        /* إعدادات الطباعة */
+        @media print {
+
+            /* إخفاء العناصر غير المرغوب بها */
+            .no-print,
+            .sidebar,
+            .navbar,
+            button,
+            footer {
+                display: none !important;
+            }
+
+            /* إخفاء حقول الإدخال الأصلية */
+            input,
+            textarea,
+            span,
+            select {
+                display: none !important;
+            }
+
+            /* عرض العناصر المحوّلة إلى سبان */
+            .print-span {
+                display: inline !important;
+            }
+
+            /* تنسيق الجدول مع المحاذاة الوسطية */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            table th,
+            table td {
+                border: 1px solid #dee2e6 !important;
+                padding: .75rem !important;
+                text-align: center !important;
+                /* محاذاة أفقية */
+                vertical-align: middle !important;
+                /* محاذاة عمودية */
+            }
+
+            /* إذا كنت تستخدم .table-striped */
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: #f9f9f9 !important;
+            }
+
+            /* ضبط حجم الصفحة وأبعادها */
+            @page {
+                margin: 1cm;
+                size: landscape;
+            }
+        }
+
+        @media screen {
+            .no-print {
+                display: inline-block;
+            }
         }
     </style>
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
 
+    <!-- Custom fonts for this template-->
+    <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
-
 </head>
 
 <body id="page-top">
-
-    <!-- Page Wrapper -->
     <div id="wrapper">
-
-        <!-- Sidebar -->
         @include('layouts.sidebar')
-        <!-- End of Sidebar -->
 
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
-
-                <!-- Topbar -->
                 @include('layouts.header')
-                <!-- End of Topbar -->
 
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                    <!-- Page Heading -->
+                <div class="container-fluid" id="report-container">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">{{ Route::currentRouteName() }}</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-                        {{-- @if (session('previous_route'))
-                                    <a href="{{ route(session('previous_route')) }}" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> رجوع
-                                    </a>
-                                @endif --}}
-                        {{-- <form action="{{ route('convert.pdf.to.text') }}" class="row" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group">
-                                <label for="pdf_file">اختر ملف PDF:</label>
-                                <input type="file" name="pdf_file" id="pdf_file" class="form-control-file"
-                                    accept="application/pdf" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">تحويل PDF إلى نص</button>
-                        </form> --}}
+                        <div>
+                            <!-- زر الحفظ/طباعة -->
+                            <button onclick="window.print()" class="btn btn-sm btn-primary shadow-sm no-print">
+                                <i class="fas fa-print"></i> حفظ كـ PDF
+                            </button>
+                        </div>
                     </div>
-                    <!-- Content Row -->
+
                     @yield('content')
                 </div>
                 <!-- /.container-fluid -->
 
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
             @include('layouts.footer')
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
     </div>
-    <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
+    <!-- Scroll to Top -->
+    <a class="scroll-to-top rounded no-print" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Bootstrap core JavaScript-->
+    <!-- Core JS -->
     <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- Core plugin JavaScript -->
     <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-    <!-- Custom scripts for all pages -->
     <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page-level plugins -->
-    <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
-
-    <!-- Page-level custom scripts -->
-    <script src="{{ asset('assets/js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('assets/js/demo/chart-pie-demo.js') }}"></script>
     @yield('scripts')
+
+    <!-- تحويل حقول الإدخال والروابط إلى نص قبل الطباعة -->
+    <script>
+        window.addEventListener('beforeprint', function() {
+            // 1. إزالة spans السابقة لتجنب التكرار
+            document.querySelectorAll('.print-span').forEach(span => span.remove());
+
+            // 2. استبدال حقول الإدخال والـ textarea والـ select بنص فقط، مع تخطي الحقول المخفية
+            document.querySelectorAll(
+                    '#report-container input, #report-container textarea, #report-container select')
+                .forEach(function(el) {
+                    // تجاهل الحقول المخفية نوعاً أو عبر CSS
+                    if (el.type === 'hidden' || window.getComputedStyle(el).display === 'none') return;
+                    let span = document.createElement('span');
+                    span.className = 'print-span';
+                    if (el.tagName === 'SELECT') {
+                        span.textContent = el.options[el.selectedIndex]?.text || '';
+                    } else {
+                        span.textContent = el.value;
+                    }
+                    el.parentNode.insertBefore(span, el);
+                    el.style.display = 'none';
+                });
+
+            // 3. استبدال الروابط داخل tbody فقط لتفادي تكرار الهيدر
+            document.querySelectorAll('#report-container a').forEach(function(a) {
+                if (a.closest('thead')) return;
+                let span = document.createElement('span');
+                span.className = 'print-span';
+                span.textContent = a.textContent;
+                a.parentNode.insertBefore(span, a);
+                a.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('afterprint', function() {
+            window.location.reload();
+        });
+    </script>
 </body>
 
 </html>
