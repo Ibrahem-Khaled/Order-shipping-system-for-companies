@@ -59,10 +59,13 @@
 
 @section('content')
     <div class="container mt-5">
+
+        @include('components.alerts')
+
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">الاجراءات</th>
                     <th scope="col">تاريخ ارضية الفارغ</th>
                     <th scope="col">التاريخ</th>
                     <th scope="col">البيان الجمركي</th>
@@ -75,6 +78,15 @@
             <tbody>
                 @foreach ($users->container->where('status', '!=', 'done') as $item)
                     <tr>
+                        <td class="text-center">
+                            <form action="{{ route('deleteContainer', $item->id) }}" method="POST"
+                                style="display: inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('هل أنت متأكد من حذف هذه الحاوية؟')">حذف</button>
+                            </form>
+                        </td>
                         <td class="text-center">
                             <div id="loading-{{ $item->id }}" class="loading-spinner"></div>
                             @if ($item->date_empty == null)

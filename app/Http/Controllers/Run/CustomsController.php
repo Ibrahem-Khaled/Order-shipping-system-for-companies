@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Run;
 use App\Http\Controllers\Controller;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
+use App\Models\FlatbedContainer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -41,6 +42,22 @@ class CustomsController extends Controller
         $users = User::find($clientId);
         return view('run.officeContanierData', compact('users'));
     }
+
+    public function deleteContainer(Container $container)
+    {
+        // تحقق مما إذا كان الحاوية مرتبطة ببيان جمركي
+        // if ($container->customs()->exists()) {
+        //     return redirect()->back()->with('error', 'لا يمكن حذف الحاوية لأنها مرتبطة ببيان جمركي.');
+        // }
+
+        // حذف الحاوية
+        FlatbedContainer::where('container_id', $container->id)->delete();
+        $container->delete();
+
+        return redirect()->back()->with('success', 'تم حذف الحاوية بنجاح يا مهرهر');
+    }
+
+
     public function showContainerPost($customId)
     {
         $custom = CustomsDeclaration::find($customId);
@@ -118,5 +135,4 @@ class CustomsController extends Controller
         $custom = CustomsDeclaration::findOrFail($customId);
         return view('FinancialManagement.Revenues.custom-with-container', compact('custom'));
     }
-
 }

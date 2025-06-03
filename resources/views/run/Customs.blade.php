@@ -56,6 +56,8 @@
         </div>
     </div>
 
+    @include('components.alerts')
+
     <!-- مودال استيراد PDF -->
     <div class="modal fade" id="pdfImportModal" tabindex="-1" aria-labelledby="pdfImportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

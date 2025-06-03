@@ -62,6 +62,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::get('get/offices', [CustomsController::class, 'index'])->name('getOfices');
     Route::post('delete/office/{id}', [CustomsController::class, 'deleteOffices'])->name('deleteOffices');
     Route::get('get/office/container/data/{clientId}', [CustomsController::class, 'getOfficeContainerData'])->name('getOfficeContainerData');
+    Route::delete('delete/container/{container}', [CustomsController::class, 'deleteContainer'])->name('deleteContainer');
 
     //add the customs id
     Route::post('post/customs/data/number/{clientId}', [CustomsController::class, 'store'])->name('postCustoms');

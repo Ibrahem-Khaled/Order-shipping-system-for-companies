@@ -63,7 +63,7 @@
                                             <div class="input-group flex-column">
                                                 @foreach ($transportContainers->groupBy('price') as $price => $group)
                                                     <div class="d-flex mb-1">
-                                                        <span class="ml-2 font-weight-bold">{{ $group->count() }} ×</span>
+                                                        <p class="ml-2 font-weight-bold">{{ $group->count() }} ×</p>
                                                         @if (auth()->user()?->userinfo?->job_title == 'administrative')
                                                             <input type="text" value="{{ $price }}"
                                                                 class="form-control text-center" disabled>

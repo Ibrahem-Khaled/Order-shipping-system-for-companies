@@ -18,7 +18,7 @@ class CheckUserRole
         if (auth()->check() && auth()->user()->role == 'superAdmin') {
             return $next($request);
         }
-        
+
         if (auth()->check() && auth()->user()->role == 'driver') {
             $allowedRoutes = [
                 'expensesSallaryeEmployee',
@@ -74,6 +74,8 @@ class CheckUserRole
                 'getAccountYears',
                 'getOfficesRent',
                 'getrentMonth',
+                'reservations.index',
+                'reservations.show',
             ];
             if (!in_array($request->route()->getName(), $allowedRoutes)) {
                 return redirect()->route('dailyManagement');
