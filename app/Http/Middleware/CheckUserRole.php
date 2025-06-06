@@ -45,6 +45,8 @@ class CheckUserRole
                 'updateEmpty',
                 'dates',
                 'ContainerRentStatus',
+                'reservations.index',
+                'reservations.show',
             ];
             if (!in_array($request->route()->getName(), $allowedRoutes)) {
                 return redirect()->route('getOfices');
@@ -78,7 +80,7 @@ class CheckUserRole
                 'reservations.show',
             ];
             if (!in_array($request->route()->getName(), $allowedRoutes)) {
-                return redirect()->route('dailyManagement');
+                return redirect()->back()->with('error', 'You do not have permission to access this page.');
             }
             return $next($request);
         }

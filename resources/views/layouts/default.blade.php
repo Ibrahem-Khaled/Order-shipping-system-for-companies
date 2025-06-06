@@ -99,7 +99,7 @@
 
                 <div class="container-fluid" id="report-container">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">{{ Route::currentRouteName() }}</h1>
+                        <span class="h3 mb-0 text-gray-800">{{ Route::currentRouteName() }}</span>
                         <div>
                             <!-- زر الحفظ/طباعة -->
                             <button onclick="window.print()" class="btn btn-sm btn-primary shadow-sm no-print">

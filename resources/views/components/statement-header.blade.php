@@ -1,7 +1,9 @@
 <div class="row mb-5 align-items-center">
-    <!-- معلومات الشركة -->
+    <!-- معلومات الشركة واللوجو -->
     <div class="col-md-6">
         <div class="d-flex justify-content-between align-items-start">
+
+            <!-- معلومات الشركة -->
             <div class="invoice-company-info text-right">
                 <h2 class="text-primary font-weight-bold mb-3" style="font-size: 2rem;">{{ $companyName }}</h2>
                 <p class="mb-2">
@@ -17,10 +19,15 @@
                     {{ $companyEmail }}
                 </p>
             </div>
+
+            <!-- اللوجو -->
+            <div class="company-logo mr-3">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="لوجو الشركة" style="max-height: 200px;">
+            </div>
         </div>
     </div>
 
-    <!-- اللوجو ومعلومات العميل -->
+    <!-- معلومات العميل -->
     <div class="col-md-6">
         <div class="d-flex justify-content-between align-items-center">
             <div class="client-info-box p-3 bg-light rounded text-right" style="flex-grow: 1;">

@@ -123,7 +123,7 @@
                                             ر.س</td>
                                     </tr>
                                     <tr class="bg-light">
-                                        <td class="font-weight-bold text-primary text-right">الإجمالي قبل الضريبة:</td>
+                                        <td class="font-weight-bold text-primary text-right">الإجمالي:</td>
                                         <td class="text-right font-weight-bold">
                                             {{ number_format($totalWithdrawPrice + $totalPrice, 2) }} ر.س</td>
                                     </tr>
