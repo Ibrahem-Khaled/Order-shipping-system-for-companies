@@ -29,6 +29,11 @@ class convertPdfToTextController extends Controller
         return $name;
     }
 
+    public function index()
+    {
+        return view('ai');
+    }
+
     public function convert(Request $request)
     {
         set_time_limit(120);

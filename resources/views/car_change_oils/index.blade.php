@@ -40,7 +40,7 @@
 
             <div class="card my-3">
                 <div class="card-header d-flex justify-content-between align-items-center bg-light">
-                    <h6>السيارة: {{ $car->type_car }} - الرقم: {{ $car->number }}</h6>
+                    <h6>السيارة: {{ $car->driver?->name }} - الرقم: {{ $car->number }}</h6>
                     <span class="text-muted">الباقي كيلومترات: {{ $KilometersLeftUntilOilChange }}</span>
                     <div>
                         <button class="btn btn-primary btn-sm" data-toggle="modal"

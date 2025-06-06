@@ -23,6 +23,13 @@
         الادارات
     </div>
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('ai-tools') }}" >
+            <i class="fas fa-fw fa-robot"></i>
+            <span>ادوات تحليل الذكاء الاصطناعي</span>
+        </a>
+    </li>
+
     <!-- Nav Item - Operations Management -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOperations"

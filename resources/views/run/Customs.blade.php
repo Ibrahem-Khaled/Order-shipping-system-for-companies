@@ -90,7 +90,7 @@
                         10MB)
                     </div>
 
-                    <form action="{{ route('process.customs.pdf') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('analyze.pdf') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group mb-4">

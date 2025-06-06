@@ -155,6 +155,6 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::resource('car_change_oils', CarChangeOilsController::class);
 
     //this routes convert pdf to text
-    Route::post('convert/pdf/to/text', [convertPdfToTextController::class, 'convert'])->name('process.customs.pdf');
+    Route::get('ai/tools', [convertPdfToTextController::class, 'index'])->name('ai-tools');
     Route::post('analyze/pdf', [convertPdfToTextController::class, 'convert'])->name('analyze.pdf');
 });

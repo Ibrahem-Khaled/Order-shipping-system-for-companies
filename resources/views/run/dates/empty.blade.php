@@ -2,18 +2,6 @@
 
 @section('content')
     <div class="container-fluid py-4">
-        <!-- Header Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="dashboard-header bg-gradient-primary p-4 rounded-3 shadow">
-                    <h1 class="text-white mb-3">
-                        <i class="fas fa-container-storage me-2"></i> نظام إدارة الحاويات
-                    </h1>
-                    <p class="text-white-50 mb-0">تتبع وإدارة كافة الحاويات في منفذ الوصول</p>
-                </div>
-            </div>
-        </div>
-
         <!-- Quick Stats Section -->
         <div class="container-fluid mt-4">
             <div class="row align-items-center justify-content-between g-4">
@@ -339,11 +327,6 @@
     </script>
 
     <style>
-        .dashboard-header {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-            border-radius: 15px;
-        }
-
         .table-hover tbody tr:hover {
             background-color: rgba(78, 115, 223, 0.05);
         }
