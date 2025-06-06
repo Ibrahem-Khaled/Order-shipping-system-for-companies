@@ -33,9 +33,9 @@ class CheckUserRole
 
         if (auth()->check() && auth()->user()?->userinfo?->job_title == 'operator') {
             $allowedRoutes = [
-                'addOffice',
-                'postOffice',
-                'getOfices',
+                // 'addOffice',
+                // 'postOffice',
+                // 'getOfices',
                 'postCustoms',
                 'showContanierPost',
                 'addContainer',
@@ -49,7 +49,7 @@ class CheckUserRole
                 'reservations.show',
             ];
             if (!in_array($request->route()->getName(), $allowedRoutes)) {
-                return redirect()->route('getOfices');
+                return redirect()->back()->with('error', 'You do not have permission to access this page.');
             }
             return $next($request);
         }
