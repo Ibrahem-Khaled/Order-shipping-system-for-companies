@@ -36,8 +36,6 @@ class convertPdfToTextController extends Controller
 
     public function convert(Request $request)
     {
-        set_time_limit(120);
-
         // 1. التحقق من صحة الطلب
         $validator = validator($request->all(), [
             'pdf_file' => 'required|file|mimes:pdf|max:10240', // 10 ميجابايت
@@ -241,9 +239,9 @@ class convertPdfToTextController extends Controller
         //     'message' => 'تمت إضافة البيانات بنجاح',
         // ], 200);
 
-        return redirect()->back()->with(
-            'success',
-            'اي خدمة يا مهرهر يا تعبان ملة',
-        );
+        return redirect()
+            ->route('getOfices')
+            ->with('success', 'اي خدمة يا مهرهر يا تعبان ملة')
+            ->with('warning', $user->name);
     }
 }

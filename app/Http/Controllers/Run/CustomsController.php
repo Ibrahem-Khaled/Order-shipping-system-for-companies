@@ -8,33 +8,57 @@ use App\Models\CustomsDeclaration;
 use App\Models\FlatbedContainer;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use GeniusTS\HijriDate\Hijri;
 
 class CustomsController extends Controller
 {
     public function index(Request $request)
     {
         $query = $request->input('query');
-
+        $office = $request->input('office');
         // جلب المستخدمين النشطين وغير النشطين دفعة واحدة
+
         $users = User::where('role', 'client')
-            // ->whereIn('is_active', [0, 1]) // جلب النشطين وغير النشطين معًا
-            ->select('id', 'name', 'created_at', 'is_active')
-            ->with(['container', 'customs'])
-            ->when($query, function ($q) use ($query) {
-                $q->where(function ($q) use ($query) {
-                    $q->where('created_at', 'like', '%' . $query . '%')
-                        ->orWhere('name', 'like', '%' . $query . '%');
-                });
+            ->when($office, function ($q) use ($office) {
+                $q->where('name', 'like', '%' . $office . '%');
             })
-            ->get();
+            ->withCount([
+                // عدّ الحاويات بحالة 'wait' أو 'rent'
+                'container as active_containers_count' => function ($q) {
+                    $q->whereIn('status', ['wait', 'rent']);
+                },
+                // عدّ البيانات المرتبطة بحاويات في الحالة نفسها
+                'customs as active_customs_count' => function ($q) {
+                    $q->whereHas('container', function ($q2) {
+                        $q2->whereIn('status', ['wait', 'rent']);
+                    });
+                },
+            ])
+            ->orderBy('is_active', 'desc')
+            ->paginate(15);
+
 
         // تقسيم المستخدمين بناءً على الحالة
         $usersActive = $users->where('is_active', 1);
         $usersDeleted = $users->where('is_active', 0);
 
-        return view('run.Customs', compact('usersActive', 'usersDeleted', 'users'));
+        $totalActiveClients = User::where('role', 'client')->where('is_active', 1)->count();
+        $totalDeletedClients = User::where('role', 'client')->where('is_active', 0)->count();
+        $totalActiveContainers = Container::whereIn('status', ['wait', 'rent'])->count();
+        $totalActiveCustoms = CustomsDeclaration::count();
+
+        $getLastClintsFromthreeDays = User::where('role', 'client')->where('is_active', 1)
+            ->whereDate('created_at', '>=', now()->subDays(3))->get();
+
+        return view('run.Customs', compact(
+            'usersActive',
+            'usersDeleted',
+            'users',
+            'getLastClintsFromthreeDays',
+            'totalActiveClients',
+            'totalDeletedClients',
+            'totalActiveContainers',
+            'totalActiveCustoms'
+        ));
     }
 
     public function getOfficeContainerData($clientId)
