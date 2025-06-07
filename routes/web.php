@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminPasswordController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CarChangeOilsController;
 use App\Http\Controllers\Company\CompanyController;
@@ -157,4 +158,9 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     //this routes convert pdf to text
     Route::get('ai/tools', [convertPdfToTextController::class, 'index'])->name('ai-tools');
     Route::post('analyze/pdf', [convertPdfToTextController::class, 'convert'])->name('analyze.pdf');
+
+    //this routes admin password
+    Route::get('/passwords', [AdminPasswordController::class, 'index'])->name('passwords.index');
+    Route::put('/users/{user}/password', [AdminPasswordController::class, 'update'])->name('passwords.update');
+    Route::post('/passwords/bulk-update', [AdminPasswordController::class, 'bulkUpdate'])->name('passwords.bulk-update');
 });

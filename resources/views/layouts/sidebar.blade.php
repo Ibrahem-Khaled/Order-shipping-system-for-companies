@@ -24,7 +24,7 @@
     </div>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('ai-tools') }}" >
+        <a class="nav-link" href="{{ route('ai-tools') }}">
             <i class="fas fa-fw fa-robot"></i>
             <span>ادوات تحليل الذكاء الاصطناعي</span>
         </a>
@@ -92,6 +92,15 @@
             <span>ادارة غيار الزيت</span>
         </a>
     </li>
+
+    @if (Auth::user()->role == 'superAdmin')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('passwords.index') }}">
+                <i class="fas fa-fw fa-lock"></i>
+                <span>ادارة كلمات المرور</span>
+            </a>
+        </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
