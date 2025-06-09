@@ -169,6 +169,21 @@ class CustomsController extends Controller
     public function showContainer($customId)
     {
         $custom = CustomsDeclaration::findOrFail($customId);
-        return view('FinancialManagement.Revenues.custom-with-container', compact('custom'));
+        $offices = User::where('role', 'client')->get();
+        return view('FinancialManagement.Revenues.custom-with-container', compact('custom', 'offices'));
+    }
+
+    public function transferCustom($customId)
+    {
+        $validate = request()->validate([
+            'new_office_id' => 'required',
+        ]);
+
+        $custom = CustomsDeclaration::findOrFail($customId);
+        $office = User::findOrFail($validate['new_office_id']);
+        $custom->client_id = $office->id;
+        $custom->save();
+
+        return redirect()->back()->with('success', 'تم نقل البيان الجمركي بنجاح');
     }
 }

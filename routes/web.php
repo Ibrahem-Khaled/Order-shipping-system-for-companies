@@ -70,6 +70,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::post('update/customs/date/{id}', [CustomsController::class, 'updateDateCustom'])->name('updateDateCustom');
     Route::get('show/contanier/post/{customId}/{contNum}', [CustomsController::class, 'showContainerPost'])->name('showContanierPost');
     Route::get('show/contanier/{customId}/', [CustomsController::class, 'showContainer'])->name('showContainer');
+    Route::post('transfer/custom/{customId}', [CustomsController::class, 'transferCustom'])->name('transferCustom');
 
     //add Container
     Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
