@@ -182,6 +182,7 @@ class CustomsController extends Controller
         $custom = CustomsDeclaration::findOrFail($customId);
         $office = User::findOrFail($validate['new_office_id']);
         $custom->client_id = $office->id;
+        $custom->container()->update(['client_id' => $office->id]);
         $custom->save();
 
         return redirect()->back()->with('success', 'تم نقل البيان الجمركي بنجاح');
