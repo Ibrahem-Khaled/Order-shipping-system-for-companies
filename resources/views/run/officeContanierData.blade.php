@@ -1,188 +1,166 @@
 @extends('layouts.default')
-<style>
-    .countdown-timer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 0.9rem;
-        color: #fff;
-        background: #cb0c9f;
-        border-radius: 5px;
-        padding: 5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-    }
-
-    .countdown-timer .time-unit {
-        margin: 0 5px;
-        text-align: center;
-        position: relative;
-        height: 60px;
-    }
-
-    .countdown-timer .time-unit span {
-        font-size: 1.2rem;
-        font-weight: bold;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .finished {
-        font-size: 1.2rem;
-        color: #ff4d4d;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .loading-spinner {
-        border: 4px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 4px solid #cb0c9f;
-        width: 20px;
-        height: 20px;
-        animation: spin 2s linear infinite;
-        margin: 0 auto;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    .d-none {
-        display: none;
-    }
-</style>
-
 @section('content')
-    <div class="container mt-5">
-
+    <div class="container-fluid py-4">
         @include('components.alerts')
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">الاجراءات</th>
-                    <th scope="col">تاريخ ارضية الفارغ</th>
-                    <th scope="col">التاريخ</th>
-                    <th scope="col">البيان الجمركي</th>
-                    <th scope="col">رقم الحاوية</th>
-                    <th scope="col">حالة الحاوية</th>
-                    <th scope="col">اسم العميل</th>
-                    <th scope="col">حجم الحاوية</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users->container->where('status', '!=', 'done') as $item)
-                    <tr>
-                        <td class="text-center">
-                            <form action="{{ route('deleteContainer', $item->id) }}" method="POST"
-                                style="display: inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger"
-                                    onclick="return confirm('هل أنت متأكد من حذف هذه الحاوية؟')">حذف</button>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            <div id="loading-{{ $item->id }}" class="loading-spinner"></div>
-                            @if ($item->date_empty == null)
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#editDateModal-{{ $item->id }}">
-                                    اضافة تاريخ ارضية الفارغ
-                                </button>
-                            @else
-                                <div id="countdown-{{ $item->id }}" class="countdown-timer d-none"
-                                    data-toggle="modal" data-target="#editDateModal-{{ $item->id }}"></div>
-                            @endif
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">إدارة الحاويات</h4>
+                    <div class="d-flex">
+                        <span class="badge bg-light text-dark me-2">الحاويات النشطة:
+                            {{ $users->container->where('status', '!=', 'done')->count() }}</span>
+                    </div>
+                </div>
+            </div>
 
-                            <!-- Modal for Editing Date -->
-                            <div class="modal fade" id="editDateModal-{{ $item->id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="editDateModalLabel-{{ $item->id }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editDateModalLabel-{{ $item->id }}">تعديل تاريخ
-                                                الإفراغ</h5>
-                                            <button type="button" class="btn-close" data-dismiss="modal"
-                                                aria-label="Close"></button>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="120px" class="text-center">الاجراءات</th>
+                                <th width="200px" class="text-center">موعد إخلاء الحاوية</th>
+                                <th class="text-center">رقم البيان</th>
+                                <th class="text-center">رقم الحاوية</th>
+                                <th class="text-center">حالة الحاوية</th>
+                                <th class="text-center">اسم العميل</th>
+                                <th class="text-center">حجم الحاوية</th>
+                                <th class="text-center">تاريخ الإدخال</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users->container->where('status', '!=', 'done') as $item)
+                                <tr class="align-middle">
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <form action="{{ route('deleteContainer', $item->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('هل أنت متأكد من حذف هذه الحاوية؟')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                            <button class="btn btn-info btn-sm" data-toggle="modal"
+                                                data-target="#containerModal{{ $item->id }}">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
                                         </div>
-                                        <form action="{{ route('updateDateEmpty', $item->id) }}" method="POST">
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label for="date-empty-{{ $item->id }}" class="form-label">تاريخ
-                                                        الإفراغ الجديد</label>
-                                                    <input type="date" class="form-control"
-                                                        id="date-empty-{{ $item->id }}" name="date_empty"
-                                                        value="{{ $item->date_empty }}" required>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">إلغاء</button>
-                                                <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                                    </td>
+                                    <td class="text-center">
 
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    var createdAt = new Date("{{ $item->transfer_date }}").getTime();
-                                    var dateEmpty = new Date("{{ $item->date_empty }}");
+                                    </td>
+                                    <td class="text-center fw-bold text-primary">
+                                        <a href="{{ route('showContainer', $item->customs->id) }}"
+                                            class="text-primary fw-bold">
+                                            {{ $item->customs->statement_number }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">{{ $item->number }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-{{ $item->status == 'wait' ? 'warning' : 'success' }}">
+                                            {{ $item->status == 'wait' ? 'انتظار' : 'منقول' }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">{{ $item->customs->importer_name }}</td>
+                                    <td class="text-center text-white">
+                                        <span class="badge bg-secondary">{{ $item->size }}</span>
+                                    </td>
+                                    <td class="text-center">{{ $item->created_at->format('Y-m-d') }}</td>
+                                </tr>
 
-                                    // تحديد نهاية اليوم للـdateEmpty
-                                    dateEmpty.setHours(23, 59, 59, 999);
-                                    dateEmpty = dateEmpty.getTime();
+                                <!-- Details Modal -->
+                                <x-container-details :item="$item" />
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-                                    var countdownElement = document.getElementById("countdown-{{ $item->id }}");
-                                    var loadingElement = document.getElementById("loading-{{ $item->id }}");
+                @if ($users->container->where('status', '!=', 'done')->isEmpty())
+                    <div class="text-center py-5">
+                        <img src="{{ asset('img/empty.svg') }}" alt="No containers" style="height: 150px;"
+                            class="mb-4">
+                        <h5 class="text-muted">لا توجد حاويات لعرضها</h5>
+                        <a href="{{ route('addContainer') }}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus me-2"></i>إضافة حاوية جديدة
+                        </a>
+                    </div>
+                @endif
+            </div>
 
-                                    // Simulate loading time
-                                    setTimeout(function() {
-                                        loadingElement.classList.add('d-none'); // Hide loading spinner
-                                        countdownElement.classList.remove('d-none'); // Show countdown timer
-                                    }, 1000); // 1 second loading time
-
-                                    // Update the count down every 1 second
-                                    var countdownInterval = setInterval(function() {
-                                        var now = new Date().getTime();
-                                        var distance = dateEmpty - now;
-
-                                        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                                        countdownElement.innerHTML =
-                                            "<div class='time-unit'><span>" + seconds + "</span><br>ثانية</div>" +
-                                            "<div class='time-unit'><span>" + minutes + "</span><br>دقيقة</div>" +
-                                            "<div class='time-unit'><span>" + hours + "</span><br>ساعة</div>" +
-                                            "<div class='time-unit'><span>" + days + "</span><br>يوم</div>";
-
-                                        if (distance < 0) {
-                                            clearInterval(countdownInterval);
-                                            countdownElement.innerHTML = "<div class='finished'>انتهى الوقت</div>";
-                                        }
-                                    }, 1000);
-                                });
-                            </script>
-                        </td>
-                        <th scope="row">{{ $item->id }}</th>
-                        <th scope="row">{{ $item->created_at }}</th>
-                        <td style="font-weight: bold">{{ $item->customs->statement_number }}</td>
-                        <td>{{ $item->number }}</td>
-                        <td>{{ $item->status == 'wait' ? 'انتظار' : 'ايجار' }}</td>
-                        <td>{{ $item->customs->importer_name }}</td>
-                        <td>{{ $item->size }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-muted small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        عرض {{ $users->container->where('status', '!=', 'done')->count() }} حاوية
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-@stop
+@endsection
+
+@push('styles')
+    <style>
+        .countdown-timer {
+            background: linear-gradient(135deg, #cb0c9f, #7928ca);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .countdown-timer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(203, 12, 159, 0.3);
+        }
+
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 8px;
+        }
+
+        .time-unit .number {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .time-unit .label {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        .time-separator {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(203, 12, 159, 0.05);
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
+
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+        }
+
+        .list-group-item:first-child {
+            border-top: none;
+        }
+    </style>
+@endpush
