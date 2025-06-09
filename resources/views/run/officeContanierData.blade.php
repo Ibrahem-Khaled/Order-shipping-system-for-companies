@@ -82,9 +82,9 @@
                         <img src="{{ asset('img/empty.svg') }}" alt="No containers" style="height: 150px;"
                             class="mb-4">
                         <h5 class="text-muted">لا توجد حاويات لعرضها</h5>
-                        <a href="{{ route('addContainer') }}" class="btn btn-primary mt-3">
+                        {{-- <a href="{{ route('addContainer') }}" class="btn btn-primary mt-3">
                             <i class="fas fa-plus me-2"></i>إضافة حاوية جديدة
-                        </a>
+                        </a> --}}
                     </div>
                 @endif
             </div>
