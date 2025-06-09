@@ -69,16 +69,28 @@ class CustomsController extends Controller
 
     public function deleteContainer(Container $container)
     {
-        // تحقق مما إذا كان الحاوية مرتبطة ببيان جمركي
-        // if ($container->customs()->exists()) {
-        //     return redirect()->back()->with('error', 'لا يمكن حذف الحاوية لأنها مرتبطة ببيان جمركي.');
-        // }
+        // الحصول على بيان الجمركي المرتبط بالحاوية (إن وجد)
+        $customs = $container->customs; // العلاقة المفترض اسمها customs
+
+        // حذف أي بيانات مرتبطة (مثلاً FlatbedContainer)
+        FlatbedContainer::where('container_id', $container->id)->delete();
 
         // حذف الحاوية
-        FlatbedContainer::where('container_id', $container->id)->delete();
         $container->delete();
 
-        return redirect()->back()->with('success', 'تم حذف الحاوية بنجاح يا مهرهر');
+        // إذا كان هناك بيان جمركي مرتبط
+        if ($customs) {
+            // تحقق هل تبقى أي حاوية مرتبطة بهذا البيان الجمركي
+            $remainingContainers = Container::where('customs_id', $customs->id)->count();
+
+            // إذا لم يتبقَّ أي حاوية، احذف البيان الجمركي أيضاً
+            if ($remainingContainers == 0) {
+                $customs->delete();
+                return redirect()->back()->with('success', 'تم حذف الحاوية، وبما أنها آخر حاوية في البيان الجمركي، تم حذف البيان الجمركي أيضاً.');
+            }
+        }
+
+        return redirect()->back()->with('success', 'تم حذف الحاوية بنجاح.');
     }
 
 

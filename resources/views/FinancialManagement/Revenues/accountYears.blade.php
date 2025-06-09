@@ -159,13 +159,14 @@
                                                     <td>{{ DateTime::createFromFormat('!m', $statement['month'])->format('F') }}
                                                     </td>
                                                     <td class="text-end">
-                                                        {{ number_format($statement['monthlyTotalFromContainerCurrent']) }}
+                                                        {{ $statement['monthlyTotalFromContainerCurrent'] }}
                                                     </td>
-                                                    <td class="text-end">{{ number_format($statement['monthlyDeposit']) }}
+                                                    <td class="text-end">
+                                                        {{ $statement['monthlyDeposit'] }}
                                                     </td>
                                                     <td
                                                         class="text-end {{ $statement['residual'] > 0 ? 'text-danger fw-bold' : 'text-success' }}">
-                                                        {{ number_format($statement['residual']) }}
+                                                        {{ $statement['residual'] }}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -225,7 +226,8 @@
                                     {{ number_format($cumulativeResidualCurrentYear) }} ر.س
                                 </h1>
                                 <p class="mb-0 text-muted">حالة الحساب:
-                                    <span class="badge text-white bg-{{ $cumulativeResidualCurrentYear > 0 ? 'danger' : 'success' }}">
+                                    <span
+                                        class="badge text-white bg-{{ $cumulativeResidualCurrentYear > 0 ? 'danger' : 'success' }}">
                                         {{ $cumulativeResidualCurrentYear > 0 ? 'مدين' : 'مسدد' }}
                                     </span>
                                 </p>
