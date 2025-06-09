@@ -113,7 +113,7 @@ class convertPdfToTextController extends Controller
         // 8. استدعاء نموذج gpt-4o-mini عبر OpenAI PHP Client
         try {
             $response = OpenAI::chat()->create([
-                'model'       => 'gpt-4o',
+                'model'       => 'gpt-4o-mini',
                 'messages'    => $messages,
                 'temperature' => 0, // لضمان دقة واستقرار أكثر
             ]);

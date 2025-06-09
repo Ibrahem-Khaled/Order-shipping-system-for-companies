@@ -79,7 +79,7 @@
 
                 @if ($users->container->where('status', '!=', 'done')->isEmpty())
                     <div class="text-center py-5">
-                        <img src="{{ asset('img/empty.svg') }}" alt="No containers" style="height: 150px;"
+                        <img src="https://imgs.search.brave.com/obtTcWALD8WcsVCkBtj3J8DtFDwrFiQifoPiv-cYSsc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG5p/Lmljb25zY291dC5j/b20vaWxsdXN0cmF0/aW9uL3ByZW1pdW0v/dGh1bWIveW91bmct/Z2lybC1zaG93aW5n/LWVtcHR5LWNvbnRh/aW5lci1pbGx1c3Ry/YXRpb24tZG93bmxv/YWQtaW4tc3ZnLXBu/Zy1naWYtZmlsZS1m/b3JtYXRzLS1zdG9y/YWdlLWRlbGV0ZWQt/YmFza2V0LWdhcmJh/Z2UtY2FuLXBhY2st/YnVzaW5lc3MtaWxs/dXN0cmF0aW9ucy0x/MDc2MjU4MS5wbmc_/Zj13ZWJw" alt="No containers" style="height: 150px;"
                             class="mb-4">
                         <h5 class="text-muted">لا توجد حاويات لعرضها</h5>
                         {{-- <a href="{{ route('addContainer') }}" class="btn btn-primary mt-3">
