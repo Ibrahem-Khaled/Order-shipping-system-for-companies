@@ -159,7 +159,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     //this routes convert pdf to text
     Route::get('ai/tools', [convertPdfToTextController::class, 'index'])->name('ai-tools');
     Route::post('analyze/pdf', [convertPdfToTextController::class, 'convert'])->name('analyze.pdf');
-
+    Route::post('analyze/pdf/container', [convertPdfToTextController::class, 'PDFAnalysisOfTheContainer'])->name('analyze.pdf.container');
     //this routes admin password
     Route::get('/passwords', [AdminPasswordController::class, 'index'])->name('passwords.index');
     Route::put('/users/{user}/password', [AdminPasswordController::class, 'update'])->name('passwords.update');

@@ -15,8 +15,11 @@
         </div>
     </div>
 
+    @include('components.alerts')
+
     <!-- قسم الأيقونات الرئيسية -->
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-4 justify-content-around">
+
         <!-- بطاقة إضافة بيان جمركي -->
         <div class="col-md-4">
             <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all">
@@ -37,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <!-- بطاقات أخرى... -->
+
         <!-- بطاقة إضافة موعد حاوية -->
         <div class="col-md-4">
             <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all">
@@ -49,29 +52,16 @@
                     <p class="text-muted mb-4">
                         حدد مواعيد الحاويات وتتبعها تلقائياً مع نظام التنبيهات الذكي
                     </p>
-                    <a href="#" class="btn btn-info text-white">تحديد موعد</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- بطاقة إضافة فارغ حاوية -->
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all">
-                <div class="card-body text-center p-4">
-                    <div class="icon-lg bg-success bg-gradient text-white rounded-circle mb-3 mx-auto">
-                        <i class="fas fa-box-open"></i>
-                    </div>
-                    <h3 class="fw-bold mb-3">إضافة فارغ حاوية</h3>
-                    <p class="text-muted mb-4">
-                        سجل بيانات الحاويات الفارغة وإدارتها بذكاء باستخدام تقنيات التعلم الآلي
-                    </p>
-                    <a href="#" class="btn btn-success">تسجيل فارغ</a>
+                    <button type="button" class="btn btn-outline-info" data-toggle="modal"
+                        data-target="#pdfAnalyzeOfContainer">
+                        تحديد موعد
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- مودال استيراد PDF -->
+    <!-- مودال استيراد بيان جمركي من PDF -->
     <div class="modal fade" id="pdfImportModal" tabindex="-1" aria-labelledby="pdfImportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -83,22 +73,6 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     <div class="alert alert-warning">
                         <div class="d-flex">
                             <i class="fas fa-exclamation-circle me-3 fs-4"></i>
@@ -108,11 +82,9 @@
                             </div>
                         </div>
                     </div>
-
                     <form action="{{ route('analyze.pdf') }}" method="POST" enctype="multipart/form-data"
                         id="pdfUploadForm">
                         @csrf
-
                         <div class="mb-4">
                             <label for="pdf_file" class="form-label fw-bold">
                                 <i class="fas fa-file-pdf me-2 text-danger"></i> ملف البيان الجمركي (PDF)
@@ -124,7 +96,6 @@
                                 <button type="button" class="btn btn-primary" id="selectFileBtn">
                                     <i class="fas fa-folder-open me-2"></i> اختر ملف
                                 </button>
-                                <!-- input مخفي فعليًا -->
                                 <input type="file" class="d-none" id="pdf_file" name="pdf_file" accept="application/pdf"
                                     required>
                                 <small class="text-muted mt-2 d-block">الحد الأقصى لحجم الملف: 10MB</small>
@@ -134,13 +105,39 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-upload me-2"></i> رفع الملف ومعالجة البيانات
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تحديد موعد حاوية -->
+    <div class="modal fade" id="pdfAnalyzeOfContainer" tabindex="-1" aria-labelledby="pdfAnalyzeOfContainerLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfAnalyzeOfContainerLabel">استيراد من PDF</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('analyze.pdf.container') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="pdfFile" class="form-label">الملف PDF</label>
+                            <input type="file" name="pdfFile" class="form-control" id="pdfFile" accept=".pdf"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">استيراد</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
                 </div>
             </div>
         </div>
@@ -193,45 +190,34 @@
             const selectBtn = document.getElementById('selectFileBtn');
             const fileNameDisplay = document.getElementById('fileName');
 
-            // عند النقر على الزر، نفّذ click() على input type="file"
             selectBtn.addEventListener('click', () => {
-                fileInput.click(); // :contentReference[oaicite:0]{index=0}
+                fileInput.click();
             });
 
-            // عند اختيار ملف عبر نافذة الحوار
             fileInput.addEventListener('change', () => {
                 if (fileInput.files.length) {
                     fileNameDisplay.textContent = fileInput.files[0].name;
                 }
             });
 
-            // منع السلوك الافتراضي للسحب والإفلات
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 dropZone.addEventListener(eventName, e => e.preventDefault());
             });
 
-            // تمييز المنطقة عند السحب فوقها
             ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, () => {
-                    dropZone.classList.add('dragover');
-                });
+                dropZone.classList.add('dragover');
             });
 
             ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, () => {
-                    dropZone.classList.remove('dragover');
-                });
+                dropZone.classList.remove('dragover');
             });
 
-            // التعامل مع حدث الإسقاط (Drop)
             dropZone.addEventListener('drop', e => {
                 const dt = e.dataTransfer;
                 if (dt.files && dt.files.length) {
                     const file = dt.files[0];
-                    // يقبل فقط ملفات PDF
                     if (file.type === 'application/pdf') {
-                        // تعيين الملف إلى input
-                        const dataTransfer = new DataTransfer(); // :contentReference[oaicite:1]{index=1}
+                        const dataTransfer = new DataTransfer();
                         dataTransfer.items.add(file);
                         fileInput.files = dataTransfer.files;
                         fileNameDisplay.textContent = file.name;

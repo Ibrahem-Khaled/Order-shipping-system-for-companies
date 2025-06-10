@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Run\DatesController;
+use App\Models\Cars;
 use App\Models\Container;
 use App\Models\User;
 use App\Models\CustomsDeclaration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use OpenAI\Laravel\Facades\OpenAI;
 
@@ -156,13 +159,6 @@ class convertPdfToTextController extends Controller
                 ], 500);
             }
         }
-
-        // 11. إرجاع النتيجة النهائية
-        // return response()->json([
-        //     'status'  => 'success',
-        //     'data'    => $jsonData,
-        //     'message' => 'تم تحويل ملف PDF بنجاح.',
-        // ], 200);
         return $this->addResponseFromModel($jsonData);
     }
 
@@ -172,9 +168,6 @@ class convertPdfToTextController extends Controller
         // 2. نطبّق توحيد التنسيق عليه
         $normalizedName = $this->normalizeName($rawName);
 
-        // 3. نبحث في قاعدة البيانات عن سجلّ يناسب هذا الاسم بعد توحيده
-        //    سنبحث بقيمة متطابقة (equals) في عمود "name_normalized" إذا أضفناه،
-        //    أو بوضع دالة تحويل في البحث نفسه.
         $user = User::whereRaw('LOWER(TRIM(REGEXP_REPLACE(name, "\\s+", " "))) = ?', [
             $normalizedName
         ])->first();
@@ -222,27 +215,161 @@ class convertPdfToTextController extends Controller
                         'client_id' => $user->id,
                     ]
                 );
-
-
-                // [
-                //     'customs_id' => $customsDeclaration->id,
-                //     'client_id' => $user->id,
-                //     'number' => $containerData['number'],
-                //     'size' => $size,
-                // ]
             }
         }
-        // return response()->json([
-        //     'status' => 'success',
-        //     'customsDeclaration' => $customsDeclaration,
-        //     'client_id' => $user->id,
-        //     'containers' => $data['containers'],
-        //     'message' => 'تمت إضافة البيانات بنجاح',
-        // ], 200);
 
         return redirect()
             ->route('getOfices')
             ->with('success', 'اي خدمة يا مهرهر يا تعبان ملة')
             ->with('warning', $user->name);
+    }
+
+    public function PDFAnalysisOfTheContainer(Request $request)
+    {
+        // 1. التحقق من صحة الطلب
+        $request->validate([
+            'pdfFile' => 'required|mimes:pdf|max:8192',
+        ]);
+
+        // 2. تخزين الملف مؤقتاً
+        $pdfFile = $request->file('pdfFile');
+        $relativePath = $pdfFile->store('public');
+        $absolutePath = Storage::path($relativePath);
+        $filename = basename($absolutePath);
+
+        // 3. قراءة الملف وتشفيره
+        try {
+            $binaryData = file_get_contents($absolutePath);
+            $base64Pdf = base64_encode($binaryData);
+        } catch (\Exception $e) {
+            Storage::delete($relativePath);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'فشل في قراءة ملف PDF.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+
+        // 4. حذف الملف المؤقت بعد الاستخدام
+        Storage::delete($relativePath);
+
+        // 5. تحضير التعليمات الخاصة بـ GPT
+        $instructions = "
+                    الرجاء تحليل النص الوارد واستخراج المعلومات التالية بدقة:
+                    1. \"اسم السائق\"
+                    2. \"رقم الحاوية\"
+                    3. \"تاريخ النقل\"
+                    4. \"نوع الموعد\" (استيراد أو تفريغ)
+                    5. \"رقم السيارة\" إن وُجد
+                    6. \"رقم هاتف السائق\" إن وُجد
+
+                    — أرجو عرض النتيجة في شكل JSON يلتزم بهذا النموذج:
+                    ```json
+                    {
+                    \"driver_name\": \"...\",           // اسم السائق
+                    \"container_number\": \"...\",     // رقم الحاوية
+                    \"transfer_date\": \"YYYY-MM-DD\", // تاريخ النقل
+                    \"appointment_type\": \"...\"      // نوع الموعد: \"استيراد\" أو \"تفريغ\"
+                    \"vehicle_number\": \"...\"        // رقم السيارة إن وُجد
+                    \"driver_phone\": \"...\"          // رقم هاتف السائق إن وُجد
+                    }
+                    — إذا لم يكن أحد هذه الحقول متوفرًا في النص، ضع له القيمة null.
+                    — تأكد من تنسيق التاريخ بالصيغة الموحدة (YYYY-MM-DD).";
+
+        // 6. تحضير الرسائل للنموذج
+        $messages = [
+            [
+                'role'    => 'system',
+                'content' => 'أنت مساعد قادر على معالجة ملفات PDF مباشرةً واستخراج المعلومات المطلوبة.'
+            ],
+            [
+                'role' => 'user',
+                'content' => [
+                    [
+                        'type' => 'file',
+                        'file' => [
+                            'filename'  => $filename,
+                            'file_data' => "data:application/pdf;base64,{$base64Pdf}",
+                        ],
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => $instructions,
+                    ],
+                ],
+            ],
+        ];
+
+        // 7. إرسال الطلب إلى OpenAI
+        try {
+            $response = OpenAI::chat()->create([
+                'model'       => 'gpt-4o',
+                'messages'    => $messages,
+                'temperature' => 0,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'حدث خطأ أثناء إرسال الطلب إلى OpenAI.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+
+        // 8. معالجة الاستجابة
+        $content = $response['choices'][0]['message']['content'] ?? null;
+
+        if (!$content) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'لم يتم الحصول على استجابة صحيحة من نموذج OpenAI.',
+            ], 500);
+        }
+
+        // 9. استخراج JSON من الاستجابة
+        if (preg_match('/```json(.*?)```/s', $content, $matches)) {
+            $jsonString = trim($matches[1]);
+        } else {
+            $jsonString = $content;
+        }
+
+        $jsonData = json_decode($jsonString, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'فشل في تحليل الاستجابة JSON: ' . json_last_error_msg(),
+            ], 500);
+        }
+
+        $container = Container::where('number', 'like', '%' . $jsonData['container_number'] . '%')->first();
+        $driver = User::where('name', 'like', '%' . $jsonData['driver_name'] . '%')
+            ->orWhere('phone', 'like', '%' . $jsonData['driver_phone'] . '%')
+            ->first();
+        $car = Cars::where('number', 'like', '%' . $jsonData['vehicle_number'] . '%')->first();
+        if (!$container) {
+            return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
+        }
+        if (!$driver) {
+            return redirect()->back()->with('error', 'لا توجد سائق بهذا الاسم');
+        }
+        if (!$car) {
+            return redirect()->back()->with('error', 'لا توجد سيارة بهذا الرقم');
+        }
+
+        // ✅ إرسال البيانات إلى الراوت الآخر
+        $requestData = new \Illuminate\Http\Request([
+            'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
+            'transfer_date' => $jsonData['transfer_date'] ?? null,
+            'driver'        => $driver->id,
+            'car'           => $car->id,
+        ]);
+
+        $response = app()->call([app(DatesController::class), 'update'], [
+            'id'      => $container->id,
+            'request' => $requestData,
+        ]);
+
+        return $response; // إعادة الريدايركت الذي أرجعته دالة update
+
     }
 }

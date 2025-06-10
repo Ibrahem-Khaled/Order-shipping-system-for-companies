@@ -81,7 +81,7 @@
                                             <td class="text-center font-weight-bold">{{ $item->number }}</td>
                                             <td class="text-center">{{ $item->size }}</td>
                                             <td class="text-center">{{ $item->customs->importer_name }}</td>
-                                            <td class="text-center">{{ $item->client->name }}</td>
+                                            <td class="text-center">{{ $item?->client?->name }}</td>
                                             <td class="text-center">
                                                 <span
                                                     class="badge badge-{{ $item->status == 'wait' ? 'warning' : 'danger' }}">
