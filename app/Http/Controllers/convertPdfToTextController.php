@@ -273,26 +273,27 @@ class convertPdfToTextController extends Controller
 
         // 5. تحضير التعليمات الخاصة بـ GPT
         $instructions = "
-                    الرجاء تحليل النص الوارد واستخراج المعلومات التالية بدقة:
-                    1. \"اسم السائق\"
-                    2. \"رقم الحاوية وامسح المسافة بين الحروف والارقام ووعلي ان يكون 4 احرف و 7 ارقام\"
-                    3. \"تاريخ النقل\"
-                    4. \"نوع الموعد\" (استيراد أو تفريغ)
-                    5. \"رقم السيارة\" إن وُجد
-                    6. \"رقم هاتف السائق\" إن وُجد
+الرجاء تحليل النص الوارد واستخراج المعلومات التالية بدقة:
+1. \"اسم السائق\"
+2. \"أرقام الحاويات\" — استخرج جميع أرقام الحاويات الموجودة في النص، وامسح المسافات بينها لتكون كل واحدة مكونة من 4 أحرف و7 أرقام (مثل: ABCD1234567). أرجعها كمصفوفة.
+3. \"تاريخ النقل\"
+4. \"نوع الموعد\" (استيراد أو تفريغ)
+5. \"رقم السيارة\" إن وُجد
+6. \"رقم هاتف السائق\" إن وُجد
 
-                    — أرجو عرض النتيجة في شكل JSON يلتزم بهذا النموذج:
-                    ```json
-                    {
-                    \"driver_name\": \"...\",           // اسم السائق
-                    \"container_number\": \"...\",     // رقم الحاوية
-                    \"transfer_date\": \"YYYY-MM-DD\", // تاريخ النقل
-                    \"appointment_type\": \"...\"      // نوع الموعد: \"استيراد\" أو \"تفريغ\"
-                    \"vehicle_number\": \"...\"        // رقم السيارة إن وُجد
-                    \"driver_phone\": \"...\"          // رقم هاتف السائق إن وُجد
-                    }
-                    — إذا لم يكن أحد هذه الحقول متوفرًا في النص، ضع له القيمة null.
-                    — تأكد من تنسيق التاريخ بالصيغة الموحدة (YYYY-MM-DD).";
+— أرجو عرض النتيجة في شكل JSON يلتزم بهذا النموذج:
+```json
+{
+  \"driver_name\": \"...\",            // اسم السائق
+  \"container_numbers\": [\"...\"],   // مصفوفة من أرقام الحاويات
+  \"transfer_date\": \"YYYY-MM-DD\",  // تاريخ النقل
+  \"appointment_type\": \"...\",      // نوع الموعد: \"استيراد\" أو \"تفريغ\"
+  \"vehicle_number\": \"...\",        // رقم السيارة إن وُجد
+  \"driver_phone\": \"...\"           // رقم هاتف السائق إن وُجد
+}
+— إذا لم يكن أحد هذه الحقول متوفرًا في النص، ضع له القيمة null.
+— تأكد من تنسيق التاريخ بالصيغة الموحدة (YYYY-MM-DD).
+";
 
         // 6. تحضير الرسائل للنموذج
         $messages = [
@@ -359,83 +360,85 @@ class convertPdfToTextController extends Controller
             ], 500);
         }
 
-        if (isset($jsonData['container_number'])) {
-            $rawContainerNumber = $jsonData['container_number'];
 
-            // نستخدم regex لاستخراج 4 أحرف يليها 7 أرقام فقط
-            if (preg_match('/([A-Z]{4})(\d{7})/', strtoupper($rawContainerNumber), $matches)) {
-                $cleanedNumber = $matches[1] . $matches[2]; // 4 أحرف + 7 أرقام
 
-                // البحث في قاعدة البيانات
-                $container = Container::where('number', 'like', '%' . $cleanedNumber . '%')->first();
+        foreach ($jsonData['container_numbers'] as $key => $value) {
+            if (isset($value)) {
+                $rawContainerNumber = $value;
+
+                // نستخدم regex لاستخراج 4 أحرف يليها 7 أرقام فقط
+                if (preg_match('/([A-Z]{4})(\d{7})/', strtoupper($rawContainerNumber), $matches)) {
+                    $cleanedNumber = $matches[1] . $matches[2]; // 4 أحرف + 7 أرقام
+
+                    // البحث في قاعدة البيانات
+                    $container = Container::where('number', 'like', '%' . $cleanedNumber . '%')->first();
+                }
             }
-        }
-        $driver = User::where('name', 'like', '%' . $jsonData['driver_name'] . '%')
-            ->orWhere('phone', 'like', '%' . $jsonData['driver_phone'] . '%')
-            ->first();
+            $driver = User::where('name', 'like', '%' . $jsonData['driver_name'] . '%')
+                ->orWhere('phone', 'like', '%' . $jsonData['driver_phone'] . '%')
+                ->first();
 
-        if (!empty($jsonData['vehicle_number'])) {
-            $clean = $this->normalizeVehicleNumber($jsonData['vehicle_number']);
-            $full = $clean['full'];
-            $digitsOnly = $clean['digits'];
+            if (!empty($jsonData['vehicle_number'])) {
+                $clean = $this->normalizeVehicleNumber($jsonData['vehicle_number']);
+                $full = $clean['full'];
+                $digitsOnly = $clean['digits'];
 
-            // نجرب أولاً نبحث باستخدام الأرقام فقط لأنها الأسهل
-            $car = Cars::whereRaw("REGEXP_REPLACE(number, '[^0-9]', '') LIKE ?", ["%{$digitsOnly}%"])->first();
+                // نجرب أولاً نبحث باستخدام الأرقام فقط لأنها الأسهل
+                $car = Cars::whereRaw("REGEXP_REPLACE(number, '[^0-9]', '') LIKE ?", ["%{$digitsOnly}%"])->first();
 
-            // إذا لم نجد، نجرب البحث بالرقم الكامل بعد التنظيف
+                // إذا لم نجد، نجرب البحث بالرقم الكامل بعد التنظيف
+                if (!$car) {
+                    $car = Cars::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, ' ', ''), '-', ''), '_', ''), '.', ''), '\r', ''), '\n', '') LIKE ?", ["%{$full}%"])->first();
+                }
+            }
+            if (!$container) {
+                return response()->json([
+                    'status'  => 'لا توجد حاوية بهذا الرقم',
+                    'message' => $jsonData,
+                ]);
+                return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
+            }
+            if (!$driver) {
+                return response()->json([
+                    'status'  => 'لا توجد سائق بهذا الاسم',
+                    'message' => $jsonData,
+                ]);
+                return redirect()->back()->with('error', 'لا توجد سائق بهذا الاسم');
+            }
             if (!$car) {
-                $car = Cars::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, ' ', ''), '-', ''), '_', ''), '.', ''), '\r', ''), '\n', '') LIKE ?", ["%{$full}%"])->first();
+                return response()->json([
+                    'status'  => 'لا توجد سيارة بهذا الرقم',
+                    'message' => $jsonData,
+                ]);
+                return redirect()->back()->with('error', 'لا توجد سيارة بهذا الرقم');
+            }
+
+            if ($jsonData['appointment_type'] == 'استيراد') {
+                $requestData = new \Illuminate\Http\Request([
+                    'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
+                    'transfer_date' => $jsonData['transfer_date'] ?? null,
+                    'driver'        => $driver->id,
+                    'car'           => $car->id,
+                ]);
+
+                $response = app()->call([app(DatesController::class), 'update'], [
+                    'id'      => $container->id,
+                    'request' => $requestData,
+                ]);
+            } else {
+                $requestData = new \Illuminate\Http\Request([
+                    'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
+                    'user_id'       => $driver->id,
+                    'car_id'        => $car->id,
+                    'price'         => 20,
+                ]);
+
+                $response = app()->call([app(DatesController::class), 'updateEmpty'], [
+                    'id'      => $container->id,
+                    'request' => $requestData,
+                ]);
             }
         }
-        if (!$container) {
-            return response()->json([
-                'status'  => 'لا توجد حاوية بهذا الرقم',
-                'message' => $jsonData,
-            ]);
-            return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
-        }
-        if (!$driver) {
-            return response()->json([
-                'status'  => 'لا توجد سائق بهذا الاسم',
-                'message' => $jsonData,
-            ]);
-            return redirect()->back()->with('error', 'لا توجد سائق بهذا الاسم');
-        }
-        if (!$car) {
-            return response()->json([
-                'status'  => 'لا توجد سيارة بهذا الرقم',
-                'message' => $jsonData,
-            ]);
-            return redirect()->back()->with('error', 'لا توجد سيارة بهذا الرقم');
-        }
-
-        if ($jsonData['appointment_type'] == 'استيراد') {
-            $requestData = new \Illuminate\Http\Request([
-                'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
-                'transfer_date' => $jsonData['transfer_date'] ?? null,
-                'driver'        => $driver->id,
-                'car'           => $car->id,
-            ]);
-
-            $response = app()->call([app(DatesController::class), 'update'], [
-                'id'      => $container->id,
-                'request' => $requestData,
-            ]);
-        } else {
-            $requestData = new \Illuminate\Http\Request([
-                'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
-                'user_id'       => $driver->id,
-                'car_id'        => $car->id,
-                'price'         => 20,
-            ]);
-
-            $response = app()->call([app(DatesController::class), 'updateEmpty'], [
-                'id'      => $container->id,
-                'request' => $requestData,
-            ]);
-        }
-
-        return $response; // إعادة الريدايركت الذي أرجعته دالة update
-
+        return $response;
     }
 }
