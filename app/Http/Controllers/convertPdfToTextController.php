@@ -341,7 +341,18 @@ class convertPdfToTextController extends Controller
             ], 500);
         }
 
-        $container = Container::where('number', 'like', '%' . $jsonData['container_number'] . '%')->first();
+        if (isset($jsonData['container_number'])) {
+            $rawContainerNumber = $jsonData['container_number'];
+
+            // نستخدم regex لاستخراج 4 أحرف يليها 7 أرقام فقط
+            if (preg_match('/([A-Z]{4})(\d{7})/', strtoupper($rawContainerNumber), $matches)) {
+                $cleanedNumber = $matches[1] . $matches[2]; // 4 أحرف + 7 أرقام
+
+                // البحث في قاعدة البيانات
+                $container = Container::where('number', 'like', '%' . $cleanedNumber . '%')->first();
+            }
+        }
+
         $driver = User::where('name', 'like', '%' . $jsonData['driver_name'] . '%')
             ->orWhere('phone', 'like', '%' . $jsonData['driver_phone'] . '%')
             ->first();
