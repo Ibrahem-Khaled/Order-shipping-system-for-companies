@@ -79,7 +79,7 @@ class DatesController extends Controller
                 ->where('status', 'done')
                 ->with('tipsEmpty')
                 ->orderBy('updated_at', 'desc')
-                ->paginate(1);
+                ->paginate(10);
             $containerPort = Container::where('status', 'transport')->latest('updated_at')->paginate(10);
             $storageContainer = Container::whereIn('status', ['storage', 'rent'])->latest('updated_at')->paginate(10);
         } else {
@@ -89,7 +89,7 @@ class DatesController extends Controller
                         ->orWhere('number', 'like', '%' . $query . '%')
                         ->orWhere('price', 'like', '%' . $query . '%');
                 })
-                ->paginate(1);
+                ->paginate(10);
 
             $containerPort = Container::where('status', 'transport')
                 ->where(function ($queryBuilder) use ($query) {
