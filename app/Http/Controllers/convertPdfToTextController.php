@@ -33,17 +33,21 @@ class convertPdfToTextController extends Controller
     }
     function normalizeVehicleNumber($number)
     {
-        // 1. تحويل الأرقام العربية إلى أرقام إنجليزية
+        // تحويل الأرقام العربية إلى أرقام إنجليزية
         $eastern_arabic_digits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
         $western_arabic_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         $number = str_replace($eastern_arabic_digits, $western_arabic_digits, $number);
 
-        // 2. حذف كل المسافات والفواصل والعلامات
-        $number = preg_replace('/[\s\-\_\.]/u', '', $number);
+        // إزالة المسافات والرموز
+        $normalized = preg_replace('/[\s\-\_\.]/u', '', $number);
 
-        // 3. تحويل الحروف إلى صيغة موحدة (اختياري: مثلا من عربية إلى إنجليزية إن كانت هناك قاعدة واضحة)
+        // استخراج الأرقام فقط
+        $digitsOnly = preg_replace('/\D/', '', $normalized); // أي شيء غير رقم يُحذف
 
-        return $number;
+        return [
+            'full' => $normalized,
+            'digits' => $digitsOnly,
+        ];
     }
 
     public function index()
@@ -371,12 +375,17 @@ class convertPdfToTextController extends Controller
             ->first();
 
         if (!empty($jsonData['vehicle_number'])) {
-            $cleanNumber = $this->normalizeVehicleNumber($jsonData['vehicle_number']);
+            $clean = $this->normalizeVehicleNumber($jsonData['vehicle_number']);
+            $full = $clean['full'];
+            $digitsOnly = $clean['digits'];
 
-            // نبحث بنفس الشكل في قاعدة البيانات (مفضل يكون الحقل مخزن بنفس الشكل)
-            $car = Cars::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, '٠', '0'), '١', '1'), '٢', '2'), '٣', '3'), '٤', '4'), '٥', '5'), '٦', '6'), '٧', '7'), '٨', '8'), '٩', '9')")
-                ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, ' ', ''), '-', ''), '_', ''), '.', ''), '\r', ''), '\n', '') LIKE ?", ["%{$cleanNumber}%"])
-                ->first();
+            // نجرب أولاً نبحث باستخدام الأرقام فقط لأنها الأسهل
+            $car = Cars::whereRaw("REGEXP_REPLACE(number, '[^0-9]', '') LIKE ?", ["%{$digitsOnly}%"])->first();
+
+            // إذا لم نجد، نجرب البحث بالرقم الكامل بعد التنظيف
+            if (!$car) {
+                $car = Cars::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, ' ', ''), '-', ''), '_', ''), '.', ''), '\r', ''), '\n', '') LIKE ?", ["%{$full}%"])->first();
+            }
         }
         if (!$container) {
             return response()->json([
