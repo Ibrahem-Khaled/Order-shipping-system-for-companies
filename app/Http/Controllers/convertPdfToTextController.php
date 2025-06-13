@@ -257,7 +257,7 @@ class convertPdfToTextController extends Controller
         $instructions = "
                     الرجاء تحليل النص الوارد واستخراج المعلومات التالية بدقة:
                     1. \"اسم السائق\"
-                    2. \"رقم الحاوية وامسح المسافة بين الحروف والارقام\"
+                    2. \"رقم الحاوية وامسح المسافة بين الحروف والارقام ووعلي ان يكون 4 احرف و 7 ارقام\"
                     3. \"تاريخ النقل\"
                     4. \"نوع الموعد\" (استيراد أو تفريغ)
                     5. \"رقم السيارة\" إن وُجد
@@ -347,12 +347,24 @@ class convertPdfToTextController extends Controller
             ->first();
         $car = Cars::where('number', 'like', '%' . $jsonData['vehicle_number'] . '%')->first();
         if (!$container) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $jsonData,
+            ]);
             return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
         }
         if (!$driver) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $jsonData,
+            ]);
             return redirect()->back()->with('error', 'لا توجد سائق بهذا الاسم');
         }
         if (!$car) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $jsonData,
+            ]);
             return redirect()->back()->with('error', 'لا توجد سيارة بهذا الرقم');
         }
 
