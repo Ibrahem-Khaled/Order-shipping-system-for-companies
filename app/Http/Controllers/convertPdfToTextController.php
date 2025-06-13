@@ -400,18 +400,31 @@ class convertPdfToTextController extends Controller
             return redirect()->back()->with('error', 'لا توجد سيارة بهذا الرقم');
         }
 
-        // ✅ إرسال البيانات إلى الراوت الآخر
-        $requestData = new \Illuminate\Http\Request([
-            'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
-            'transfer_date' => $jsonData['transfer_date'] ?? null,
-            'driver'        => $driver->id,
-            'car'           => $car->id,
-        ]);
+        if ($jsonData['appointment_type'] == 'استيراد') {
+            $requestData = new \Illuminate\Http\Request([
+                'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
+                'transfer_date' => $jsonData['transfer_date'] ?? null,
+                'driver'        => $driver->id,
+                'car'           => $car->id,
+            ]);
 
-        $response = app()->call([app(DatesController::class), 'update'], [
-            'id'      => $container->id,
-            'request' => $requestData,
-        ]);
+            $response = app()->call([app(DatesController::class), 'update'], [
+                'id'      => $container->id,
+                'request' => $requestData,
+            ]);
+        } else {
+            $requestData = new \Illuminate\Http\Request([
+                'status'        => $jsonData['appointment_type'] == 'استيراد' ? 'transport' : 'done',
+                'user_id'       => $driver->id,
+                'car_id'        => $car->id,
+                'price'         => 20,
+            ]);
+
+            $response = app()->call([app(DatesController::class), 'updateEmpty'], [
+                'id'      => $container->id,
+                'request' => $requestData,
+            ]);
+        }
 
         return $response; // إعادة الريدايركت الذي أرجعته دالة update
 
