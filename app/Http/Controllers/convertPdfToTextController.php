@@ -31,6 +31,20 @@ class convertPdfToTextController extends Controller
 
         return $name;
     }
+    function normalizeVehicleNumber($number)
+    {
+        // 1. تحويل الأرقام العربية إلى أرقام إنجليزية
+        $eastern_arabic_digits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        $western_arabic_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $number = str_replace($eastern_arabic_digits, $western_arabic_digits, $number);
+
+        // 2. حذف كل المسافات والفواصل والعلامات
+        $number = preg_replace('/[\s\-\_\.]/u', '', $number);
+
+        // 3. تحويل الحروف إلى صيغة موحدة (اختياري: مثلا من عربية إلى إنجليزية إن كانت هناك قاعدة واضحة)
+
+        return $number;
+    }
 
     public function index()
     {
@@ -352,11 +366,18 @@ class convertPdfToTextController extends Controller
                 $container = Container::where('number', 'like', '%' . $cleanedNumber . '%')->first();
             }
         }
-
         $driver = User::where('name', 'like', '%' . $jsonData['driver_name'] . '%')
             ->orWhere('phone', 'like', '%' . $jsonData['driver_phone'] . '%')
             ->first();
-        $car = Cars::where('number', 'like', '%' . $jsonData['vehicle_number'] . '%')->first();
+
+        if (!empty($jsonData['vehicle_number'])) {
+            $cleanNumber = $this->normalizeVehicleNumber($jsonData['vehicle_number']);
+
+            // نبحث بنفس الشكل في قاعدة البيانات (مفضل يكون الحقل مخزن بنفس الشكل)
+            $car = Cars::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, '٠', '0'), '١', '1'), '٢', '2'), '٣', '3'), '٤', '4'), '٥', '5'), '٦', '6'), '٧', '7'), '٨', '8'), '٩', '9')")
+                ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(number, ' ', ''), '-', ''), '_', ''), '.', ''), '\r', ''), '\n', '') LIKE ?", ["%{$cleanNumber}%"])
+                ->first();
+        }
         if (!$container) {
             return response()->json([
                 'status'  => 'لا توجد حاوية بهذا الرقم',
