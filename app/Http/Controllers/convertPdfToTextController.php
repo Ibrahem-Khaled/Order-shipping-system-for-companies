@@ -348,21 +348,21 @@ class convertPdfToTextController extends Controller
         $car = Cars::where('number', 'like', '%' . $jsonData['vehicle_number'] . '%')->first();
         if (!$container) {
             return response()->json([
-                'status'  => 'error',
+                'status'  => 'لا توجد حاوية بهذا الرقم',
                 'message' => $jsonData,
             ]);
             return redirect()->back()->with('error', 'لا توجد حاوية بهذا الرقم');
         }
         if (!$driver) {
             return response()->json([
-                'status'  => 'error',
+                'status'  => 'لا توجد سائق بهذا الاسم',
                 'message' => $jsonData,
             ]);
             return redirect()->back()->with('error', 'لا توجد سائق بهذا الاسم');
         }
         if (!$car) {
             return response()->json([
-                'status'  => 'error',
+                'status'  => 'لا توجد سيارة بهذا الرقم',
                 'message' => $jsonData,
             ]);
             return redirect()->back()->with('error', 'لا توجد سيارة بهذا الرقم');
