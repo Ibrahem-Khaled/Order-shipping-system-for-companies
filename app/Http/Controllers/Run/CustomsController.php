@@ -187,4 +187,17 @@ class CustomsController extends Controller
 
         return redirect()->back()->with('success', 'تم نقل البيان الجمركي بنجاح');
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'statement_status' => 'required|string|max:255',
+        ]);
+
+        $statement = CustomsDeclaration::findOrFail($id);
+        $statement->statement_status = $request->statement_status;
+        $statement->save();
+
+        return redirect()->back()->with('success', 'تم تحديث حالة البيان بنجاح');
+    }
 }

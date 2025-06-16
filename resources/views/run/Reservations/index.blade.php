@@ -20,6 +20,7 @@
                                 <th class="py-3 bg-primary text-white">الوزن</th>
                                 <th class="py-3 bg-primary text-white text-center">الحاويات</th>
                                 <th class="py-3 bg-primary text-white">رقم البيان</th>
+                                <th class="py-3 bg-primary text-white">حالة البيان</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,6 +59,50 @@
                                             {{ $statement->statement_number }}
                                         </a>
                                     </td>
+                                    <td class="py-3">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn p-0 border-0 bg-transparent" data-toggle="modal"
+                                            data-target="#statusModal{{ $statement->id }}">
+                                            {{ $statement->statement_status ?? 'غير محدد' }}
+                                            </span>
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="statusModal{{ $statement->id }}" tabindex="-1"
+                                            aria-labelledby="statusModalLabel{{ $statement->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-primary text-white">
+                                                        <h5 class="modal-title" id="statusModalLabel{{ $statement->id }}">
+                                                            تحديث حالة البيان رقم {{ $statement->statement_number }}
+                                                        </h5>
+                                                        <button type="button" class="btn-close btn-close-white"
+                                                            data-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('statements.update-status', $statement->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="statement_status{{ $statement->id }}"
+                                                                    class="form-label"> حالة البيان</label>
+                                                                <textarea class="form-control" id="statement_status{{ $statement->id }}" name="statement_status" rows="3">
+                                                                    {{ old('statement_status', $statement->statement_status) }}
+                                                                </textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">إلغاء</button>
+                                                            <button type="submit" class="btn btn-primary">حفظ
+                                                                التغييرات</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -84,6 +129,7 @@
             background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
         }
 
+        /* Responsive table styles */
         @media (max-width: 768px) {
             .table-responsive {
                 border: 0;
@@ -118,22 +164,23 @@
                 border-bottom: 0;
             }
         }
+
+        /* Custom badge styles */
+        .badge {
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+
+        /* Remove button styles */
+        .btn.p-0.border-0.bg-transparent {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn.p-0.border-0.bg-transparent:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
     </style>
-@endpush
-
-@push('scripts')
-    <script>
-        // جعل الجدول متجاوبًا على الشاشات الصغيرة
-        document.addEventListener('DOMContentLoaded', function() {
-            const cells = document.querySelectorAll('tbody td');
-            const headers = document.querySelectorAll('thead th');
-
-            if (window.innerWidth <= 768) {
-                cells.forEach((cell, index) => {
-                    const headerIndex = index % headers.length;
-                    cell.setAttribute('data-label', headers[headerIndex].textContent.trim());
-                });
-            }
-        });
-    </script>
 @endpush

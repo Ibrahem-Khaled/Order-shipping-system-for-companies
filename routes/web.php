@@ -71,7 +71,8 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::get('show/contanier/post/{customId}/{contNum}', [CustomsController::class, 'showContainerPost'])->name('showContanierPost');
     Route::get('show/contanier/{customId}/', [CustomsController::class, 'showContainer'])->name('showContainer');
     Route::post('transfer/custom/{customId}', [CustomsController::class, 'transferCustom'])->name('transferCustom');
-
+    Route::put('/statements/{id}/update-status', [CustomsController::class, 'updateStatus'])
+        ->name('statements.update-status');
     //add Container
     Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
     Route::post('edit/contanier/price/{id}', [RevenuesController::class, 'priceContainerEdit'])->name('editContainerPrice');
