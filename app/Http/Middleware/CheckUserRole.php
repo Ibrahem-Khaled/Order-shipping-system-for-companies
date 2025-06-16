@@ -47,6 +47,7 @@ class CheckUserRole
                 'ContainerRentStatus',
                 'reservations.index',
                 'reservations.show',
+                'updateStatus',
             ];
             if (!in_array($request->route()->getName(), $allowedRoutes)) {
                 return redirect()->route('reservations.index')->with('error', 'You do not have permission to access this page.');
@@ -78,6 +79,7 @@ class CheckUserRole
                 'getrentMonth',
                 'reservations.index',
                 'reservations.show',
+                'updateStatus',
             ];
             if (!in_array($request->route()->getName(), $allowedRoutes)) {
                 return redirect()->route('reservations.index')->with('error', 'You do not have permission to access this page.');
