@@ -87,7 +87,7 @@
                                                             <div class="mb-3">
                                                                 <label for="statement_status{{ $statement->id }}"
                                                                     class="form-label"> حالة البيان</label>
-                                                                <textarea class="form-control" id="statement_status{{ $statement->id }}" name="statement_status" rows="3">
+                                                                <textarea class="form-control" id="statement_status{{ $statement->id }}" name="statement_status" rows="3" required >
                                                                     {{ old('statement_status', $statement->statement_status) }}
                                                                 </textarea>
                                                             </div>

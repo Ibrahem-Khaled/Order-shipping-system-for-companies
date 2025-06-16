@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('importer_name')->nullable();
             $table->date('expire_customs')->nullable();
             $table->bigInteger('customs_weight')->default(0)->nullable();
+            $table->text('statement_status')->nullable();
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
