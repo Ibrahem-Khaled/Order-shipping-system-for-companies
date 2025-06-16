@@ -82,7 +82,7 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::get('offices/dates', [DatesController::class, 'index'])->name('dates');
     Route::get('update/container/{id}', [DatesController::class, 'ContainerRentStatus'])->name('ContainerRentStatus');
     Route::get('empty/contaniers', [DatesController::class, 'empty'])->name('empty');
-    Route::post('/direction/update/{id}', [DatesController::class, 'updateDirection']);
+    Route::post('/direction/update/{id}', [DatesController::class, 'updateDirection'])->name('direction.update');
     Route::post('update/container/status/{id}', [DatesController::class, 'update'])->name('updateContainer');
     Route::post('delete/container/{id}', [DatesController::class, 'deleteContainer'])->name('deleteContainer');
     Route::post('update/container/empty/{id}', [DatesController::class, 'updateEmpty'])->name('updateEmpty');
