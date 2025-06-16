@@ -18,8 +18,7 @@
         <div class="row justify-content-center">
             <!-- Expenses Card -->
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card accounting-card bg-gradient-danger h-100" data-toggle="modal"
-                    data-target="#expensesModal">
+                <div class="card accounting-card bg-gradient-danger h-100" data-toggle="modal" data-target="#expensesModal">
                     <div class="card-body text-center p-4">
                         <div class="icon-wrapper mb-3">
                             <i class="fas fa-money-bill-wave fa-4x text-white"></i>
@@ -129,61 +128,31 @@
 
     <!-- Expenses Modal -->
     <div class="modal fade" id="expensesModal" tabindex="-1" aria-labelledby="expensesModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">Add commentMore actions
             <div class="modal-content">
-                <div class="modal-header bg-gradient-danger text-white">
-                    <h5 class="modal-title" id="expensesModalLabel">
-                        <i class="fas fa-money-bill-wave me-2"></i> إدارة المصروفات
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal"
-                        aria-label="Close"></button>
+                <!-- Modal Content Goes Here -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEmployeeModalLabel">اختر نوع الطلب:</h5>Add commentMore actions
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <a href="{{ route('expensesCarsData') }}" class="card option-card h-100 text-decoration-none">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-car fa-3x text-danger mb-3"></i>
-                                    <h5 class="card-title">كشف حساب السيارات</h5>
-                                    <p class="card-text text-muted">عرض مصروفات الوقود والصيانة</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <a href="{{ route('expensesSallaryeEmployee') }}"
-                                class="card option-card h-100 text-decoration-none">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-users fa-3x text-danger mb-3"></i>
-                                    <h5 class="card-title">المرتبات</h5>
-                                    <p class="card-text text-muted">إدارة رواتب الموظفين</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <a href="{{ route('expensesSallaryAlbancher') }}"
-                                class="card option-card h-100 text-decoration-none">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-user-tie fa-3x text-danger mb-3"></i>
-                                    <h5 class="card-title">البنشري</h5>
-                                    <p class="card-text text-muted">إدارة رواتب البنشري</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <a href="{{ route('expensesOthers') }}" class="card option-card h-100 text-decoration-none">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-file-invoice-dollar fa-3x text-danger mb-3"></i>
-                                    <h5 class="card-title">كشوف أخرى</h5>
-                                    <p class="card-text text-muted">المصروفات الإدارية والنثرية</p>
-                                </div>
-                            </a>
-                        </div>
+                    <!-- Form to Add Employee Data -->
+                    <div class="list-group">
+                        <a href="{{ route('expensesCarsData') }}" class="list-group-item list-group-item-action">كشف حساب
+                            السيارات</a>
+                        <a href="{{ route('expensesSallaryeEmployee') }}"
+                            class="list-group-item list-group-item-action">المرتبات</a>
+                        <a href="{{ route('expensesSallaryAlbancher') }}"
+                            class="list-group-item list-group-item-action">البنشري</a>
+                        @foreach ($users as $item)
+                            <a href="{{ route('expensesAlbancherDaily', $item->id) }}"
+                                class="list-group-item list-group-item-action">مصروفات ادارية ونثرية </a>
+                        @endforeach
+                        <a href="{{ route('expensesOthers') }}" class="list-group-item list-group-item-action">كشوف أخرى</a>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="fas fa-times me-2"></i> إغلاق
-                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

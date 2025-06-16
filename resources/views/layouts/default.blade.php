@@ -18,7 +18,6 @@
     <style>
         body {
             font-family: "Tajawal", sans-serif !important;
-            background: url('{{ asset('logo.jpeg') }}') center/cover no-repeat;
         }
 
         /* إعدادات الطباعة */
