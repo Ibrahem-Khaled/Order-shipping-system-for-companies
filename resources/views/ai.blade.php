@@ -182,7 +182,7 @@
     </style>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const dropZone = document.getElementById('pdfDropZone');
@@ -228,4 +228,4 @@
             });
         });
     </script>
-@endsection
+@endpush
