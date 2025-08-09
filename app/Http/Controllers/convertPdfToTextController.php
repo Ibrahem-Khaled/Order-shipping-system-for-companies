@@ -210,7 +210,7 @@ class convertPdfToTextController extends Controller
                 'importer_name' => $data['importer_name'],
                 // 'expire_customs' => $data['expire_customs'],
                 'customs_weight' => $data['customs_weight'],
-                'pdf_file' => $relativePath,
+                'pdf_path' => $relativePath,
             ]);
 
             foreach ($data['containers'] as $containerData) {

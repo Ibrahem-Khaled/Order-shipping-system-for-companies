@@ -21,7 +21,7 @@
                         </a>
                     @endif
                     @can('is-super-admin')
-                        <button class="btn btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#addLocationModal">
+                        <button class="btn btn-primary mb-0" data-toggle="modal" data-target="#addLocationModal">
                             <i class="fas fa-map-marker-alt me-1"></i> إضافة موقع
                         </button>
                     @endcan
@@ -135,8 +135,8 @@
                         @csrf
                         <div class="modal-header">
                             <h5 class="modal-title" id="addLocationModalLabel">إضافة موقع جديد</h5>
-                            {{-- Note: data-dismiss is for Bootstrap 4. BS5 uses data-bs-dismiss --}}
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            {{-- Note: data-dismiss is for Bootstrap 4. BS5 uses data-dismiss --}}
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
@@ -154,7 +154,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
                             <button type="submit" class="btn btn-primary">حفظ الموقع</button>
                         </div>
                     </form>
@@ -265,12 +265,12 @@
             // Also fixing the modal trigger attributes for Bootstrap 5
             const addLocationButton = document.querySelector('button[data-target="#addLocationModal"]');
             if (addLocationButton) {
-                addLocationButton.setAttribute('data-bs-toggle', 'modal');
-                addLocationButton.setAttribute('data-bs-target', '#addLocationModal');
+                addLocationButton.setAttribute('data-toggle', 'modal');
+                addLocationButton.setAttribute('data-target', '#addLocationModal');
             }
             const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
             closeButtons.forEach(btn => {
-                btn.setAttribute('data-bs-dismiss', 'modal');
+                btn.setAttribute('data-dismiss', 'modal');
             });
         });
     </script>
