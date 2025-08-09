@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +25,10 @@ class AppServiceProvider extends ServiceProvider
     {
         \Carbon\Carbon::setLocale('ar');
         Paginator::useBootstrap();
+
+        Gate::define('is-super-admin', function (User $user) {
+            // افترض أن السوبر أدمن له role معين أو ID محدد
+            return $user->role === 'superAdmin';
+        });
     }
 }

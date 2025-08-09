@@ -22,4 +22,9 @@ class CustomsDeclaration extends Model
     {
         return $this->hasMany(Container::class, 'customs_id');
     }
+
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
 }

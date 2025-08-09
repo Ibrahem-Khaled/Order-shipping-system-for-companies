@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Container;
 use App\Models\CustomsDeclaration;
 use App\Models\FlatbedContainer;
+use App\Models\Location;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CustomsController extends Controller
 {
@@ -199,5 +201,57 @@ class CustomsController extends Controller
         $statement->save();
 
         return redirect()->back()->with('success', 'تم تحديث حالة البيان بنجاح');
+    }
+
+    public function downloadPdf($id)
+    {
+        // 1. ابحث عن البيان الجمركي باستخدام الـ ID
+        $declaration = CustomsDeclaration::findOrFail($id);
+
+        // 2. تحقق من وجود مسار للملف ومن أن الملف موجود فعلياً على السيرفر
+        if (!$declaration->pdf_path || !Storage::exists($declaration->pdf_path)) {
+            abort(404, 'الملف غير موجود.');
+        }
+
+        // 3. قم بإرجاع استجابة تحميل للملف
+        // سيقوم Laravel تلقائياً بتحديد الـ Headers المناسبة للتحميل
+        return Storage::download($declaration->pdf_path);
+    }
+
+    public function show(CustomsDeclaration $statement)
+    {
+        // تحميل العلاقات لتجنب مشكلة N+1
+        $statement->load('client', 'locations', 'container');
+
+        return view('run.Reservations.custom-declaration', compact('statement'));
+    }
+
+    public function storeLocation(Request $request, CustomsDeclaration $statement)
+    {
+        // التحقق من صلاحية السوبر أدمن
+        if (auth()->user()->role !== 'superAdmin') {
+            abort(403);
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'maps_url' => 'nullable|url',
+        ]);
+
+        $statement->locations()->create($request->all());
+
+        return back()->with('success', 'تمت إضافة الموقع بنجاح!');
+    }
+
+    public function destroyLocation(Location $location)
+    {
+        if (auth()->user()->role !== 'superAdmin') {
+            abort(403);
+        }
+
+        $location->delete();
+
+        return back()->with('success', 'تم حذف الموقع بنجاح.');
     }
 }

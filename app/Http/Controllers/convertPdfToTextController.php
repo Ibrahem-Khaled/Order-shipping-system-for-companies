@@ -71,11 +71,16 @@ class convertPdfToTextController extends Controller
 
         // 2. تخزين الملف مؤقتاً في storage/app/public
         $pdfFile      = $request->file('pdf_file');
-        $relativePath = $pdfFile->store('public');
+        // لنقم بإنشاء اسم ملف فريد ومنظم
+        $originalName = pathinfo($pdfFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $uniqueName = $originalName . '_' . time() . '.' . $pdfFile->getClientOriginalExtension();
+
+        // تخزين الملف في مجلد 'declarations' داخل 'storage/app/public'
+        $relativePath = $pdfFile->storeAs('public/declarations', $uniqueName);
         // مثال: "public/abc123.pdf"
 
         // 3. الحصول على المسار المطلق الفعلي
-        $absolutePath = Storage::path($relativePath);
+        $absolutePath = Storage::path($relativePath)
         // مثال: "/var/www/project/storage/app/public/abc123.pdf"
 
         // 4. قراءة محتوى ملف PDF ثنائيّاً ثمّ تشفيره إلى Base64
@@ -93,7 +98,7 @@ class convertPdfToTextController extends Controller
         }
 
         // 5. حذف الملف المؤقت بعد القراءة
-        Storage::delete($relativePath);
+        // Storage::delete($relativePath);
 
         // 6. تحضير التعليمات (prompt) لإرسالها مع الملف إلى نموذج gpt-4o-mini
         $instructions =
@@ -135,7 +140,7 @@ class convertPdfToTextController extends Controller
 
         try {
             $response = OpenAI::chat()->create([
-                'model'       => 'gpt-4o',
+                'model'       => 'gpt-5',
                 'messages'    => $messages,
                 'temperature' => 0, // لضمان دقة واستقرار أكثر
             ]);
@@ -177,10 +182,10 @@ class convertPdfToTextController extends Controller
                 ], 500);
             }
         }
-        return $this->addResponseFromModel($jsonData);
+        return $this->addResponseFromModel($jsonData, $relativePath);
     }
 
-    public function addResponseFromModel($data)
+    public function addResponseFromModel($data, $relativePath)
     {
         $rawName = $data['client_id'];
         // 2. نطبّق توحيد التنسيق عليه
@@ -205,6 +210,7 @@ class convertPdfToTextController extends Controller
                 'importer_name' => $data['importer_name'],
                 // 'expire_customs' => $data['expire_customs'],
                 'customs_weight' => $data['customs_weight'],
+                'pdf_file' => $relativePath,
             ]);
 
             foreach ($data['containers'] as $containerData) {

@@ -73,6 +73,14 @@ Route::group(['prefix' => 'system', 'middleware' => ['auth', 'CheckUserRole']], 
     Route::post('transfer/custom/{customId}', [CustomsController::class, 'transferCustom'])->name('transferCustom');
     Route::put('/statements/{id}/update-status', [CustomsController::class, 'updateStatus'])
         ->name('statements.update-status');
+    Route::get('/declarations/{id}/download', [CustomsController::class, 'downloadPdf'])->name('declarations.download');
+    // مسار لعرض صفحة تفاصيل البيان
+    Route::get('/statements/{statement}', [CustomsController::class, 'show'])->name('statements.show');
+    // مسار لإضافة موقع جديد (للسوبر أدمن فقط)
+    Route::post('/statements/{statement}/locations', [CustomsController::class, 'storeLocation'])->name('locations.store');
+    // مسار لحذف موقع (للسوبر أدمن فقط)
+    Route::delete('/locations/{location}', [CustomsController::class, 'destroyLocation'])->name('locations.destroy');
+
     //add Container
     Route::post('add/contanier/post/{customs_id}', [ContanierController::class, 'store'])->name('addContainer');
     Route::post('edit/contanier/price/{id}', [RevenuesController::class, 'priceContainerEdit'])->name('editContainerPrice');

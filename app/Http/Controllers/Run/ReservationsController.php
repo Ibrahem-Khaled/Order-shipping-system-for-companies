@@ -12,7 +12,7 @@ class ReservationsController extends Controller
     {
         $statements = CustomsDeclaration::whereHas('container', function ($query) {
             $query->where('status', 'wait');
-        })->with('container')->paginate(25);
+        })->with('container')->paginate(30);
 
         return view('run.Reservations.index', compact('statements'));
     }

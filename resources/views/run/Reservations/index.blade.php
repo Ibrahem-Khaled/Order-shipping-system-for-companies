@@ -21,6 +21,7 @@
                                 <th class="py-3 bg-primary text-white text-center">الحاويات</th>
                                 <th class="py-3 bg-primary text-white">رقم البيان</th>
                                 <th class="py-3 bg-primary text-white">حالة البيان</th>
+                                <th class="py-3 bg-primary text-white text-center">الإجراءات</th> {{-- <-- عمود جديد --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -89,7 +90,8 @@
                                                                     class="form-label"> حالة البيان</label>
                                                                 <input type="text" class="form-control"
                                                                     id="statement_status{{ $statement->id }}"
-                                                                    name="statement_status" required value="{{ $statement->statement_status ?? 'غير محدد' }}">
+                                                                    name="statement_status" required
+                                                                    value="{{ $statement->statement_status ?? 'غير محدد' }}">
 
                                                             </div>
                                                         </div>
@@ -103,6 +105,12 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </td>
+                                    <td class="py-3 text-center"> {{-- <-- خلية جديدة --}}
+                                        <a href="{{ route('statements.show', $statement->id) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye me-1"></i> تفاصيل
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
