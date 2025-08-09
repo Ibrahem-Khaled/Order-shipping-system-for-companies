@@ -140,7 +140,7 @@ class convertPdfToTextController extends Controller
 
         try {
             $response = OpenAI::chat()->create([
-                'model'       => 'gpt-5',
+                'model'       => 'gpt-4o',
                 'messages'    => $messages,
                 'temperature' => 0, // لضمان دقة واستقرار أكثر
             ]);

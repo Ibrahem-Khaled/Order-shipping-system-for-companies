@@ -21,7 +21,7 @@
                         </a>
                     @endif
                     @can('is-super-admin')
-                        <button class="btn btn-primary mb-0" data-toggle="modal" data-target="#addLocationModal">
+                        <button class="btn btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#addLocationModal">
                             <i class="fas fa-map-marker-alt me-1"></i> إضافة موقع
                         </button>
                     @endcan
@@ -135,7 +135,8 @@
                         @csrf
                         <div class="modal-header">
                             <h5 class="modal-title" id="addLocationModalLabel">إضافة موقع جديد</h5>
-                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            {{-- Note: data-dismiss is for Bootstrap 4. BS5 uses data-bs-dismiss --}}
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
@@ -153,7 +154,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                             <button type="submit" class="btn btn-primary">حفظ الموقع</button>
                         </div>
                     </form>
@@ -164,27 +165,112 @@
 @endsection
 
 @push('scripts')
+    {{-- =============================================================== --}}
+    {{-- ================ الكود المحدث لزر المشاركة =================== --}}
+    {{-- =============================================================== --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            /**
+             * Copies text to the clipboard, using the modern API with a fallback.
+             * @param {string} text The text to copy.
+             * @param {HTMLElement} element The button element for visual feedback.
+             */
+            function copyToClipboard(text, element) {
+                // Use modern API if available and in a secure context (HTTPS)
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showSuccess(element);
+                    }).catch(err => {
+                        console.error('Modern clipboard API failed. Using fallback.', err);
+                        fallbackCopy(text, element);
+                    });
+                } else {
+                    // Fallback for insecure contexts (HTTP) or older browsers
+                    console.warn('Using fallback clipboard method.');
+                    fallbackCopy(text, element);
+                }
+            }
+
+            /**
+             * Fallback method to copy text using a temporary textarea.
+             * @param {string} text The text to copy.
+             * @param {HTMLElement} element The button element for visual feedback.
+             */
+            function fallbackCopy(text, element) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.top = "-9999px";
+                textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showSuccess(element);
+                    } else {
+                        console.error('Fallback: Unable to copy.');
+                        alert('لم نتمكن من نسخ الرابط، يرجى المحاولة يدوياً.');
+                    }
+                } catch (err) {
+                    console.error('Fallback: Error copying text.', err);
+                    alert('حدث خطأ أثناء محاولة نسخ الرابط.');
+                }
+                document.body.removeChild(textArea);
+            }
+
+            /**
+             * Provides visual feedback on the button after a successful copy.
+             * @param {HTMLElement} button The button that was clicked.
+             */
+            function showSuccess(button) {
+                const originalContent = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+                button.classList.add('btn-success');
+                button.classList.remove('btn-outline-info');
+                button.disabled = true;
+
+                setTimeout(() => {
+                    button.innerHTML = originalContent;
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-outline-info');
+                    button.disabled = false;
+                }, 2000);
+            }
+
+            // Attach event listeners to all share buttons
             const shareButtons = document.querySelectorAll('.share-btn');
             shareButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const googleLink = this.dataset.google || '';
-                    let textToCopy = 'مشاركة موقع:\n';
-                    if (googleLink) textToCopy += `- خرائط جوجل: ${googleLink}\n`;
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
 
-                    if (textToCopy.length > 20) {
-                        navigator.clipboard.writeText(textToCopy.trim()).then(() => {
-                            const originalContent = this.innerHTML;
-                            this.innerHTML = '<i class="fas fa-check"></i>';
-                            this.classList.add('btn-success');
-                            setTimeout(() => {
-                                this.innerHTML = originalContent;
-                                this.classList.remove('btn-success');
-                            }, 2000);
-                        }).catch(err => console.error('Failed to copy: ', err));
+                    const googleLink = this.dataset.google || '';
+                    if (!googleLink) {
+                        alert('لا يوجد رابط خرائط جوجل متاح لهذا الموقع.');
+                        return;
                     }
+
+                    // Find the location title from the parent element
+                    const timelineContent = this.closest('.timeline-content');
+                    const titleElement = timelineContent ? timelineContent.querySelector('h6') : null;
+                    const locationTitle = titleElement ? titleElement.textContent.trim() : 'الموقع المحدد';
+
+                    const textToCopy = `موقع: ${locationTitle}\nرابط خرائط جوجل: ${googleLink}`;
+
+                    copyToClipboard(textToCopy, this);
                 });
+            });
+
+            // Also fixing the modal trigger attributes for Bootstrap 5
+            const addLocationButton = document.querySelector('button[data-target="#addLocationModal"]');
+            if (addLocationButton) {
+                addLocationButton.setAttribute('data-bs-toggle', 'modal');
+                addLocationButton.setAttribute('data-bs-target', '#addLocationModal');
+            }
+            const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+            closeButtons.forEach(btn => {
+                btn.setAttribute('data-bs-dismiss', 'modal');
             });
         });
     </script>
@@ -225,10 +311,11 @@
             position: relative;
         }
 
-        .timeline.timeline-one-side:before {
+        .timeline.timeline-one-side::before {
             content: "";
             position: absolute;
-            left: 11px;
+            right: 11px; /* Adjusted for RTL */
+            left: auto;
             top: 0;
             height: 100%;
             border-left: 2px solid #dee2e6;
@@ -240,7 +327,8 @@
 
         .timeline-step {
             position: absolute;
-            left: 0;
+            right: 0; /* Adjusted for RTL */
+            left: auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -253,7 +341,8 @@
         }
 
         .timeline-content {
-            margin-left: 45px;
+            margin-right: 45px; /* Adjusted for RTL */
+            margin-left: 0;
         }
     </style>
 @endpush
