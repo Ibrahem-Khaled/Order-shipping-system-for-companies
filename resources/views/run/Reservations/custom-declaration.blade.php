@@ -51,12 +51,16 @@
                         <div class="d-flex justify-content-around text-center py-2">
                             <div>
                                 <span
-                                    class="badge bg-success-soft fs-4">{{ $statement->container->where('status', 'transport')->count() }}</span>
+                                    class="badge bg-success-soft fs-4">
+                                    {{ $statement->container->where('status', 'transport')->count() }}
+                                </span>
                                 <p class="text-sm fw-bold mt-1 mb-0">محجوزة</p>
                             </div>
                             <div>
                                 <span
-                                    class="badge bg-warning-soft fs-4">{{ $statement->container->where('status', 'wait')->count() }}</span>
+                                    class="badge bg-warning-soft fs-4">
+                                    {{ $statement->container->where('status', 'wait')->count() }}
+                                </span>
                                 <p class="text-sm fw-bold mt-1 mb-0">منتظرة</p>
                             </div>
                             <div>

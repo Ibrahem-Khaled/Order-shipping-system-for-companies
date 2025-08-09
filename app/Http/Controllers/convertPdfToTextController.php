@@ -80,7 +80,7 @@ class convertPdfToTextController extends Controller
         // مثال: "public/abc123.pdf"
 
         // 3. الحصول على المسار المطلق الفعلي
-        $absolutePath = Storage::path($relativePath)
+        $absolutePath = Storage::path($relativePath);
         // مثال: "/var/www/project/storage/app/public/abc123.pdf"
 
         // 4. قراءة محتوى ملف PDF ثنائيّاً ثمّ تشفيره إلى Base64
